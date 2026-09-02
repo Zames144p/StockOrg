@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.ctp": "php"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+  }
+}
