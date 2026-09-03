@@ -2,17 +2,22 @@
 
 <h1>Blog posts</h1>
 <p><?php echo $this->Html->link("Add Post", array('action' => 'add')); ?></p>
+
+<p><?php echo $this->Html->link("login", array('controller' => 'Users', 'action' => 'login')); ?></p>
+
 <table>
     <tr>
         <th>Id</th>
         <th>Title</th>
-        <th>Action</th>
+        <th>Actions</th>
         <th>Created</th>
     </tr>
 
-<!-- Here's where we loop through our $posts array, printing out post info -->
-
-<?php foreach ($posts as $post): ?>
+<?php
+/**
+ * @var array $posts
+ */
+foreach ($posts as $post): ?>
     <tr>
         <td><?php echo $post['Post']['id']; ?></td>
         <td>
@@ -28,6 +33,12 @@
                 echo $this->Html->link(
                     'Edit',
                     array('action' => 'edit', $post['Post']['id'])
+                );
+                echo ' | ';
+                echo $this->Form->postLink(
+                    'Delete',
+                    array('action' => 'delete', $post['Post']['id']),
+                    array('confirm' => 'Are you sure?')
                 );
             ?>
         </td>

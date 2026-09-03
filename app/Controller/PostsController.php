@@ -43,7 +43,7 @@ class PostsController extends AppController {
         if($this->request->is(array('post', 'put'))){
             $this->Post->id = $id;
             if($this->Post->save($this->request->data)){
-                $this->Flash->sucesse(__('Your post has been updated.'));
+                $this->Flash->success(__('The post with id: %s has been updated.', h($id)));
                 return $this->redirect(array('action' => 'index'));
             }
             $this->Flash->error(__('Unable to update your post.'));
@@ -52,7 +52,25 @@ class PostsController extends AppController {
         if($this->request->is('get')){
             $this->request->data = $post;
         }
+    }
 
+    public function delete($id = null){
+            if($this->request->is('get')){
+                throw new MethodNotAllowedException();
 
+            };
+
+            if($this->Post->delete($id)){
+                $this->Flash->success(
+                    __('The post with id: %s has been deleted.', h($id))
+                );
+                return $this->redirect(array('action' => 'index'));
+            } else {
+                $this->Flash->error(
+                    __('The post with id: %s could not be deleted.', h($id))
+                );
+            }
+
+        return $this->redirect(array('action' => 'index'));
     }
 }
