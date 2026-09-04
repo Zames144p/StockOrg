@@ -31,4 +31,21 @@ App::uses('Controller', 'Controller');
  * @link		https://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+    public $layout = 'clean';
+
+    //pra eu conseguir usar o authcomponent e o blowfish, eu preciso colocar eles aqui, e depois eu vou configurar eles no beforeFilter.
+    public $components = array(
+        'Session',
+        'Auth' => array(
+            'authenticate' => array(
+                'Form' => array(
+                    'passwordHasher' => 'Blowfish',
+                    'fields' => array('username' => 'username', 'password' => 'password')
+                )
+            ),
+            'loginAction' => array('controller' => 'Users', 'action' => 'login'),
+            'loginRedirect' => array('controller' => 'Dashboard', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'Users', 'action' => 'login')
+        )
+    );
 }

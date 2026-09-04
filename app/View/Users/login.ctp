@@ -1,26 +1,37 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Basico</title>
-    <link rel="stylesheet" href="/app/">
-</head>
-<body>
-    <header>
-        <h1>Login tlgd</h1>
-    </header>
-    <section>
-        <div id="layout" text-align="center">
-            <p><input type="text" id="usuario" placeholder="Usuário" itemid="usuario"></p>
-            <p><input type="password" id="senha" placeholder="Senha" itemid="senha"></p>
-            <button onclick="login()">Login</button> <br>
-            <p>ou <?php echo $this->Html->link('se cadastre', array('controller' => 'Users', 'action' => 'cadastro')); ?></p>
+<?php echo $this->Html->css('loginPage'); ?>
+
+<div class="login-card">
+    <h2>Faça seu login!</h2>
+    <div class="line-divider"></div>
+
+    <?php echo $this->Form->create('User'); ?>
+    
+        <div class="form-group">
+            <?php echo $this->Form->input('username', array('label' => 'NOME', 'div' => false)); ?>
         </div>
-    </section>
-    <footer>
-        <p>&copy; ZamesINC</p>
-    </footer>
-<script src="<?php echo $this->Html->script('scriptLogin'); ?>"></script>
-</body>
-</html>
+
+        <div class="form-group">
+            <?php echo $this->Form->input('password', array('label' => 'SENHA', 'div' => false)); ?>
+        </div>
+
+        <!-- Checkbox alinhado corretamente -->
+        <div class="form-checkbox">
+            <input type="checkbox" id="remember_me" name="data[User][remember_me]">
+            <label for="remember_me">Salvar Senha</label>
+        </div>
+
+        <!-- Botões alinhados lado a lado -->
+        <div class="form-actions">
+            <?php echo $this->Html->link(
+                'Criar uma conta',
+                array('controller' => 'Users', 'action' => 'cadastro'),
+                array('class' => 'btn-cadastro')
+            ); ?>
+
+            <?php echo $this->Form->submit('Entrar', array('class' => 'btn-login', 'div' => false)); ?>
+        </div>
+
+    <?php echo $this->Form->end(); ?>
+
+    <p class="footer-credits">Criado com 🧡 por ZamesINC</p>
+</div>

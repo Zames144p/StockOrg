@@ -1,33 +1,69 @@
-body{
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background-color: rgb(0, 77, 110);
-    color: white;
+/* Oculta textos perdidos do carrossel/slide */
+.carousel-caption, 
+.slide-title, 
+h5:contains("First slide") {
+    display: none !important;
 }
 
-div#layout{
-    background-color: white;
-    color: rgb(57, 57, 57);
-    width: 400px;
-    margin: auto;
-    border-radius: 10px;
-    padding: 15px;
+/* Prevenção de vazamento do Card */
+.login-card {
+    position: relative;
+    overflow: hidden;
+    padding: 30px;
 }
 
-input#usuario, input#senha{
+/* Alinhamento perfeito do Checkbox com o texto */
+.form-checkbox {
     display: flex;
-    width: 300px;
-    padding: 10px;
-    margin: 5px 0px;
-    border: 1px solid rgb(57, 57, 57);
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0 20px 0;
 }
 
-header{
-    text-align: center;
-    color: rgb(255, 255, 255);
+.form-checkbox input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
 }
 
-footer{
+.form-checkbox label {
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Botões com contraste e espaçamento ajustados */
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.btn-cadastro {
+    background-color: #95cefa;
+    color: #1a4971 !important; /* Cor mais escura para legibilidade */
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn-login {
+    background-color: #DE6262;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.footer-credits {
     text-align: center;
-    color: rgb(255, 255, 255);
-    margin-top: 20px;
+    font-size: 12px;
+    color: #777;
+    margin-top: 25px;
 }
