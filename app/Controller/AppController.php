@@ -40,12 +40,12 @@ class AppController extends Controller {
             'authenticate' => array(
                 'Form' => array(
                     'passwordHasher' => 'Blowfish',
-                    'fields' => array('username' => 'username', 'password' => 'password')
+                    'fields' => array('username' => 'usuario', 'password' => 'senha_hash')
                 )
             ),
-            'loginAction' => array('controller' => 'Users', 'action' => 'login'),
-            'loginRedirect' => array('controller' => 'Dashboard', 'action' => 'index'),
-            'logoutRedirect' => array('controller' => 'Users', 'action' => 'login')
+            'loginAction' => array('controller' => 'users', 'action' => 'login'),
+            'loginRedirect' => array('controller' => 'posts', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'users', 'action' => 'login')
         )
     );
 }

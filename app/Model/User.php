@@ -12,7 +12,7 @@ class User extends AppModel {
 
     //Obs: a variavel validate é uma variavel do cake, ent ela é usada pra validar os formularios.
     public $validate = array(
-        'nome' => array(
+        'username' => array(
             'rule' => 'notBlank',
             'message' => 'O nome de usuário não pode estar em branco.',
 
@@ -21,11 +21,11 @@ class User extends AppModel {
                 'message' => 'Este nome de usuário já está em uso.'
             )
         ),
-        'senha' => array(
+        'password' => array(
             'rule' => 'notBlank',
             'message' => 'A senha não pode estar em branco.'
         ),
-        'confirmar_senha' => array(
+        'confirmar_password' => array(
             'rule' => 'matchPasswords',
             'message' => 'As senhas precisam ser iguais.'
         ),
@@ -41,11 +41,11 @@ class User extends AppModel {
         }
 
         //Depois de ver se o usuario ja existe ou não, recebemos a informação de senha do usuario e hashear antes de botar no banco.
-        if (isset($this->data[$this->alias]['password']))//verifica se tem uma senha ou não. 
+        if (isset($this->data[$this->alias]['senha_hash']))//verifica se tem uma senha ou não. 
         {
             $passwordHasher = new BlowfishPasswordHasher();
-            $this->data[$this->alias]['password'] = $passwordHasher->hash(
-                $this->data[$this->alias]['password']
+            $this->data[$this->alias]['senha_hash'] = $passwordHasher->hash(
+                $this->data[$this->alias]['senha_hash']
             );
         }
 

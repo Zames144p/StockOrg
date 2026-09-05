@@ -23,6 +23,16 @@ class UsersController extends AppController {
     }
 
     public function login(){
-        if($this->request->is('post'))
-    }    
+        //primeiro eu verifico a requisiçao, se for get é pq o usuario ta acessando pela primeira vez.
+        if ($this->request->is('get')) {
+            return; //manda pra login normalmente
+        }
+        //Se for post, ele ta preenchendo o formularios e entao verifico se o usuario ja existe
+        if($this->request->is('post')){
+            if($this->Auth->login()){ //esse metodo do cake verifica tanto o usuario quanto a senha, retornando true se tiver certo.
+                return $this->redirect($this->Auth->redirectUrl());
+            }
+            $this->Session->setFlash('Usuário ou senha inválidos, tente novamente.');
+        }
+    }
 }

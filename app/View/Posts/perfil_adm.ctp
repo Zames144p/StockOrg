@@ -1,0 +1,1 @@
+Aqui vai ser o acesso do adm nos posts, ele vai poder criar, editar e deletar posts, alem de poder ver os usuarios cadastrados no blog.

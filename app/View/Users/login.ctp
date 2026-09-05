@@ -4,14 +4,14 @@
     <h2>Faça seu login!</h2>
     <div class="line-divider"></div>
 
-    <?php echo $this->Form->create('User'); ?>
+    <?php echo $this->Form->create('User'); //ai ele vai acessar o model e corresponder os campos ?>
     
         <div class="form-group">
-            <?php echo $this->Form->input('username', array('label' => 'NOME', 'div' => false)); ?>
+            <?php echo $this->Form->input('usuario', array('label' => 'NOME', 'div' => false)); ?>
         </div>
 
         <div class="form-group">
-            <?php echo $this->Form->input('password', array('label' => 'SENHA', 'div' => false)); ?>
+            <?php echo $this->Form->input('senha_hash', array('label' => 'SENHA', 'type' => 'password', 'div' => false)); ?>
         </div>
 
         <!-- Checkbox alinhado corretamente -->
