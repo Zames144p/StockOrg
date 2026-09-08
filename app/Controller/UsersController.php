@@ -18,8 +18,8 @@ class UsersController extends AppController {
                 $this->Session->setFlash('Cadastro realizado com sucesso!');
                 return $this->redirect(array('action' => 'login'));
             }
+            $this->Session->setFlash('Não foi possível realizar o cadastro. Por favor, tente novamente.');
         }
-        $this->Session->setFlash('Não foi possível realizar o cadastro. Por favor, tente novamente.');
     }
 
     public function login(){

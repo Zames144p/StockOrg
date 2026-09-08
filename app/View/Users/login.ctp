@@ -7,11 +7,11 @@
     <?php echo $this->Form->create('User'); //ai ele vai acessar o model e corresponder os campos ?>
     
         <div class="form-group">
-            <?php echo $this->Form->input('usuario', array('label' => 'NOME', 'div' => false)); ?>
+            <?php echo $this->Form->input('nome', array('label' => 'Nome', 'div' => false)); ?>
         </div>
 
         <div class="form-group">
-            <?php echo $this->Form->input('senha_hash', array('label' => 'SENHA', 'type' => 'password', 'div' => false)); ?>
+            <?php echo $this->Form->input('senha_hash', array('label' => 'Senha', 'type' => 'password', 'div' => false)); ?>
         </div>
 
         <!-- Checkbox alinhado corretamente -->
@@ -27,6 +27,13 @@
                 array('controller' => 'Users', 'action' => 'cadastro'),
                 array('class' => 'btn-cadastro')
             ); ?>
+
+            <?php echo $this->Html->link(
+                'Acessar como guest',
+                array('controller' => 'posts', 'action' => 'index'),
+                array('class' => 'btn-guest')
+            ); ?>
+
 
             <?php echo $this->Form->submit('Entrar', array('class' => 'btn-login', 'div' => false)); ?>
         </div>

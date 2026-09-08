@@ -21,23 +21,26 @@ class User extends AppModel {
                 'message' => 'Este nome de usuário já está em uso.'
             )
         ),
-        'password' => array(
+        'senha_hash' => array(
             'rule' => 'notBlank',
             'message' => 'A senha não pode estar em branco.'
         ),
-        'confirmar_password' => array(
+        'confirmar_senha' => array(
             'rule' => 'matchPasswords',
             'message' => 'As senhas precisam ser iguais.'
         ),
     );
 
     public function beforeSave($options = array()) {
+        //antes de salvar, eu removo o que foi colocar no confirmar_senha e usado n verificação, assim nao fica registrado no banco a confimação.
+        unset($this->data[$this->alias]['confirmar_senha']);
+
         //verifico se tem o id na tabela, se nao tiver, criar um novo e se ja tiver, ele vai modificar.
         if(!$this -> id){
-            $this->data[$this->alias]['created'] = date('Y-m-d H:i:s');
+            $this->data[$this->alias]['criado_em'] = date('Y-m-d H:i:s');
         }
         if($this -> id){
-            $this->data[$this->alias]['modified'] = date('Y-m-d H:i:s');
+            $this->data[$this->alias]['modificado_em'] = date('Y-m-d H:i:s');
         }
 
         //Depois de ver se o usuario ja existe ou não, recebemos a informação de senha do usuario e hashear antes de botar no banco.
@@ -48,13 +51,17 @@ class User extends AppModel {
                 $this->data[$this->alias]['senha_hash']
             );
         }
-
-        return true;
     }
 
+
+    //action pra verificar e classificar os cargos do blog
     public function autorOuNao($id){
         if(empty($this->data[$this->alias]['cargo'])){
             $this->data[$this->alias]['cargo'] = 'autor';
         }
+    }
+
+    public function matchPasswords($data){
+        return $data['confirmar_senha'] === $this->data[$this->alias]['senha_hash'];
     }
 }

@@ -5,12 +5,14 @@ class PostsController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-
-        $this->Auth->allow('posts');
+        //aqui o usuario consegue acessar a home page e acessar os posts.
+        $this->Auth->allow('index', 'view');
     }
 
     public function index() {
         $this->set('posts', $this->Post->find('all'));
+        //Caso o usuario esteja logado(esteja autenticad), ele concegu acessar as actions de user.
+        $this->set('isAuthenticated', (bool) $this->Auth->user());
     }
 
     public function view($id = null) {

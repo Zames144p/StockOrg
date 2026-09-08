@@ -1,7 +1,13 @@
 <!-- File: /app/View/Posts/index.ctp  (edit links added) -->
 
 <h1>Blog posts</h1>
-<p><?php echo $this->Html->link("Add Post", array('action' => 'add')); ?></p>
+<?php 
+/**
+ * @var array $isAuthenticated
+*/
+if ($isAuthenticated): ?>
+    <p><?php echo $this->Html->link("Add Post", array('action' => 'add')); ?></p>
+<?php endif; ?>
 
 <p><?php echo $this->Html->link("login", array('controller' => 'Users', 'action' => 'login')); ?></p>
 
@@ -9,7 +15,9 @@
     <tr>
         <th>Id</th>
         <th>Title</th>
-        <th>Actions</th>
+        <?php if ($isAuthenticated): ?>
+            <th>Actions</th>
+        <?php endif; ?>
         <th>Created</th>
     </tr>
 
@@ -28,20 +36,22 @@ foreach ($posts as $post): ?>
                 );
             ?>
         </td>
-        <td>
-            <?php
-                echo $this->Html->link(
-                    'Edit',
-                    array('action' => 'edit', $post['Post']['id'])
-                );
-                echo ' | ';
-                echo $this->Form->postLink(
-                    'Delete',
-                    array('action' => 'delete', $post['Post']['id']),
-                    array('confirm' => 'Are you sure?')
-                );
-            ?>
-        </td>
+        <?php if ($isAuthenticated): ?>
+            <td>
+                <?php
+                    echo $this->Html->link(
+                        'Edit',
+                        array('action' => 'edit', $post['Post']['id'])
+                    );
+                    echo ' | ';
+                    echo $this->Form->postLink(
+                        'Delete',
+                        array('action' => 'delete', $post['Post']['id']),
+                        array('confirm' => 'Are you sure?')
+                    );
+                ?>
+            </td>
+        <?php endif; ?>
         <td>
             <?php echo $post['Post']['created']; ?>
         </td>
