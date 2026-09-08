@@ -37,7 +37,7 @@ class User extends AppModel {
 
         //verifico se tem o id na tabela, se nao tiver, criar um novo e se ja tiver, ele vai modificar.
         if(!$this -> id){
-            $this->data[$this->alias]['criado_em'] = date('Y-m-d H:i:s');
+            $this->data[$this->alias]['criado_em'] = date('Y-m-d H:i:s');       
         }
         if($this -> id){
             $this->data[$this->alias]['modificado_em'] = date('Y-m-d H:i:s');
@@ -51,14 +51,12 @@ class User extends AppModel {
                 $this->data[$this->alias]['senha_hash']
             );
         }
-    }
 
-
-    //action pra verificar e classificar os cargos do blog
-    public function autorOuNao($id){
         if(empty($this->data[$this->alias]['cargo'])){
             $this->data[$this->alias]['cargo'] = 'autor';
         }
+
+        return true;
     }
 
     public function matchPasswords($data){

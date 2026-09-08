@@ -1,0 +1,104 @@
+body {
+    font-family: 'Merriweather', serif;
+    background: radial-gradient(circle at center, #4b0000 0%, #2a0000 100%);
+    color: #d4af37;
+    margin: 0;
+    padding: 0;
+}
+
+/* Cabeçalho */
+h1 {
+    text-align: center;
+    color: #f0d98a;
+    margin: 30px 0;
+    font-size: 2.4em;
+    letter-spacing: 1px;
+}
+
+/* Links */
+a {
+    color: #d4af37;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+a:hover {
+    color: #f0d98a;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+}
+
+/* Botões de ação */
+p a {
+    display: inline-block;
+    background: #d4af37;
+    color: #3b0000;
+    padding: 8px 18px;
+    border-radius: 6px;
+    margin: 5px;
+    border: 1px solid #d4af37;
+    font-size: 14px;
+}
+
+p a:hover {
+    background: #f0d98a;
+}
+
+/* Tabela de posts */
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: #3b0000;
+    border: 2px solid #d4af37;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 14px 20px;
+    text-align: center;
+}
+
+th {
+    background: #2a0000;
+    color: #f0d98a;
+    font-weight: 700;
+    border-bottom: 2px solid #d4af37;
+    font-size: 15px;
+}
+
+td {
+    color: #f0d98a;
+    border-bottom: 1px solid #d4af37;
+    font-size: 14px;
+}
+
+tr:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+/* Rodapé */
+.footer-credits {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: #f0d98a;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+}

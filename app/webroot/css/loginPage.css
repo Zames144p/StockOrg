@@ -1,69 +1,142 @@
-/* Oculta textos perdidos do carrossel/slide */
-.carousel-caption, 
-.slide-title, 
-h5:contains("First slide") {
-    display: none !important;
+body {
+    font-family: 'Merriweather', serif;
+    background: radial-gradient(circle at center, #4b0000 0%, #2a0000 100%);
+    margin: 0;
+    color: #d4af37;
 }
 
-/* Prevenção de vazamento do Card */
+/* Container customizado para não conflitar com Bootstrap */
+.login-container {
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+/* Card principal */
 .login-card {
-    position: relative;
-    overflow: hidden;
-    padding: 30px;
+    background: #3b0000;
+    padding: 32px 50px;   
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+    max-width: 500px;     
+    min-width: 360px;     
+    text-align: center;
+    border: 2px solid #d4af37;
+    margin: auto;
 }
 
-/* Alinhamento perfeito do Checkbox com o texto */
+
+/* Título e divisor */
+.login-card h2 {
+    margin-bottom: 10px;
+    color: #d4af37;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.line-divider {
+    width: 80px;
+    height: 3px;
+    background: #d4af37;
+    margin: 10px auto 25px;
+    border-radius: 2px;
+}
+
+/* Campos do formulário */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #f0d98a;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+    background: #2a0000;
+    color: #f0d98a;
+}
+
+/* Checkbox */
 .form-checkbox {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 15px 0 20px 0;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #f0d98a;
 }
 
-.form-checkbox input[type="checkbox"] {
-    margin: 0;
-    cursor: pointer;
+.form-checkbox input {
+    margin-right: 8px;
 }
 
-.form-checkbox label {
-    font-size: 13px;
-    color: #555;
-    cursor: pointer;
-    margin: 0;
-}
-
-/* Botões com contraste e espaçamento ajustados */
+/* Botões */
 .form-actions {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    align-items: center;
+}
+
+.btn-cadastro,
+.btn-login {
+    width: 140px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    border: 1px solid #d4af37;
+    cursor: pointer;
+    text-align: center;
 }
 
 .btn-cadastro {
-    background-color: #95cefa;
-    color: #1a4971 !important; /* Cor mais escura para legibilidade */
-    font-weight: 600;
-    padding: 10px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 13px;
+    background: #d4af37;
+    color: #3b0000;
+}
+
+.btn-cadastro:hover {
+    background: #f0d98a;
 }
 
 .btn-login {
-    background-color: #DE6262;
-    color: #ffffff;
-    font-weight: 600;
-    padding: 10px 24px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
+    background: transparent;
+    color: #d4af37;
 }
 
+.btn-login:hover {
+    background: #d4af37;
+    color: #3b0000;
+}
+
+/* Rodapé */
 .footer-credits {
-    text-align: center;
-    font-size: 12px;
-    color: #777;
     margin-top: 25px;
+    font-size: 12px;
+    color: #f0d98a;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .login-card {
+        width: 100%;
+        padding: 28px 20px;
+    }
+
+    .form-actions {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .btn-cadastro,
+    .btn-login {
+        flex: 1 1 120px;
+    }
 }

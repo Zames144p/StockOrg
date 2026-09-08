@@ -35,4 +35,20 @@ class UsersController extends AppController {
             $this->Session->setFlash('Usuário ou senha inválidos, tente novamente.');
         }
     }
+
+    public function sairDaConta() {
+        return $this->redirect($this->Auth->logout());
+    }
+
+    //action pra dar o poder de admin (lembrar de chamar isso apenas no painel de usuarios)
+    public function poderAdemiro($id){
+        $this -> User -> id = $id;
+
+        if(!$this-> user -> exists()){
+            throw new NotFoundException('Usuário não encontrado');
+        }
+        //caso o user exista, quando essa action for chamada, ele vai mudar o cargo do usuario para admin.
+        $this->User->saveField('cargo', 'admin');
+        return $this->redirect(array('action' => 'index'));
+    }
 }
