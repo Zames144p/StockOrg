@@ -1,0 +1,72 @@
+body {
+    font-family: 'Merriweather', serif;
+    background: radial-gradient(circle at center, #4b0000 0%, #2a0000 100%);
+    color: #f0d98a;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container principal */
+.post-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: #3b0000;
+    padding: 40px;
+    border-radius: 12px;
+    border: 2px solid #d4af37;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+}
+
+/* Título */
+.post-container h1 {
+    color: #d4af37;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* Data de criação */
+.post-container small {
+    display: block;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #f0d98a;
+    font-style: italic;
+}
+
+/* Corpo do post */
+.post-container p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #f0d98a;
+    text-align: justify;
+}
+
+/* Links dentro do post */
+.post-container a {
+    color: #d4af37;
+    text-decoration: underline;
+    transition: 0.3s;
+}
+
+.post-container a:hover {
+    color: #f0d98a;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .post-container {
+        width: 90%;
+        padding: 25px;
+    }
+
+    .post-container h1 {
+        font-size: 1.8em;
+    }
+
+    .post-container p {
+        font-size: 15px;
+    }
+}

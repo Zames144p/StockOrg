@@ -9,12 +9,14 @@ class UsersController extends AppController {
         parent::beforeFilter();
         // Configurações do AuthComponent
         $this->Auth->allow('login', 'cadastro'); // Permite acesso às ações de login e cadastro sem autenticação.
+        $this->set('currentUser', $this->Auth->user());
     }
 
     public function cadastro(){
         if($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)){
+                $this->User->saveField('cargo', 'autor');
                 $this->Session->setFlash('Cadastro realizado com sucesso!');
                 return $this->redirect(array('action' => 'login'));
             }
@@ -50,5 +52,10 @@ class UsersController extends AppController {
         //caso o user exista, quando essa action for chamada, ele vai mudar o cargo do usuario para admin.
         $this->User->saveField('cargo', 'admin');
         return $this->redirect(array('action' => 'index'));
+    }
+
+    public function perfil(){
+        $this->layout = 'dashboard';
+        $this->set('currentUser', $this->Auth->user());
     }
 }

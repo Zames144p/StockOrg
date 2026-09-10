@@ -10,13 +10,13 @@ services:
       - .:/var/www/html
     environment:
       - PHP_INI_DATE_TIMEZONE=America/Recife
+      - DATABASE_HOST=db
     restart: always
     depends_on:
       - db
 
   db:
-    image: postgres:13
-    user: "${UID}:${GID}" #se n colocar o usuario ele fica dando erro quando subir o container
+    image: postgres:12-alpine
     container_name: BancoBlog
     restart: always
     ports:
@@ -24,7 +24,7 @@ services:
     environment:
       - POSTGRES_USER=cakeBlog
       - POSTGRES_PASSWORD=c4k3-rUl3Z
-      - POSTGRES_DB=BlogUsuarios
+      - POSTGRES_DB=blogdb
     volumes:
       - ./data/pgdata:/var/lib/postgresql/data
 volumes:

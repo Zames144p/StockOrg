@@ -1,0 +1,233 @@
+html, body.dashboard-body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Evita barras de rolagem externas */
+    background-color: #1a0000;
+}
+
+/* Container do Dashboard enquadrado */
+.profile-dashboard {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    box-sizing: border-box;
+}
+
+/* Sidebar Vermelho Vinho */
+.sidebar {
+    width: 200px;
+    height: 100vh;
+    background-color: #2a0000;
+    border-right: 1px solid #d4af37;
+    padding: 20px 15px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.brand-logo h2 {
+    color: #d4af37;
+    margin: 0 0 30px 0;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.sidebar-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-menu li a {
+    display: block;
+    color: #f0d98a;
+    padding: 12px 15px;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.sidebar-menu li.active a, .sidebar-menu li a:hover {
+    background-color: #d4af37;
+    color: #2a0000;
+    font-weight: bold;
+}
+
+/* Conteúdo Principal */
+.dashboard-content {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto; /* Apenas o conteúdo interno rola se a tela for pequena */
+    padding: 20px 30px;
+    box-sizing: border-box;
+    background: radial-gradient(circle at center, #3b0000 0%, #1a0000 100%);
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    background: #2a0000;
+    border: 1px solid #d4af37;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: #f0d98a;
+    width: 250px;
+}
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid #d4af37;
+}
+
+/* Banner de Capa + Perfil */
+.profile-header-card {
+    background: #2a0000;
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.cover-photo {
+    height: 100px;
+    background: linear-gradient(135deg, #4b0000 0%, #d4af37 100%);
+}
+
+.profile-info-bar {
+    display: flex;
+    align-items: center;
+    padding: 0 30px 20px;
+    position: relative;
+}
+
+.avatar-wrapper {
+    margin-top: -30px;
+    margin-right: 20px;
+}
+
+.profile-main-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 4px solid #2a0000;
+    background: #2a0000;
+    object-fit: cover;
+}
+
+.user-titles {
+    flex: 1;
+}
+
+.user-titles h2 {
+    margin: 10px 0 0 0;
+    color: #f0d98a;
+}
+
+.user-titles p {
+    margin: 0;
+    color: #d4af37;
+    font-size: 13px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary {
+    background: #d4af37;
+    color: #2a0000;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Layout em Colunas */
+.content-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr 200px;
+    gap: 15px;
+}
+
+.card {
+    background: #2a0000;
+    border: 1px solid #d4af37;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #d4af37;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding-bottom: 10px;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    line-height: 2;
+    font-size: 13px;
+}
+
+.feed-tabs {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.feed-tabs span {
+    cursor: pointer;
+    color: #a0a0a0;
+}
+
+.feed-tabs span.active {
+    color: #d4af37;
+    font-weight: bold;
+    border-bottom: 2px solid #d4af37;
+}
+
+.post-item {
+    background: #3b0000;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.post-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}

@@ -1,63 +1,123 @@
-<?php
-/**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @package       app.View.Layouts
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- */
-
-$cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
-$cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
-?>
 <!DOCTYPE html>
 <html>
+
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php echo $cakeDescription ?>:
 		<?php echo $this->fetch('title'); ?>
 	</title>
 	<?php
-		echo $this->Html->meta('icon');
-
-		echo $this->Html->css('cake.generic');
-
-		echo $this->fetch('meta');
-		echo $this->fetch('css');
-		echo $this->fetch('script');
+	echo $this->Html->meta('icon');
+	echo $this->Html->css('homePage');
+	echo $this->fetch('meta');
+	echo $this->fetch('css');
+	echo $this->fetch('script');
+	echo $this->Html->css('postsView');
+	echo $this->Html->css('loginPage');
 	?>
 </head>
+
 <body>
-	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'https://cakephp.org'); ?></h1>
-		</div>
-		<div id="content">
 
-			<?php echo $this->Flash->render(); ?>
+	<header class="blog-header">
+		<div class="container-fluid" style="position: relative;">
+			<?php
+			// Lê o usuário autenticado diretamente da sessão global
+			$userSession = $this->Session->read('Auth.User');
 
-			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'https://cakephp.org/',
-					array('target' => '_blank', 'escape' => false, 'id' => 'cake-powered')
-				);
+			// Verifica qual pagina é (olha o controller e a action acessada)
+			$currentController = strtolower($this->params['controller']);
+			$currentAction     = strtolower($this->params['action']);
+
+			// Define se está na tela de login
+			$isLoginPage = ($currentController === 'users' && $currentAction === 'login');
+
+			$isCadastroPage = ($currentController === 'users' && $currentAction === 'cadastro');
 			?>
-			<p>
-				<?php echo $cakeVersion; ?>
-			</p>
+
+			<?php //se o usuario estiver logado: 
+			if (!empty($userSession)): ?>
+				<div class="profile-container">
+					<?php
+					$userAvatar = !empty($userSession['foto']) ? $userSession['foto'] : 'perfilDefault.jpg';
+					echo $this->Html->link(
+						$this->Html->image($userAvatar, array('alt' => 'Foto de Perfil', 'class' => 'profile-avatar')) .
+							' <span>' . h($userSession['nome'] ?? $userSession['username'] ?? 'Perfil') . '</span>',
+						array('controller' => 'Users', 'action' => 'perfil'),
+						array('class' => 'profile-link', 'escape' => false)
+					);
+					?>
+				</div>
+
+				<nav class="nav-actions">
+					<p>
+						<?php echo $this->Html->link("Add Post", array('controller' => 'Posts', 'action' => 'add')); ?>
+						<?php echo $this->Html->link("Sair", array('controller' => 'Users', 'action' => 'sairDaConta')); ?>
+					</p>
+				</nav>
+
+			<?php // Usuário não Logado: Só mostra o botão "login" se não estiver na página de login
+			else: ?>
+				<?php if (!$isLoginPage && !$isCadastroPage): ?>
+					<nav class="nav-actions">
+						<p><?php echo $this->Html->link("login", array('controller' => 'Users', 'action' => 'login')); ?></p>
+					</nav>
+				<?php endif; ?>
+			<?php endif; ?>
 		</div>
-	</div>
-	<?php echo $this->element('sql_dump'); ?>
+	</header>
+
+	<main class="main-content">
+		<?php echo $this->Flash->render(); ?>
+		<?php echo $this->fetch('content'); ?>
+	</main>
+
+	<footer class="blog-footer">
+    <div class="footer-container">
+        
+        <!-- Coluna 1: Links da Empresa / Sistema -->
+        <div class="footer-col">
+            <h4 class="footer-title">COMPANHIA</h4>
+            <ul class="footer-links">
+                <li><?php echo $this->Html->link("Sobre nós", array('controller' => 'pages', 'action' => 'about')); ?></li>
+                <li><?php echo $this->Html->link("Qualidades e Serviços", '#'); ?></li>
+                <li><?php echo $this->Html->link("Marcas", '#'); ?></li>
+                <li><?php echo $this->Html->link("Contato", '#'); ?></li>
+            </ul>
+        </div>
+
+        <!-- Coluna 2: Categoria de Posts / Conteúdo -->
+        <div class="footer-col">
+            <h4 class="footer-title">CATEGORIAS</h4>
+            <ul class="footer-links">
+                <li><?php echo $this->Html->link("Posts", array('controller' => 'posts', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link("Artigos", '#'); ?></li>
+                <li><?php echo $this->Html->link("Noticias", '#'); ?></li>
+                <li><?php echo $this->Html->link("Updates", '#'); ?></li>
+            </ul>
+        </div>
+
+        <!-- Coluna 3: Localização e Contato -->
+        <div class="footer-col">
+            <div class="footer-tabs">
+                <span class="tab active">NATAL</span>
+            </div>
+            <address class="footer-address">
+                Av. Engenheiro Roberto Freire, 1000<br>
+                Capim Macio - Natal/RN<br><br>
+                <a href="tel:+5584999999999">+55 (84) 99178-1998</a><br>
+                <a href="mailto:contact@stockorg.com">contact@stockorg.com</a>
+            </address>
+            <a href="#" class="all-contacts-link">Todos contatos</a>
+        </div>
+
+        <!-- Coluna 4: Copyright -->
+        <div class="footer-col footer-copyright-col">
+            <p>&copy; <?php echo date('Y'); ?> StockOrg.<br>All Rights Reserved.</p>
+        </div>
+
+    </div>
+</footer>
+
 </body>
 </html>
