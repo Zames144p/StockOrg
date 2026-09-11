@@ -1,51 +1,37 @@
-<?php echo $this->Html->css('loginPage'); ?>
+<?php echo $this->Html->css('loginPage.css?v=' . time()); ?>
 
-<div class="container">
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="col-12 col-md-8">
-            <div class="login-card">
-                <h2>Faça seu login!</h2>
-                <div class="line-divider"></div>
+<div class="login-wrapper">
+    <div class="login-card">
+        <h2>Faça seu login!</h2>
+        <div class="divider"></div>
 
-                <?php echo $this->Form->create('User'); //ai ele vai acessar o model e corresponder os campos 
-                ?>
-
-                <div class="form-group">
-                    <?php echo $this->Form->input('nome', array('label' => 'Nome', 'div' => false)); ?>
-                </div>
-
-                <div class="form-group">
-                    <?php echo $this->Form->input('senha_hash', array('label' => 'Senha', 'type' => 'password', 'div' => false)); ?>
-                </div>
-
-                <!-- Checkbox alinhado corretamente -->
-                <div class="form-checkbox">
-                    <input type="checkbox" id="remember_me" name="data[User][remember_me]">
-                    <label for="remember_me">Salvar Senha</label>
-                </div>
-
-                <!-- Botões alinhados lado a lado -->
-                <div class="form-actions">
-                    <?php echo $this->Html->link(
-                        'Criar uma conta',
-                        array('controller' => 'Users', 'action' => 'cadastro'),
-                        array('class' => 'btn-cadastro')
-                    ); ?>
-
-                    <?php echo $this->Html->link(
-                        'Acessar como guest',
-                        array('controller' => 'posts', 'action' => 'index'),
-                        array('class' => 'btn-guest')
-                    ); ?>
-
-
-                    <?php echo $this->Form->submit('Entrar', array('class' => 'btn-login', 'div' => false)); ?>
-                </div>
-
-                <?php echo $this->Form->end(); ?>
-
-                <p class="footer-credits">Criado com 🧡 por ZamesINC</p>
+        <?php echo $this->Form->create('User'); ?>
+            
+            <div class="form-group">
+                <?php echo $this->Form->input('nome', array('label' => 'Nome', 'class' => 'form-input')); ?>
             </div>
-        </div>
+
+            <div class="form-group">
+                <?php echo $this->Form->input('senha_hash', array('type' => 'password', 'label' => 'Senha', 'class' => 'form-input')); ?>
+            </div>
+
+            <div class="form-checkbox">
+                <label>
+                    <input type="checkbox" name="salvar_senha"> Salvar Senha
+                </label>
+            </div>
+
+            <!-- Botões Estilizados -->
+            <div class="login-actions">
+                <?php echo $this->Html->link("Criar uma conta", array('action' => 'cadastro'), array('class' => 'btn-gold-link')); ?>
+                <?php echo $this->Html->link("Acessar como guest", array('controller' => 'posts', 'action' => 'index'), array('class' => 'btn-guest-link')); ?>
+                <?php echo $this->Form->submit('Entrar', array('class' => 'btn-gold-submit', 'div' => false)); ?>
+            </div>
+
+            <div class="login-footer">
+                <small>Criado com &#129505; por ZamesINC</small>
+            </div>
+
+        <?php echo $this->Form->end(); ?>
     </div>
 </div>

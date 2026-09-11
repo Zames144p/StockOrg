@@ -12,7 +12,7 @@ class User extends AppModel {
 
     //Obs: a variavel validate é uma variavel do cake, ent ela é usada pra validar os formularios.
     public $validate = array(
-        'username' => array(
+        'nome' => array(
             'rule' => 'notBlank',
             'message' => 'O nome de usuário não pode estar em branco.',
 
@@ -29,6 +29,14 @@ class User extends AppModel {
             'rule' => 'matchPasswords',
             'message' => 'As senhas precisam ser iguais.'
         ),
+    );
+
+    public $hasMany = array(
+        'Post' => array(
+            'className' => 'Post',
+            'foreignKey' => 'user_id',
+            'dependent' => true // Deleta posts no Cake se o User for removido
+        )
     );
 
     public function beforeSave($options = array()) {

@@ -3,6 +3,9 @@
 
 <head>
 	<?php echo $this->Html->charset(); ?>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
 	<title>
 		<?php echo $this->fetch('title'); ?>
 	</title>
@@ -14,6 +17,10 @@
 	echo $this->fetch('script');
 	echo $this->Html->css('postsView');
 	echo $this->Html->css('loginPage');
+	echo $this->Html->meta(
+        'viewport',
+        'width=device-width, initial-scale=1.0'
+        );
 	?>
 </head>
 

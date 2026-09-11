@@ -1,53 +1,58 @@
-html, body.dashboard-body {
-    height: 100vh;
+html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Evita barras de rolagem externas */
+    width: 100%;
+    min-height: 100vh;
     background-color: #1a0000;
+    color: #f0d98a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Container do Dashboard enquadrado */
+/* Base Mobile: 100% de largura */
 .profile-dashboard {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
     box-sizing: border-box;
 }
 
-/* Sidebar Vermelho Vinho */
+/* Sidebar no Topo (Mobile) */
 .sidebar {
-    width: 200px;
-    height: 100vh;
+    width: 100%;
     background-color: #2a0000;
-    border-right: 1px solid #d4af37;
-    padding: 20px 15px;
+    border-bottom: 1px solid #d4af37;
+    padding: 15px;
     box-sizing: border-box;
-    flex-shrink: 0;
 }
 
 .brand-logo h2 {
     color: #d4af37;
-    margin: 0 0 30px 0;
-    font-size: 22px;
-    letter-spacing: 1px;
+    margin: 0 0 10px 0;
+    font-size: 20px;
 }
 
-.sidebar-menu ul {
+.sidebar-menu > ul {
+    display: flex;
+    gap: 10px;
     list-style: none;
     padding: 0;
+    margin: 0;
+    overflow-x: auto;
 }
 
 .sidebar-menu li a {
     display: block;
     color: #f0d98a;
-    padding: 12px 15px;
+    padding: 8px 14px;
     text-decoration: none;
     border-radius: 6px;
-    margin-bottom: 8px;
-    transition: 0.3s;
+    white-space: nowrap;
+    font-size: 13px;
+    background: rgba(212, 175, 55, 0.1);
 }
 
-.sidebar-menu li.active a, .sidebar-menu li a:hover {
+.sidebar-menu li.active a {
     background-color: #d4af37;
     color: #2a0000;
     font-weight: bold;
@@ -56,43 +61,45 @@ html, body.dashboard-body {
 /* Conteúdo Principal */
 .dashboard-content {
     flex: 1;
-    height: 100vh;
-    overflow-y: auto; /* Apenas o conteúdo interno rola se a tela for pequena */
-    padding: 20px 30px;
+    width: 100%;
+    padding: 15px;
     box-sizing: border-box;
     background: radial-gradient(circle at center, #3b0000 0%, #1a0000 100%);
 }
 
 .topbar {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+    flex-direction: column-reverse;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .search-input {
     background: #2a0000;
     border: 1px solid #d4af37;
-    padding: 8px 16px;
+    padding: 8px 14px;
     border-radius: 20px;
     color: #f0d98a;
-    width: 250px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .user-badge {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 10px;
 }
 
 .topbar-avatar {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border: 1px solid #d4af37;
+    object-fit: cover;
 }
 
-/* Banner de Capa + Perfil */
+/* Card de Capa */
 .profile-header-card {
     background: #2a0000;
     border: 1px solid #d4af37;
@@ -102,56 +109,57 @@ html, body.dashboard-body {
 }
 
 .cover-photo {
-    height: 100px;
+    height: 90px;
     background: linear-gradient(135deg, #4b0000 0%, #d4af37 100%);
 }
 
 .profile-info-bar {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 0 30px 20px;
-    position: relative;
+    text-align: center;
+    padding: 0 15px 15px;
+    margin-top: -35px;
 }
 
 .avatar-wrapper {
-    margin-top: -30px;
-    margin-right: 20px;
+    margin-bottom: 8px;
+    z-index: 2;
 }
 
 .profile-main-avatar {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    border: 4px solid #2a0000;
-    background: #2a0000;
+    border: 3px solid #2a0000;
+    background-color: #2a0000;
     object-fit: cover;
-}
-
-.user-titles {
-    flex: 1;
+    display: block;
 }
 
 .user-titles h2 {
-    margin: 10px 0 0 0;
+    margin: 0;
+    font-size: 18px;
     color: #f0d98a;
 }
 
 .user-titles p {
     margin: 0;
+    font-size: 12px;
     color: #d4af37;
-    font-size: 13px;
 }
 
 .header-actions {
     display: flex;
     gap: 10px;
+    margin-top: 12px;
 }
 
 .btn-primary {
     background: #d4af37;
     color: #2a0000;
     border: none;
-    padding: 8px 20px;
+    padding: 6px 16px;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
@@ -161,50 +169,47 @@ html, body.dashboard-body {
     background: transparent;
     color: #d4af37;
     border: 1px solid #d4af37;
-    padding: 8px 20px;
+    padding: 6px 16px;
     border-radius: 6px;
     cursor: pointer;
 }
 
-/* Layout em Colunas */
+/* Grid de Cards (Mobile - 1 coluna inteira) */
 .content-grid {
-    display: grid;
-    grid-template-columns: 220px 1fr 200px;
+    display: flex;
+    flex-direction: column;
     gap: 15px;
 }
 
 .card {
     background: #2a0000;
     border: 1px solid #d4af37;
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 8px;
+    padding: 15px;
 }
 
 .card h3 {
     margin-top: 0;
     color: #d4af37;
     border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    padding-bottom: 10px;
+    padding-bottom: 8px;
+    font-size: 14px;
 }
 
 .info-list {
     list-style: none;
     padding: 0;
-    line-height: 2;
+    margin: 0;
     font-size: 13px;
+    line-height: 1.8;
 }
 
 .feed-tabs {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.feed-tabs span {
-    cursor: pointer;
-    color: #a0a0a0;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 .feed-tabs span.active {
@@ -215,19 +220,234 @@ html, body.dashboard-body {
 
 .post-item {
     background: #3b0000;
-    padding: 15px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 12px;
 }
 
 .post-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .post-avatar {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
+}
+
+.small-text {
+    font-size: 12px;
+    color: #a0a0a0;
+}
+
+.dropdown-menu {
+    z-index: 1050 !important;
+    min-width: 170px;
+}
+
+.dropdown-menu.bg-wine {
+    background-color: #2a0000 !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dropdown-item {
+    color: #f0d98a !important;
+    font-size: 13px;
+    padding: 8px 16px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    font-weight: bold;
+}
+
+.dropdown-divider {
+    border-top: 1px solid rgba(212, 175, 55, 0.3) !important;
+    margin: 4px 0 !important;
+}
+
+/* ========================================== */
+/* ANIMAÇÕES DE HOVER (TODOS OS BOTÕES)       */
+/* ========================================== */
+
+/* Quando a li é active, o link interno fica amarelo dourado */
+
+/* Transição suave base apenas para botões principais */
+.sidebar-menu > ul > li > a,
+.btn-primary,
+.btn-outline,
+.dropdown-item {
+    transition: all 0.25s ease-in-out !important;
+}
+
+/* 1. Botões da Sidebar Principal (Apenas 1º nível, sem afetar o dropdown) */
+.sidebar-menu > ul > li > a:hover {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    font-weight: bold;
+    transform: translateX(4px);
+}
+
+/* 2. Botão Principal do Perfil (Follow) */
+.btn-primary:hover {
+    background-color: #f0d98a !important;
+    color: #1a0000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+/* 3. Botão Contorno do Perfil (Contact) */
+.btn-outline:hover {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* ========================================== */
+/* RESET FIXO DO DROPDOWN (SETTINGS)          */
+/* ========================================== */
+
+/* Garante fundo transparente e texto dourado nos sublinks em estado normal e active */
+.sidebar-menu .dropdown-menu li a,
+.sidebar-menu li.active .dropdown-menu li a {
+    background: transparent !important;
+    color: #f0d98a !important;
+    font-weight: normal !important;
+    border-radius: 0 !important;
+    padding: 8px 16px !important;
+    transform: none !important;
+}
+
+/* Hover suave exclusivo para os subitens do dropdown */
+.sidebar-menu .dropdown-menu li a:hover,
+.sidebar-menu li.active .dropdown-menu li a:hover {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    font-weight: bold !important;
+    padding-left: 20px !important; /* Desliza o texto suavemente */
+}
+
+/* Cor vermelha para o botão Sair da Conta */
+.sidebar-menu .dropdown-menu li a.text-danger {
+    color: #ff4d4d !important;
+}
+
+.sidebar-menu .dropdown-menu li a.text-danger:hover {
+    background-color: #ff4d4d !important;
+    color: #ffffff !important;
+}
+
+/* Ajuste para o mobile (evita deslocamento lateral indesejado na barra superior) */
+@media (max-width: 768px) {
+    .sidebar-menu li a:hover {
+        transform: translateY(-2px); /* No celular ele eleva em vez de ir pra direita */
+    }
+}
+
+/* ========================================== */
+/* ESTILOS DA TABELA ADMINISTRATIVA          */
+/* ========================================== */
+
+.table-dark-wine {
+    --bs-table-bg: #2a0000;
+    --bs-table-color: #f0d98a;
+    --bs-table-border-color: rgba(212, 175, 55, 0.2);
+}
+
+.table-dark-wine th {
+    color: #d4af37;
+    font-size: 13px;
+    border-bottom: 2px solid #d4af37 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-dark-wine td {
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.table-dark-wine tbody tr:hover {
+    background-color: #3b0000 !important;
+}
+
+/* Código da Senha / Hash */
+.hash-code {
+    background-color: #1a0000;
+    color: #d4af37;
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    font-size: 11px;
+}
+
+/* Badges e Botões de Ação na Tabela */
+.bg-gold {
+    background-color: #d4af37 !important;
+}
+
+.btn-outline-danger {
+    border-color: #ff4d4d;
+    color: #ff4d4d;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ff4d4d;
+    color: #ffffff;
+}
+
+/* ========================================== */
+/* DESKTOP (Telas maiores que 768px)          */
+/* ========================================== */
+@media (min-width: 768px) {
+    .profile-dashboard {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 200px;
+        border-bottom: none;
+        border-right: 1px solid #d4af37;
+        flex-shrink: 0;
+    }
+
+    .sidebar-menu > ul {
+        flex-direction: column;
+        overflow-x: visible;
+    }
+
+    .topbar {
+        flex-direction: row;
+    }
+
+    .search-input {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .profile-info-bar {
+        flex-direction: row;
+        text-align: left;
+        align-items: flex-end;
+    }
+
+    .avatar-wrapper {
+        margin-bottom: 0;
+    }
+
+    .header-actions {
+        margin-top: 0;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 200px 1fr 180px;
+    }
 }

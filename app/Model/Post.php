@@ -5,6 +5,13 @@ class Post extends AppModel {
     public $primaryKey = 'id';
     public $displayField = 'title';
 
+    public $belongsTo = array(
+        'User' => array(
+            'className' => 'User',
+            'foreignKey' => 'user_id'
+        )
+    );
+
     public $validate = array(
         'title' => array(
             'rule' => 'notBlank',
