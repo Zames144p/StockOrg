@@ -1,0 +1,365 @@
+/* ========================================== */
+/* ESTILOS GERAIS DA APLICAÇÃO (VINHO & OURO) */
+/* ========================================== */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #1a0000;
+    color: #f0d98a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.bg-dark-wine {
+    background-color: #1a0000 !important;
+}
+
+.main-layout-container {
+    min-height: 100vh;
+    display: flex;
+}
+
+.text-gold {
+    color: #d4af37 !important;
+}
+
+.text-gold-light {
+    color: #f0d98a !important;
+}
+
+/* ========================================== */
+/* SIDEBAR ESTILO X (TWITTER)                 */
+/* ========================================== */
+
+/* Definição Base da Sidebar no Desktop/Tablet */
+.x-sidebar {
+    background-color: #2a0000 !important;
+    border-right: 1px solid rgba(212, 175, 55, 0.25) !important;
+    width: 88px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    flex-shrink: 0;
+    z-index: 1000;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+    .x-sidebar {
+        width: 270px;
+    }
+}
+
+/* Logo Superior (X + StockOrg) */
+.x-brand-header {
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+}
+
+.x-brand-header:hover {
+    background-color: rgba(212, 175, 55, 0.12);
+}
+
+/* Links da Nav Principal */
+.x-nav-link {
+    color: #f0d98a !important;
+    font-size: 19px !important;
+    font-weight: 500;
+    padding: 12px 18px !important;
+    border-radius: 9999px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.x-nav-link:hover {
+    background-color: rgba(212, 175, 55, 0.15) !important;
+    color: #ffffff !important;
+    transform: translateX(3px);
+}
+
+.x-nav-link.active {
+    font-weight: 700 !important;
+    color: #d4af37 !important;
+    background-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Botão Postar Principal */
+.x-btn-post-lg {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    height: 48px;
+    border-radius: 9999px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+    transition: all 0.2s ease-in-out !important;
+}
+
+.x-btn-post-lg:hover {
+    background-color: #f0d98a !important;
+    color: #1a0000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+}
+
+/* Card do Usuário Logado no Rodapé da Sidebar */
+.x-user-card-footer {
+    padding: 8px 14px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.x-user-card-footer:hover {
+    background-color: rgba(212, 175, 55, 0.15);
+}
+
+/* ========================================== */
+/* DROPDOWN "MAIS" ESTILO X                   */
+/* ========================================== */
+
+/* Animação Keyframes de Entrada */
+@keyframes xDropdownPop {
+    0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.x-accordion-container {
+    width: 100%;
+}
+
+/* Transição do Ícone da Setinha */
+.x-chevron-icon {
+    transition: transform 0.3s ease;
+}
+
+.x-accordion-container.active .x-chevron-icon {
+    transform: rotate(180deg);
+}
+
+/* Caixa expansível fluida */
+.x-accordion-menu {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.25s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    margin-top: 4px;
+}
+
+/* Estado Aberto (Empurra tudo para baixo) */
+.x-accordion-container.active .x-accordion-menu {
+    max-height: 300px; /* Espaço suficiente para os itens */
+    opacity: 1;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Itens de Submenu com Efeito Pílula */
+.x-sub-item {
+    color: #f0d98a !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 9px 16px !important;
+    border-radius: 9999px !important;
+    display: block !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Hover em Pílula Amarela */
+.x-sub-item:hover {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    font-weight: 700 !important;
+    transform: translateX(4px) !important;
+}
+
+/* Linha Divisória */
+.x-sub-divider {
+    border-top: 1px solid rgba(212, 175, 55, 0.2) !important;
+    margin: 4px 8px !important;
+}
+
+/* Opção Sair da Conta */
+.x-sub-item.text-danger {
+    color: #ff4d4d !important;
+}
+
+.x-sub-item.text-danger:hover {
+    background-color: #ff4d4d !important;
+    color: #ffffff !important;
+}
+
+/* ========================================== */
+/* CONTEÚDO PRINCIPAL & CARDS                */
+/* ========================================== */
+
+.dashboard-content {
+    background: radial-gradient(circle at center, #3b0000 0%, #1a0000 100%);
+    flex: 1;
+}
+
+.card {
+    background: #2a0000 !important;
+    border: 1px solid #d4af37 !important;
+    border-radius: 8px;
+    padding: 15px;
+    color: #f0d98a;
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #d4af37;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding-bottom: 8px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: #d4af37 !important;
+    color: #2a0000 !important;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out !important;
+}
+
+.btn-primary:hover {
+    background-color: #f0d98a !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+.btn-outline {
+    background: transparent !important;
+    color: #d4af37 !important;
+    border: 1px solid #d4af37 !important;
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out !important;
+}
+
+.btn-outline:hover {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    transform: translateY(-2px);
+}
+
+/* ========================================== */
+/* TABELA DO PAINEL DE ADM / FEED             */
+/* ========================================== */
+
+.table-dark-wine {
+    --bs-table-bg: #2a0000;
+    --bs-table-color: #f0d98a;
+    --bs-table-border-color: rgba(212, 175, 55, 0.2);
+    background-color: #2a0000 !important;
+    color: #f0d98a !important;
+}
+
+.table-dark-wine th {
+    color: #d4af37 !important;
+    font-size: 13px;
+    border-bottom: 2px solid #d4af37 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-dark-wine td {
+    font-size: 13px;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+}
+
+.table-dark-wine tbody tr:hover {
+    background-color: #3b0000 !important;
+}
+
+.post-title-link {
+    color: #f0d98a !important;
+    transition: color 0.2s ease;
+}
+
+.post-title-link:hover {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.hash-code {
+    background-color: #1a0000;
+    color: #d4af37;
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    font-size: 11px;
+}
+
+.bg-gold {
+    background-color: #d4af37 !important;
+}
+
+/* ========================================== */
+/* RESPONSIVIDADE MOBILE (BARRA INFERIOR)     */
+/* ========================================== */
+
+@media (max-width: 768px) {
+    .x-sidebar {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        top: auto !important;
+        width: 100% !important;
+        height: 60px !important;
+        min-height: auto !important;
+        z-index: 1050 !important;
+        border-right: none !important;
+        border-top: 1px solid rgba(212, 175, 55, 0.25) !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        padding: 0 10px !important;
+    }
+
+    .x-sidebar .x-brand-header,
+    .x-sidebar .x-user-card-footer {
+        display: none !important;
+    }
+
+    .x-sidebar .x-nav {
+        margin: 0 !important;
+    }
+
+    .x-sidebar .x-nav ul {
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .x-btn-post-lg {
+        width: auto !important;
+        padding: 8px 12px !important;
+        border-radius: 50% !important;
+        height: auto !important;
+    }
+
+    .dashboard-content {
+        padding-bottom: 75px !important;
+    }
+}

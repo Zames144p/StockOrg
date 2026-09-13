@@ -11,62 +11,6 @@ $currentAction     = strtolower($this->params['action']);
 $userSession = $this->Session->read('Auth.User'); ?>
 
 <div class="profile-dashboard">
-    <!-- Sidebar / Topbar no Mobile -->
-    <aside class="sidebar">
-        <div class="brand-logo">
-            <h2>StockOrg</h2>
-        </div>
-        <nav class="sidebar-menu">
-            <ul>
-                <!-- Home (Posts -> index) -->
-                <li class="<?php echo ($currentController === 'posts' && $currentAction === 'index') ? 'active' : ''; ?>">
-                    <?php echo $this->Html->link('Home', array('controller' => 'posts', 'action' => 'index')); ?>
-                </li>
-
-                <!-- Profile (Users -> perfil) -->
-                <li class="<?php echo ($currentController === 'users' && $currentAction === 'perfil') ? 'active' : ''; ?>">
-                    <?php echo $this->Html->link('Profile', array('controller' => 'users', 'action' => 'perfil')); ?>
-                </li>
-
-                <!-- Add Post (Posts -> add) -->
-                <li class="<?php echo ($currentController === 'posts' && $currentAction === 'add') ? 'active' : ''; ?>">
-                    <?php echo $this->Html->link('Add Post', array('controller' => 'posts', 'action' => 'add')); ?>
-                </li>
-
-                <!-- Settings (Ativa se estiver em edit, alterarSenha ou painelAdemiro) -->
-                <?php
-                $isSettingsActive = ($currentController === 'users' && in_array($currentAction, array('edit', 'alterarsenha', 'painelademiro')));
-                ?>
-                <li class="nav-item dropdown position-relative <?php echo $isSettingsActive ? 'active' : ''; ?>">
-                    <a class="nav-link dropdown-toggle text-gold-light" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Settings
-                    </a>
-                    <ul class="dropdown-menu bg-wine border-gold" aria-labelledby="settingsDropdown">
-                        <li>
-                            <?php echo $this->Html->link('Editar Perfil', array('controller' => 'users', 'action' => 'edit'), array('class' => 'dropdown-item text-gold-light')); ?>
-                        </li>
-                        <li>
-                            <?php echo $this->Html->link('Alterar Senha', array('controller' => 'users', 'action' => 'alterarSenha'), array('class' => 'dropdown-item text-gold-light')); ?>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider border-gold">
-                        </li>
-                        <li>
-                            <?php echo $this->Html->link('Sair da Conta', array('controller' => 'users', 'action' => 'sairDaConta'), array('class' => 'dropdown-item text-danger fw-bold')); ?>
-                        </li>
-                        <?php if (!empty($userSession['cargo']) && $userSession['cargo'] === 'admin'): ?>
-                            <li>
-                                <hr class="dropdown-divider border-gold">
-                            </li>
-                            <li>
-                                <?php echo $this->Html->link('Painel administrativo', array('controller' => 'users', 'action' => 'painelAdemiro'), array('class' => 'dropdown-item text-gold-light')); ?>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </aside>
 
     <!-- Conteúdo Principal -->
     <main class="dashboard-content">

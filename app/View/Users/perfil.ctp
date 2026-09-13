@@ -1,60 +1,17 @@
 <?php echo $this->Html->css('perfilPage.css?v=' . time()); ?>
-<?php $userSession = $this->Session->read('Auth.User'); ?>
+<?php
+	$userSession       = $this->Session->read('Auth.User');
+	$currentController = strtolower($this->params['controller']);
+	$currentAction     = strtolower($this->params['action']);
+	?>
 
 <div class="profile-dashboard">
-    <!-- Sidebar / Topbar no Mobile -->
-    <aside class="sidebar">
-        <div class="brand-logo">
-            <h2>StockOrg</h2>
-        </div>
-        <nav class="sidebar-menu">
-            <ul>
-                <li><?php echo $this->Html->link('Home', array('controller' => 'posts', 'action' => 'index')); ?></li>
-                <li class="active"><?php echo $this->Html->link('Profile', array('controller' => 'users', 'action' => 'perfil')); ?></li>
-                <li><?php echo $this->Html->link('Add Post', array('controller' => 'posts', 'action' => 'add')); ?></li>
-                <li class="nav-item dropdown position-relative">
-                    <a class="nav-link dropdown-toggle text-gold-light" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Settings
-                    </a>
-                    <ul class="dropdown-menu bg-wine border-gold" aria-labelledby="settingsDropdown">
-                        <li>
-                            <?php echo $this->Html->link('Editar Perfil', array('controller' => 'users', 'action' => 'edit'), array('class' => 'dropdown-item text-gold-light')); ?>
-                        </li>
-                        <li>
-                            <?php echo $this->Html->link('Alterar Senha', array('controller' => 'users', 'action' => 'alterarSenha'), array('class' => 'dropdown-item text-gold-light')); ?>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider border-gold">
-                        </li>
-                        <li>
-                            <?php echo $this->Html->link('Sair da Conta', array('controller' => 'users', 'action' => 'sairDaConta'), array('class' => 'dropdown-item text-danger fw-bold')); ?>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider border-gold">
-                        </li>
-                        <li>
-                            <?php if (!empty($userSession['cargo']) && $userSession['cargo'] === 'admin'): ?>
-                                <?php echo $this->Html->link('Painel administrativo', array('controller' => 'users', 'action' => 'painelAdemiro'), array('class' => 'dropdown-item text-gold-light')); ?>
-                            <?php endif; ?>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </aside>
 
     <!-- Conteúdo Principal -->
     <main class="dashboard-content">
         <!-- Topbar -->
         <header class="topbar">
             <input type="text" placeholder="Search..." class="search-input">
-            <div class="user-badge">
-                <span><?php echo h($userSession['nome'] ?? $userSession['username'] ?? 'User'); ?></span>
-                <?php
-                $avatar = !empty($user['foto']) ? $user['foto'] : 'perfilDefault.jpg';
-                echo $this->Html->image($avatar, array('class' => 'topbar-avatar'));
-                ?>
-            </div>
         </header>
 
         <!-- Banner de Capa + Foto de Perfil -->
@@ -62,7 +19,9 @@
             <div class="cover-photo"></div>
             <div class="profile-info-bar">
                 <div class="avatar-wrapper">
-                    <?php echo $this->Html->image($avatar, array('class' => 'profile-main-avatar')); ?>
+                    <?php $avatar = !empty($user['foto']) ? $user['foto'] : 'perfilDefault.jpg';
+                echo $this->Html->image($avatar, array('class' => 'profile-main-avatar'));
+                 ?>
                 </div>
                 <div class="user-titles">
                     <h2><?php echo h($userSession['nome'] ?? $userSession['username'] ?? 'User'); ?></h2>

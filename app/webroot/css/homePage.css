@@ -5,14 +5,17 @@ body {
 }
 
 .blog-header {
-    padding: 30px 40px 20px; /* Mais espaço no topo e laterais */
+    padding: 30px 40px 20px;
+    /* Mais espaço no topo e laterais */
     margin-bottom: 20px;
 }
 
 /* Espaçamento do conteúdo principal */
 .main-content {
-    flex: 1; /* Empurra o footer para o final da tela */
-    padding: 20px 0 60px; /* Garante distância entre a tabela e o footer */
+    flex: 1;
+    /* Empurra o footer para o final da tela */
+    padding: 20px 0 60px;
+    /* Garante distância entre a tabela e o footer */
 }
 
 .nav-actions p {
@@ -98,7 +101,8 @@ table {
     overflow: hidden;
 }
 
-th, td {
+th,
+td {
     padding: 18px 24px;
     text-align: center;
 }
@@ -123,7 +127,8 @@ tr:hover {
 
 /* Container principal do Footer */
 .blog-footer {
-    background-color: #1a1a1a; /* Fundo cinza escuro do exemplo */
+    background-color: #1a1a1a;
+    /* Fundo cinza escuro do exemplo */
     color: #a0a0a0;
     padding: 50px 0 40px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -176,7 +181,8 @@ tr:hover {
 }
 
 .footer-links a:hover {
-    color: #d4af37; /* Cor dourada do seu tema ao passar o mouse */
+    color: #d4af37;
+    /* Cor dourada do seu tema ao passar o mouse */
 }
 
 /* Abas de Localização */
@@ -239,6 +245,151 @@ tr:hover {
     margin: 0;
 }
 
+/* ========================================== */
+/* FEED DA HOME                   */
+/* ========================================== */
+
+.main-layout-container {
+    background-color: #1a0000;
+    min-height: 100vh;
+}
+
+/* Sidebar Estilo X */
+.x-sidebar {
+    background-color: #2a0000 !important;
+    border-right: 1px solid rgba(212, 175, 55, 0.25) !important;
+    width: 270px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    flex-shrink: 0;
+}
+
+/* Logo Superior (X + StockOrg) */
+.x-brand-header {
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+}
+
+.x-brand-header:hover {
+    background-color: rgba(212, 175, 55, 0.12);
+}
+
+.text-gold {
+    color: #d4af37 !important;
+}
+
+.text-gold-light {
+    color: #f0d98a !important;
+}
+
+/* Links de Navegação da Sidebar */
+.x-nav-link {
+    color: #f0d98a !important;
+    font-size: 19px !important;
+    font-weight: 500;
+    padding: 12px 20px !important;
+    border-radius: 9999px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.x-nav-link:hover {
+    background-color: rgba(212, 175, 55, 0.15) !important;
+    color: #ffffff !important;
+    transform: translateX(3px);
+}
+
+.x-nav-link.active {
+    font-weight: 700 !important;
+    color: #d4af37 !important;
+    background-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Botão Postar Principal (Estilo X) */
+.x-btn-post-lg {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    height: 48px;
+    border-radius: 9999px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+    transition: all 0.2s ease-in-out !important;
+}
+
+.x-btn-post-lg:hover {
+    background-color: #f0d98a !important;
+    color: #1a0000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+}
+
+/* Card do Usuário Logado no Rodapé */
+.x-user-card-footer {
+    padding: 8px 14px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.x-user-card-footer:hover {
+    background-color: rgba(212, 175, 55, 0.15);
+}
+
+/* --- FEED E TABELA DE POSTS (SEM CAIXA BRANCA) --- */
+.x-feed-card {
+    background-color: #2a0000 !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.table-dark-wine {
+    --bs-table-bg: transparent !important;
+    --bs-table-color: #f0d98a !important;
+    background-color: transparent !important;
+    color: #f0d98a !important;
+}
+
+.table-dark-wine th {
+    color: #d4af37 !important;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #d4af37 !important;
+}
+
+.table-dark-wine td {
+    padding: 14px 12px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+}
+
+.post-title-link {
+    color: #f0d98a !important;
+    font-size: 15px;
+    transition: color 0.2s ease;
+}
+
+.post-title-link:hover {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+/* Botão Novo Post */
+.x-btn-gold-sm {
+    background-color: #d4af37 !important;
+    color: #2a0000 !important;
+    border-radius: 9999px !important;
+    padding: 6px 18px !important;
+    transition: all 0.2s ease !important;
+}
+
+.x-btn-gold-sm:hover {
+    background-color: #f0d98a !important;
+    transform: translateY(-1px);
+}
+
 /* Responsividade para telas menores */
 @media (max-width: 768px) {
     .footer-container {
@@ -258,7 +409,8 @@ tr:hover {
         font-size: 13px;
     }
 
-    th, td {
+    th,
+    td {
         padding: 10px;
     }
 
