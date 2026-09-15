@@ -21,138 +21,188 @@
 
 <body class="bg-dark-wine">
 
-    <?php
-    $userSession       = $this->Session->read('Auth.User');
-    $currentController = strtolower($this->params['controller']);
-    $currentAction     = strtolower($this->params['action']);
-    ?>
+   <?php
+	$userSession       = $this->Session->read('Auth.User');
+	$currentController = strtolower($this->params['controller']);
+	$currentAction     = strtolower($this->params['action']);
+	?>
 
-    <div class="main-layout-container d-flex">
+	<div class="main-layout-container d-flex">
+        <!-- Opção de Temas -->
+		<li>
+			<hr class="x-sub-divider">
+		</li>
+		<li class="px-3 py-1">
+			<small class="d-block text-gold-light fw-bold mb-2">Tema do Site:</small>
+			<div class="d-flex gap-2">
+				<button type="button" class="btn btn-sm btn-outline-warning w-50" onclick="setAppTheme('yellow-black')">
+					🟡 Preto
+				</button>
+				<button type="button" class="btn btn-sm btn-outline-danger w-50" onclick="setAppTheme('red-white')">
+					🔴 Branco
+				</button>
+			</div>
+		</li>
+		<?php if (!empty($userSession)): ?>
+			<!-- SIDEBAR GLOBLAL -->
+			<aside class="x-sidebar d-flex flex-column justify-content-between p-3">
+				<div class="d-flex flex-column align-items-start w-100">
 
-        <!-- SIDEBAR GLOBLAL -->
-        <aside class="x-sidebar d-flex flex-column justify-content-between p-3">
-            <div class="d-flex flex-column align-items-start w-100">
+					<!-- Logo: Ícone do X + Texto StockOrg -->
+					<?php echo $this->Html->link(
+						'<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="text-gold" viewBox="0 0 16 16"><path d="M12.6 1h2.454l-5.36 6.126L16 15h-4.937l-3.867-5.07L2.76 15H.304l5.732-6.551L0 1h5.059l3.497 4.628L12.6 1zm-.86 12.56h1.36L4.323 2.34H2.865l8.875 11.22z"/></svg>' .
+							'<span class="fs-4 fw-bold text-gold tracking-wide d-none d-xl-inline">StockOrg</span>',
+						array('controller' => 'posts', 'action' => 'index'),
+						array('class' => 'x-brand-header d-flex align-items-center gap-3 mb-4 text-decoration-none px-2 py-1', 'escape' => false)
+					); ?>
 
-                <!-- Logo: Ícone do X + Texto StockOrg -->
-                <?php echo $this->Html->link(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="text-gold" viewBox="0 0 16 16"><path d="M12.6 1h2.454l-5.36 6.126L16 15h-4.937l-3.867-5.07L2.76 15H.304l5.732-6.551L0 1h5.059l3.497 4.628L12.6 1zm-.86 12.56h1.36L4.323 2.34H2.865l8.875 11.22z"/></svg>' .
-                        '<span class="fs-4 fw-bold text-gold tracking-wide d-none d-xl-inline">StockOrg</span>',
-                    array('controller' => 'posts', 'action' => 'index'),
-                    array('class' => 'x-brand-header d-flex align-items-center gap-3 mb-4 text-decoration-none px-2 py-1', 'escape' => false)
-                ); ?>
+					<!-- Navegação Principal -->
+					<nav class="x-nav w-100 mb-3">
+						<ul class="nav flex-column gap-2">
+							<!-- Home -->
+							<li class="nav-item">
+								<?php
+								$active = ($currentController === 'posts' && $currentAction === 'index') ? 'active' : '';
+								echo $this->Html->link(
+									'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16"><path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.505a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146A.5.5 0 0 0 .5 8.5v7a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5"/></svg><span class="d-none d-xl-inline">Página Inicial</span>',
+									array('controller' => 'posts', 'action' => 'index'),
+									array('class' => 'x-nav-link d-flex align-items-center gap-3 ' . $active, 'escape' => false)
+								); ?>
+							</li>
 
-                <!-- Navegação Principal -->
-                <nav class="x-nav w-100 mb-3">
-                    <ul class="nav flex-column gap-2">
-                        <!-- Home -->
-                        <li class="nav-item">
-                            <?php
-                            $active = ($currentController === 'posts' && $currentAction === 'index') ? 'active' : '';
-                            echo $this->Html->link(
-                                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16"><path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.505a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146A.5.5 0 0 0 .5 8.5v7a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5"/></svg><span class="d-none d-xl-inline">Página Inicial</span>',
-                                array('controller' => 'posts', 'action' => 'index'),
-                                array('class' => 'x-nav-link d-flex align-items-center gap-3 ' . $active, 'escape' => false)
-                            ); ?>
-                        </li>
+							<!-- Perfil -->
+							<?php if (!empty($userSession)): ?>
+								<li class="nav-item">
+									<?php
+									$active = ($currentController === 'users' && $currentAction === 'perfil') ? 'active' : '';
+									echo $this->Html->link(
+										'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg><span class="d-none d-xl-inline">Perfil</span>',
+										array('controller' => 'users', 'action' => 'perfil'),
+										array('class' => 'x-nav-link d-flex align-items-center gap-3 ' . $active, 'escape' => false)
+									); ?>
+								</li>
+							<?php endif; ?>
 
-                        <!-- Perfil -->
-                        <?php if (!empty($userSession)): ?>
-                            <li class="nav-item">
-                                <?php
-                                $active = ($currentController === 'users' && $currentAction === 'perfil') ? 'active' : '';
-                                echo $this->Html->link(
-                                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg><span class="d-none d-xl-inline">Perfil</span>',
-                                    array('controller' => 'users', 'action' => 'perfil'),
-                                    array('class' => 'x-nav-link d-flex align-items-center gap-3 ' . $active, 'escape' => false)
-                                ); ?>
-                            </li>
-                        <?php endif; ?>
+							<!-- Dropdown Mais -->
+							<?php
+							// Padroniza a action para minúsculas para evitar problemas de case sensitivity
+							$actionClean = strtolower($currentAction);
 
-                        <!-- Dropdown Mais -->
-                        <?php $isSettingsActive = ($currentController === 'users' && in_array($currentAction, array('edit', 'alterarsenha', 'painelademiro'))); ?>
-                        <li class="nav-item x-accordion-container">
-                            <a class="x-nav-link d-flex align-items-center gap-3" href="javascript:void(0);" id="xAccordionTrigger">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                                </svg>
-                                <span class="d-none d-xl-inline">Mais</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down ms-auto x-chevron-icon d-none d-xl-inline" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                </svg>
-                            </a>
+							// Lógica de verificação das páginas ativas do submenu
+							$isAboutPage = ($currentController === 'pages' && $actionClean === 'sobre');
+							$isEditPage  = ($currentController === 'users' && $actionClean === 'edit');
+							$isAdminPage = ($currentController === 'users' && $actionClean === 'painelademiro');
 
-                            <!-- Submenu Expansível (Abre para baixo empurrando o resto) -->
-                            <div class="x-accordion-menu" id="xAccordionMenu">
-                                <ul class="list-unstyled m-0 p-2 d-flex flex-column gap-1">
-                                    <li><?php echo $this->Html->link('Sobre Nós', array('controller' => 'pages', 'action' => 'about'), array('class' => 'x-sub-item')); ?></li>
-                                    <?php if (!empty($userSession)): ?>
-                                        <li><?php echo $this->Html->link('Editar Perfil', array('controller' => 'users', 'action' => 'edit'), array('class' => 'x-sub-item')); ?></li>
-                                        <li><?php echo $this->Html->link('Alterar Senha', array('controller' => 'users', 'action' => 'alterarSenha'), array('class' => 'x-sub-item')); ?></li>
-                                        <?php if (!empty($userSession['cargo']) && $userSession['cargo'] === 'admin'): ?>
-                                            <li>
-                                                <hr class="x-sub-divider">
-                                            </li>
-                                            <li><?php echo $this->Html->link('Painel Administrativo', array('controller' => 'users', 'action' => 'painelAdemiro'), array('class' => 'x-sub-item')); ?></li>
-                                        <?php endif; ?>
-                                        <li>
-                                            <hr class="x-sub-divider">
-                                        </li>
-                                        <li><?php echo $this->Html->link('Sair da Conta', array('controller' => 'users', 'action' => 'sairDaConta'), array('class' => 'x-sub-item text-danger')); ?></li>
-                                    <?php endif; ?>
-                                </ul>
-                            </div>
-                        </li>
+							// Define se o menu "Mais" deve iniciar expandido
+							$isMoreActive = ($isAboutPage || $isEditPage || $isAdminPage);
+							?>
 
-                        <!-- Botão Postar (Fica logo abaixo do Acordeão) -->
-                        <?php if (!empty($userSession)): ?>
-                            <?php echo $this->Html->link(
-                                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-lg d-xl-none" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg><span class="d-none d-xl-inline">Postar</span>',
-                                array('controller' => 'posts', 'action' => 'add'),
-                                array('class' => 'btn x-btn-post-lg w-100 mt-3 d-flex align-items-center justify-content-center gap-2', 'escape' => false)
-                            ); ?>
-                        <?php endif; ?>
-                    </ul>
-                    </li>
-                    </ul>
-                </nav>
+							<!-- Acordeão / Submenu Mais -->
+							<li class="nav-item x-accordion-container <?php echo $isMoreActive ? 'active' : ''; ?>">
+								<a class="x-nav-link d-flex align-items-center gap-3 <?php echo $isMoreActive ? 'active' : ''; ?>" href="javascript:void(0);" id="xAccordionTrigger">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+										<path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+									</svg>
+									<span class="d-none d-xl-inline">Mais</span>
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down ms-auto x-chevron-icon d-none d-xl-inline" viewBox="0 0 16 16">
+										<path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+									</svg>
+								</a>
 
-            <!-- Card do Usuário Logado no Rodapé da Sidebar -->
-            <?php if (!empty($userSession)): ?>
-                <div class="x-user-card-footer d-flex align-items-center justify-content-between w-100 mt-auto">
-                    <div class="d-flex align-items-center gap-3">
-                        <?php
-                        $avatar = !empty($userSession['foto']) ? $userSession['foto'] : 'perfilDefault.jpg';
-                        echo $this->Html->image($avatar, array('class' => 'rounded-circle', 'style' => 'width: 42px; height: 42px; object-fit: cover; border: 1px solid #d4af37;'));
-                        ?>
-                        <div class="lh-sm d-none d-xl-block">
-                            <strong class="d-block text-gold-light fs-6 mb-0"><?php echo h($userSession['nome'] ?? $userSession['username']); ?></strong>
-                            <small class="text-muted" style="font-size: 12px;">@<?php echo h($userSession['username'] ?? 'user'); ?></small>
-                        </div>
-                    </div>
-                </div>
-            <?php else: ?>
-                <div class="w-100 mt-auto d-none d-xl-block">
-                    <?php echo $this->Html->link('Entrar', array('controller' => 'users', 'action' => 'login'), array('class' => 'btn x-btn-post-lg w-100 font-weight-bold')); ?>
-                </div>
-            <?php endif; ?>
-        </aside>
+								<!-- Submenu Expansível -->
+								<div class="x-accordion-menu" id="xAccordionMenu">
+									<ul class="list-unstyled m-0 p-2 d-flex flex-column gap-1">
+										<!-- Link Sobre Nós ajustado para a action 'sobre' -->
+										<li>
+											<?php echo $this->Html->link('Sobre Nós', array('controller' => 'pages', 'action' => 'sobre'), array('class' => 'x-sub-item ' . ($isAboutPage ? 'active' : ''))); ?>
+										</li>
+
+										<?php if (!empty($userSession)): ?>
+											<li>
+												<?php echo $this->Html->link('Editar Perfil', array('controller' => 'users', 'action' => 'edit'), array('class' => 'x-sub-item ' . ($isEditPage ? 'active' : ''))); ?>
+											</li>
+
+											<?php if (!empty($userSession['cargo']) && $userSession['cargo'] === 'admin'): ?>
+												<li>
+													<hr class="x-sub-divider">
+												</li>
+												<li>
+													<?php echo $this->Html->link('Painel Administrativo', array('controller' => 'users', 'action' => 'painelAdemiro'), array('class' => 'x-sub-item ' . ($isAdminPage ? 'active' : ''))); ?>
+												</li>
+											<?php endif; ?>
+
+											<li>
+												<hr class="x-sub-divider">
+											</li>
+											<li>
+												<?php echo $this->Html->link('Sair da Conta', array('controller' => 'users', 'action' => 'sairDaConta'), array('class' => 'x-sub-item text-danger')); ?>
+											</li>
+										<?php endif; ?>
+									</ul>
+								</div>
+							</li>
+
+							<!-- Botão Postar (Fica logo abaixo do Acordeão) -->
+							<?php if (!empty($userSession)): ?>
+								<?php echo $this->Html->link(
+									'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-lg d-xl-none" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg><span class="d-none d-xl-inline">Postar</span>',
+									array('controller' => 'posts', 'action' => 'add'),
+									array('class' => 'btn x-btn-post-lg w-100 mt-3 d-flex align-items-center justify-content-center gap-2', 'escape' => false)
+								); ?>
+							<?php endif; ?>
+						</ul>
+					</nav>
+				</div>
+
+				<!-- Card do Usuário Logado no Rodapé da Sidebar -->
+				<?php if (!empty($userSession)): ?>
+					<div class="x-user-card-footer d-flex align-items-center justify-content-between w-100 mt-auto">
+						<div class="d-flex align-items-center gap-3">
+							<?php
+							$avatar = !empty($userSession['foto']) ? $userSession['foto'] : 'perfilDefault.jpg';
+							echo $this->Html->image($avatar, array('class' => 'rounded-circle', 'style' => 'width: 42px; height: 42px; object-fit: cover; border: 1px solid #d4af37;'));
+							?>
+							<div class="lh-sm d-none d-xl-block">
+								<strong class="d-block text-gold-light fs-6 mb-0"><?php echo h($userSession['nome'] ?? $userSession['username']); ?></strong>
+								<small class="text-muted" style="font-size: 12px;">@<?php echo h($userSession['username'] ?? 'user'); ?></small>
+							</div>
+						</div>
+					</div>
+				<?php endif; ?>
+			</aside>
+		<?php endif; ?>
 
         <?php echo $this->fetch('content'); ?>
 
         <!-- Bootstrap 5 JS Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const trigger = document.getElementById('xAccordionTrigger');
-                const container = trigger ? trigger.closest('.x-accordion-container') : null;
+            $(document).ready(function() {
+			// Evento de clique para abrir/fechar o acordeão
+			$('#xAccordionTrigger').on('click', function(e) {
+				e.preventDefault();
+				$(this).closest('.x-accordion-container').toggleClass('active');
+			});
+		});
 
-                if (trigger && container) {
-                    trigger.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        container.classList.toggle('active');
-                    });
-                }
-            });
+		// Função para alterar e persistir o tema
+		function setAppTheme(themeName) {
+			$('html').attr('data-theme', themeName);
+			localStorage.setItem('stockorg_theme', themeName);
+		}
+
+		// Executa assim que o DOM estiver pronto
+		$(document).ready(function() {
+			// 1. Restaura o tema salvo no localStorage (padrão: amarelo e preto)
+			var savedTheme = localStorage.getItem('stockorg_theme') || 'yellow-black';
+			$('html').attr('data-theme', savedTheme);
+
+			// 2. Controla o clique para abrir/fechar o submenu acordeão do "Mais"
+			$('#xAccordionTrigger').on('click', function(e) {
+				e.preventDefault();
+				$(this).closest('.x-accordion-container').toggleClass('active');
+			});
+		});
         </script>
 </body>
 

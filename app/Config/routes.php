@@ -36,6 +36,8 @@
 /**
  * Rotas para páginas estáticas do PagesController.
  */
+	Router::connect('/pages/sobre', array('controller' => 'pages', 'action' => 'sobre'));
+
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
 	Router::connect('/login', array('controller' => 'Users', 'action' => 'login'));
@@ -45,6 +47,7 @@
 	Router::connect('/users/perfil', array('controller' => 'Users', 'action' => 'perfil'));
 	
 	Router::connect('/users/perfil/painelAdm', array('controller' => 'Users', 'action' => 'painelAdemiro'));
+
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.

@@ -32,10 +32,12 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
     public $layout = 'default';
+    public $helpers = array('Html', 'Form', 'Flash');
 
     //pra eu conseguir usar o authcomponent e o blowfish, eu preciso colocar eles aqui, e depois eu vou configurar eles no beforeFilter.
     public $components = array(
         'Session',
+        'Flash',
         'Auth' => array(
             'authenticate' => array(
                 'Form' => array(

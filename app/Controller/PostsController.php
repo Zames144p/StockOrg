@@ -12,7 +12,9 @@ class PostsController extends AppController {
     }
 
     public function index() {
-        $this->set('posts', $this->Post->find('all'));
+        $this->set('posts', $this->Post->find('all', array(
+            'order' => array('Post.id' => 'ASC') // ordena os blgs dos ids
+        )));
     }
 
     public function view($id = null) {
@@ -33,7 +35,7 @@ class PostsController extends AppController {
             $this->request->data['Post']['user_id'] = $this->Auth->user('id'); //Associa o post criado ao seu usuario
 
             if($this->Post->save($this->request->data)){
-                $this->Flash->sucesse(__('Your post has been saved.'));
+                $this->Flash->success(__('Your post has been saved.'));
                 return $this->redirect(array('action' => 'index'));
             }
             $this->Flash->error(__('Unable to add your post.'));

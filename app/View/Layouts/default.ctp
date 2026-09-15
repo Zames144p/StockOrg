@@ -29,6 +29,21 @@
 	?>
 
 	<div class="main-layout-container d-flex">
+		<!-- Opção de Temas -->
+		<li>
+			<hr class="x-sub-divider">
+		</li>
+		<li class="px-3 py-1">
+			<small class="d-block text-gold-light fw-bold mb-2">Tema do Site:</small>
+			<div class="d-flex gap-2">
+				<button type="button" class="btn btn-sm btn-outline-warning w-50" onclick="setAppTheme('yellow-black')">
+					🟡 Preto
+				</button>
+				<button type="button" class="btn btn-sm btn-outline-danger w-50" onclick="setAppTheme('red-white')">
+					🔴 Branco
+				</button>
+			</div>
+		</li>
 		<?php if (!empty($userSession)): ?>
 			<!-- SIDEBAR GLOBLAL -->
 			<aside class="x-sidebar d-flex flex-column justify-content-between p-3">
@@ -69,10 +84,22 @@
 								</li>
 							<?php endif; ?>
 
-							<!-- Dropdown Mais -->
-							<?php $isSettingsActive = ($currentController === 'users' && in_array($currentAction, array('edit', 'alterarsenha', 'painelademiro'))); ?>
-							<li class="nav-item x-accordion-container">
-								<a class="x-nav-link d-flex align-items-center gap-3" href="javascript:void(0);" id="xAccordionTrigger">
+							<?php
+							// Padroniza a action para minúsculas para evitar problemas de case sensitivity
+							$actionClean = strtolower($currentAction);
+
+							// Lógica de verificação das páginas ativas do submenu
+							$isAboutPage = ($currentController === 'pages' && $actionClean === 'sobre');
+							$isEditPage  = ($currentController === 'users' && $actionClean === 'edit');
+							$isAdminPage = ($currentController === 'users' && $actionClean === 'painelademiro');
+
+							// Define se o menu "Mais" deve iniciar expandido
+							$isMoreActive = ($isAboutPage || $isEditPage || $isAdminPage);
+							?>
+
+							<!-- Acordeão / Submenu Mais -->
+							<li class="nav-item x-accordion-container <?php echo $isMoreActive ? 'active' : ''; ?>">
+								<a class="x-nav-link d-flex align-items-center gap-3 <?php echo $isMoreActive ? 'active' : ''; ?>" href="javascript:void(0);" id="xAccordionTrigger">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
 										<path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
 									</svg>
@@ -82,23 +109,34 @@
 									</svg>
 								</a>
 
-								<!-- Submenu Expansível (Abre para baixo empurrando o resto) -->
+								<!-- Submenu Expansível -->
 								<div class="x-accordion-menu" id="xAccordionMenu">
 									<ul class="list-unstyled m-0 p-2 d-flex flex-column gap-1">
-										<li><?php echo $this->Html->link('Sobre Nós', array('controller' => 'pages', 'action' => 'about'), array('class' => 'x-sub-item')); ?></li>
+										<!-- Link Sobre Nós ajustado para a action 'sobre' -->
+										<li>
+											<?php echo $this->Html->link('Sobre Nós', array('controller' => 'pages', 'action' => 'sobre'), array('class' => 'x-sub-item ' . ($isAboutPage ? 'active' : ''))); ?>
+										</li>
+
 										<?php if (!empty($userSession)): ?>
-											<li><?php echo $this->Html->link('Editar Perfil', array('controller' => 'users', 'action' => 'edit'), array('class' => 'x-sub-item')); ?></li>
-											<li><?php echo $this->Html->link('Alterar Senha', array('controller' => 'users', 'action' => 'alterarSenha'), array('class' => 'x-sub-item')); ?></li>
+											<li>
+												<?php echo $this->Html->link('Editar Perfil', array('controller' => 'users', 'action' => 'edit'), array('class' => 'x-sub-item ' . ($isEditPage ? 'active' : ''))); ?>
+											</li>
+
 											<?php if (!empty($userSession['cargo']) && $userSession['cargo'] === 'admin'): ?>
 												<li>
 													<hr class="x-sub-divider">
 												</li>
-												<li><?php echo $this->Html->link('Painel Administrativo', array('controller' => 'users', 'action' => 'painelAdemiro'), array('class' => 'x-sub-item')); ?></li>
+												<li>
+													<?php echo $this->Html->link('Painel Administrativo', array('controller' => 'users', 'action' => 'painelAdemiro'), array('class' => 'x-sub-item ' . ($isAdminPage ? 'active' : ''))); ?>
+												</li>
 											<?php endif; ?>
+
 											<li>
 												<hr class="x-sub-divider">
 											</li>
-											<li><?php echo $this->Html->link('Sair da Conta', array('controller' => 'users', 'action' => 'sairDaConta'), array('class' => 'x-sub-item text-danger')); ?></li>
+											<li>
+												<?php echo $this->Html->link('Sair da Conta', array('controller' => 'users', 'action' => 'sairDaConta'), array('class' => 'x-sub-item text-danger')); ?>
+											</li>
 										<?php endif; ?>
 									</ul>
 								</div>
@@ -145,16 +183,31 @@
 	<!-- Bootstrap 5 JS Bundle -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			const trigger = document.getElementById('xAccordionTrigger');
-			const container = trigger ? trigger.closest('.x-accordion-container') : null;
+		$(document).ready(function() {
+			// Evento de clique para abrir/fechar o acordeão
+			$('#xAccordionTrigger').on('click', function(e) {
+				e.preventDefault();
+				$(this).closest('.x-accordion-container').toggleClass('active');
+			});
+		});
 
-			if (trigger && container) {
-				trigger.addEventListener('click', function(e) {
-					e.preventDefault();
-					container.classList.toggle('active');
-				});
-			}
+		// Função para alterar e persistir o tema
+		function setAppTheme(themeName) {
+			$('html').attr('data-theme', themeName);
+			localStorage.setItem('stockorg_theme', themeName);
+		}
+
+		// Executa assim que o DOM estiver pronto
+		$(document).ready(function() {
+			// 1. Restaura o tema salvo no localStorage (padrão: amarelo e preto)
+			var savedTheme = localStorage.getItem('stockorg_theme') || 'yellow-black';
+			$('html').attr('data-theme', savedTheme);
+
+			// 2. Controla o clique para abrir/fechar o submenu acordeão do "Mais"
+			$('#xAccordionTrigger').on('click', function(e) {
+				e.preventDefault();
+				$(this).closest('.x-accordion-container').toggleClass('active');
+			});
 		});
 	</script>
 </body>

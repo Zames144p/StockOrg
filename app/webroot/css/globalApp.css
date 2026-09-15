@@ -1,15 +1,63 @@
 /* ========================================== */
-/* ESTILOS GERAIS DA APLICAÇÃO (VINHO & OURO) */
+/* VARIÁVEIS DE TEMAS (PALETAS DE CORES)      */
 /* ========================================== */
 
-html, body {
+/* Tema 1: Amarelo e Preto (Padrão Dark Elegante) */
+:root,
+[data-theme="yellow-black"] {
+    --bg-main: #000000;
+    --bg-sidebar: #0a0a0a;
+    --bg-card: #121212;
+    --border-color: rgba(212, 175, 55, 0.3);
+
+    --text-primary: #d4af37;
+    /* Ouro / Amarelo */
+    --text-secondary: #f0d98a;
+    /* Amarelo Claro */
+    --text-hover: #ffffff;
+
+    --btn-bg: #d4af37;
+    --btn-text: #000000;
+    --btn-hover-bg: #f0d98a;
+
+    --hover-overlay: rgba(212, 175, 55, 0.15);
+}
+
+/* Tema 2: Vermelho e Branco (Estilo Imperial / Clear) */
+[data-theme="red-white"] {
+    --bg-main: #f8f9fa;
+    --bg-sidebar: #800000;
+    /* Vermelho Vinho */
+    --bg-card: #ffffff;
+    --border-color: #800000;
+
+    --text-primary: #800000;
+    /* Vermelho Vinho */
+    --text-secondary: #333333;
+    /* Texto Escuro */
+    --text-hover: #800000;
+
+    --btn-bg: #800000;
+    --btn-text: #ffffff;
+    --btn-hover-bg: #a00000;
+
+    --hover-overlay: rgba(128, 0, 0, 0.1);
+}
+
+/* ========================================== */
+/* APLICAÇÃO DAS VARIÁVEIS                    */
+/* ========================================== */
+
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
     min-height: 100vh;
-    background-color: #1a0000;
-    color: #f0d98a;
+    background-color: var(--bg-main) !important;
+    color: var(--text-secondary) !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .bg-dark-wine {
@@ -21,12 +69,9 @@ html, body {
     display: flex;
 }
 
-.text-gold {
-    color: #d4af37 !important;
-}
-
+.text-gold,
 .text-gold-light {
-    color: #f0d98a !important;
+    color: var(--text-primary) !important;
 }
 
 /* ========================================== */
@@ -35,8 +80,8 @@ html, body {
 
 /* Definição Base da Sidebar no Desktop/Tablet */
 .x-sidebar {
-    background-color: #2a0000 !important;
-    border-right: 1px solid rgba(212, 175, 55, 0.25) !important;
+    background-color: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border-color) !important;
     width: 88px;
     height: 100vh;
     position: sticky;
@@ -67,7 +112,7 @@ html, body {
 
 /* Links da Nav Principal */
 .x-nav-link {
-    color: #f0d98a !important;
+    color: var(--text-secondary) !important;
     font-size: 19px !important;
     font-weight: 500;
     padding: 12px 18px !important;
@@ -76,22 +121,27 @@ html, body {
     transition: all 0.2s ease-in-out !important;
 }
 
-.x-nav-link:hover {
-    background-color: rgba(212, 175, 55, 0.15) !important;
+/* No tema vermelho-branco, ajusta a cor dos links da sidebar */
+[data-theme="red-white"] .x-nav-link {
     color: #ffffff !important;
+}
+
+.x-nav-link:hover {
+    background-color: var(--hover-overlay) !important;
+    color: var(--text-primary) !important;
     transform: translateX(3px);
 }
 
 .x-nav-link.active {
     font-weight: 700 !important;
-    color: #d4af37 !important;
-    background-color: rgba(212, 175, 55, 0.1) !important;
+    color: var(--text-primary) !important;
+    background-color: var(--hover-overlay) !important;
 }
 
 /* Botão Postar Principal */
 .x-btn-post-lg {
-    background-color: #d4af37 !important;
-    color: #2a0000 !important;
+    background-color: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
     font-size: 17px !important;
     font-weight: 700 !important;
     height: 48px;
@@ -102,7 +152,7 @@ html, body {
 }
 
 .x-btn-post-lg:hover {
-    background-color: #f0d98a !important;
+    background-color: var(--btn-hover-bg) !important;
     color: #1a0000 !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
@@ -130,6 +180,7 @@ html, body {
         opacity: 0;
         transform: translateY(12px) scale(0.95);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -154,8 +205,8 @@ html, body {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
-                opacity 0.25s ease-in-out;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.25s ease-in-out;
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 16px;
     margin-top: 4px;
@@ -163,14 +214,15 @@ html, body {
 
 /* Estado Aberto (Empurra tudo para baixo) */
 .x-accordion-container.active .x-accordion-menu {
-    max-height: 300px; /* Espaço suficiente para os itens */
+    max-height: 300px;
+    /* Espaço suficiente para os itens */
     opacity: 1;
     border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 /* Itens de Submenu com Efeito Pílula */
 .x-sub-item {
-    color: #f0d98a !important;
+color: var(--text-secondary) !important;
     font-size: 14px !important;
     font-weight: 500 !important;
     padding: 9px 16px !important;
@@ -182,8 +234,8 @@ html, body {
 
 /* Hover em Pílula Amarela */
 .x-sub-item:hover {
-    background-color: #d4af37 !important;
-    color: #2a0000 !important;
+    background-color: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
     font-weight: 700 !important;
     transform: translateX(4px) !important;
 }
@@ -214,11 +266,17 @@ html, body {
 }
 
 .card {
-    background: #2a0000 !important;
-    border: 1px solid #d4af37 !important;
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 8px;
     padding: 15px;
-    color: #f0d98a;
+    color: var(--text-secondary) !important;
+}
+
+.x-feed-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
 }
 
 .card h3 {
@@ -267,17 +325,17 @@ html, body {
 /* ========================================== */
 
 .table-dark-wine {
-    --bs-table-bg: #2a0000;
-    --bs-table-color: #f0d98a;
+    --bs-table-bg: var(--bg-card) !important;
+    --bs-table-color: var(--text-secondary) !important;
     --bs-table-border-color: rgba(212, 175, 55, 0.2);
     background-color: #2a0000 !important;
     color: #f0d98a !important;
 }
 
 .table-dark-wine th {
-    color: #d4af37 !important;
+    color: var(--text-primary) !important;
     font-size: 13px;
-    border-bottom: 2px solid #d4af37 !important;
+    border-bottom: 2px solid var(--border-color) !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -315,9 +373,89 @@ html, body {
     background-color: #d4af37 !important;
 }
 
+/* Estado Ativo do Item do Submenu (Página Atual) */
+.x-sub-item.active {
+    background-color: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    font-weight: 700 !important;
+}
+
+/* Quando o contêiner pai está ativo, mantemos a borda visível */
+.x-accordion-container.active .x-accordion-menu {
+    max-height: 350px !important;
+    opacity: 1 !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+}
+
 /* ========================================== */
-/* RESPONSIVIDADE MOBILE (BARRA INFERIOR)     */
+/* FORMULÁRIO DE EDIÇÃO / CRIAÇÃO DE POSTS    */
 /* ========================================== */
+
+/* Estilização dos Inputs */
+.x-input-custom {
+    background-color: #1a0000 !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    color: #f0d98a !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.x-input-custom:focus {
+    background-color: #2a0000 !important;
+    border-color: #d4af37 !important;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.2) !important;
+    color: #ffffff !important;
+    outline: none;
+}
+
+.x-input-custom::placeholder {
+    color: rgba(240, 217, 138, 0.4) !important;
+}
+
+.text-area-custom {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Botão Voltar Circular */
+.btn-icon-back {
+    background-color: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-icon-back:hover {
+    background-color: rgba(212, 175, 55, 0.15);
+    border-color: #d4af37;
+    transform: translateX(-2px);
+}
+
+/* Botão Cancelar */
+.x-btn-cancel {
+    background-color: transparent !important;
+    color: #f0d98a !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    border-radius: 9999px !important;
+    transition: all 0.2s ease !important;
+}
+
+.x-btn-cancel:hover {
+    background-color: rgba(212, 175, 55, 0.1) !important;
+    color: #ffffff !important;
+    border-color: #d4af37 !important;
+}
+
+.border-gold-subtle {
+    border-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Trava de enquadramento da coluna de conteúdo principal */
+.x-feed-container {
+    max-width: 800px !important;
+    width: 100%;
+}
 
 @media (max-width: 768px) {
     .x-sidebar {

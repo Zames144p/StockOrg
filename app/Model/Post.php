@@ -22,4 +22,14 @@ class Post extends AppModel {
             'message' => 'Body is required'
         )
     );
+
+    public function beforeSave($options = array()) {
+        if (!$this->id) {
+            $this->data[$this->alias]['criado_em'] = date('Y-m-d H:i:s');
+        } else {
+            $this->data[$this->alias]['modificado_em'] = date('Y-m-d H:i:s');
+        }
+
+        return true;
+    }
 }
