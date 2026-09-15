@@ -29,29 +29,17 @@
 	?>
 
 	<div class="main-layout-container d-flex">
-		<!-- Opção de Temas -->
-		<li>
-			<hr class="x-sub-divider">
-		</li>
-		<li class="px-3 py-1">
-			<small class="d-block text-gold-light fw-bold mb-2">Tema do Site:</small>
-			<div class="d-flex gap-2">
-				<button type="button" class="btn btn-sm btn-outline-warning w-50" onclick="setAppTheme('yellow-black')">
-					🟡 Preto
-				</button>
-				<button type="button" class="btn btn-sm btn-outline-danger w-50" onclick="setAppTheme('red-white')">
-					🔴 Branco
-				</button>
-			</div>
-		</li>
 		<?php if (!empty($userSession)): ?>
 			<!-- SIDEBAR GLOBLAL -->
 			<aside class="x-sidebar d-flex flex-column justify-content-between p-3">
 				<div class="d-flex flex-column align-items-start w-100">
 
-					<!-- Logo: Ícone do X + Texto StockOrg -->
+					<!-- Logo StockOrg -->
 					<?php echo $this->Html->link(
-						'<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="text-gold" viewBox="0 0 16 16"><path d="M12.6 1h2.454l-5.36 6.126L16 15h-4.937l-3.867-5.07L2.76 15H.304l5.732-6.551L0 1h5.059l3.497 4.628L12.6 1zm-.86 12.56h1.36L4.323 2.34H2.865l8.875 11.22z"/></svg>' .
+						$this->Html->image('LogoStockOrg.png', array(
+							'alt' => 'StockOrg',
+							'style' => 'width: 30px; height: 30px; object-fit: cover; border-radius: 50%; border: 1px solid var(--border-color);'
+						)) .
 							'<span class="fs-4 fw-bold text-gold tracking-wide d-none d-xl-inline">StockOrg</span>',
 						array('controller' => 'posts', 'action' => 'index'),
 						array('class' => 'x-brand-header d-flex align-items-center gap-3 mb-4 text-decoration-none px-2 py-1', 'escape' => false)
@@ -84,6 +72,7 @@
 								</li>
 							<?php endif; ?>
 
+							<!-- Dropdown Mais -->
 							<?php
 							// Padroniza a action para minúsculas para evitar problemas de case sensitivity
 							$actionClean = strtolower($currentAction);
@@ -183,31 +172,26 @@
 	<!-- Bootstrap 5 JS Bundle -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-		$(document).ready(function() {
-			// Evento de clique para abrir/fechar o acordeão
-			$('#xAccordionTrigger').on('click', function(e) {
-				e.preventDefault();
-				$(this).closest('.x-accordion-container').toggleClass('active');
-			});
-		});
-
 		// Função para alterar e persistir o tema
 		function setAppTheme(themeName) {
-			$('html').attr('data-theme', themeName);
+			document.documentElement.setAttribute('data-theme', themeName);
 			localStorage.setItem('stockorg_theme', themeName);
 		}
 
 		// Executa assim que o DOM estiver pronto
-		$(document).ready(function() {
+		document.addEventListener('DOMContentLoaded', function() {
 			// 1. Restaura o tema salvo no localStorage (padrão: amarelo e preto)
 			var savedTheme = localStorage.getItem('stockorg_theme') || 'yellow-black';
-			$('html').attr('data-theme', savedTheme);
+			document.documentElement.setAttribute('data-theme', savedTheme);
 
 			// 2. Controla o clique para abrir/fechar o submenu acordeão do "Mais"
-			$('#xAccordionTrigger').on('click', function(e) {
+			var accordionTrigger = document.getElementById('xAccordionTrigger');
+			if (accordionTrigger) {
+				accordionTrigger.addEventListener('click', function(e) {
 				e.preventDefault();
-				$(this).closest('.x-accordion-container').toggleClass('active');
-			});
+				accordionTrigger.closest('.x-accordion-container').classList.toggle('active');
+				});
+			}
 		});
 	</script>
 </body>

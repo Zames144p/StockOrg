@@ -48,6 +48,7 @@
 	
 	Router::connect('/users/perfil/painelAdm', array('controller' => 'Users', 'action' => 'painelAdemiro'));
 
+	Router::connect('/users/editUser/*', array('controller' => 'Users', 'action' => 'edit'));
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.

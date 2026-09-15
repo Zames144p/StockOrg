@@ -1,0 +1,88 @@
+/* ========================================== */
+/* PÁGINA DE EDIÇÃO DE PERFIL                 */
+/* ========================================== */
+
+.edit-profile-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    transition: background-color 0.25s ease, border-color 0.25s ease !important;
+}
+
+/* Preview do Avatar */
+.avatar-preview-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+}
+
+.profile-edit-avatar {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-upload-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.avatar-upload-badge:hover {
+    transform: scale(1.1);
+    background-color: var(--btn-hover-bg);
+}
+
+/* Textos e Classes auxiliares de Tema */
+.text-theme-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-theme-muted {
+    color: var(--text-muted, #888888) !important;
+    font-size: 13px;
+}
+
+.border-theme-subtle {
+    border-color: var(--border-color) !important;
+    opacity: 0.6;
+}
+
+/* Botões do Formulário */
+.btn-icon-back {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.btn-icon-back:hover {
+    background-color: var(--hover-overlay);
+    transform: translateX(-2px);
+}
+
+.x-btn-cancel {
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 9999px !important;
+    transition: all 0.2s ease !important;
+}
+
+.x-btn-cancel:hover {
+    background-color: var(--hover-overlay) !important;
+    color: var(--text-primary) !important;
+}

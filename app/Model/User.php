@@ -23,11 +23,13 @@ class User extends AppModel {
         ),
         'senha_hash' => array(
             'rule' => 'notBlank',
-            'message' => 'A senha não pode estar em branco.'
+            'message' => 'A senha não pode estar em branco.',
+            'on' => 'create'
         ),
         'confirmar_senha' => array(
             'rule' => 'matchPasswords',
-            'message' => 'As senhas precisam ser iguais.'
+            'message' => 'As senhas precisam ser iguais.',
+            'on' => 'create'
         ),
     );
 
@@ -40,7 +42,7 @@ class User extends AppModel {
     );
 
     public function beforeSave($options = array()) {
-        //antes de salvar, eu removo o que foi colocar no confirmar_senha e usado n verificação, assim nao fica registrado no banco a confimação.
+        //antes de salvar, eu removo o que foi colocar no confirmar_senha e usado na verificação, assim nao fica registrado no banco a confimação.
         unset($this->data[$this->alias]['confirmar_senha']);
 
         //verifico se tem o id na tabela, se nao tiver, criar um novo e se ja tiver, ele vai modificar.
@@ -60,7 +62,7 @@ class User extends AppModel {
             );
         }
 
-        if(empty($this->data[$this->alias]['cargo'])){
+        if (!$this->id && empty($this->data[$this->alias]['cargo'])) {
             $this->data[$this->alias]['cargo'] = 'autor';
         }
 

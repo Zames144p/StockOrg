@@ -1,9 +1,9 @@
 <?php echo $this->Html->css('perfilPage.css?v=' . time()); ?>
 <?php
-	$userSession       = $this->Session->read('Auth.User');
-	$currentController = strtolower($this->params['controller']);
-	$currentAction     = strtolower($this->params['action']);
-	?>
+$userSession = $this->Session->read('Auth.User');
+$currentController = strtolower($this->params['controller']);
+$currentAction     = strtolower($this->params['action']);
+?>
 
 <div class="profile-dashboard">
 
@@ -20,8 +20,8 @@
             <div class="profile-info-bar">
                 <div class="avatar-wrapper">
                     <?php $avatar = !empty($user['foto']) ? $user['foto'] : 'perfilDefault.jpg';
-                echo $this->Html->image($avatar, array('class' => 'profile-main-avatar'));
-                 ?>
+                    echo $this->Html->image($avatar, array('class' => 'profile-main-avatar'));
+                    ?>
                 </div>
                 <div class="user-titles">
                     <h2><?php echo h($userSession['nome'] ?? $userSession['username'] ?? 'User'); ?></h2>
@@ -40,8 +40,8 @@
             <section class="card about-card">
                 <h3>About</h3>
                 <ul class="info-list">
-                    <li><strong>Email:</strong> <?php echo h($user['email'] ?? 'contact@stockorg.com'); ?></li>
-                    <li><strong>Joined:</strong> <?php echo h($user['created'] ?? 'Sep 2026'); ?></li>
+                    <li><strong>Email:</strong> <?php echo h($user['email'] ?? 'Nenhum email registrado'); ?></li>
+                    <li><strong>Joined:</strong> <?php echo h($user['criado_em'] ?? 'Sem data de criação'); ?></li>
                     <li><strong>Location:</strong> Natal, RN</li>
                 </ul>
             </section>
@@ -68,8 +68,8 @@
 
             <!-- Activity -->
             <section class="card side-card">
-                <h3>Activity</h3>
-                <p class="small-text">No recent activity detected.</p>
+                <h3>Bio</h3>
+                <p class="small-text"></p>
             </section>
         </div>
     </main>

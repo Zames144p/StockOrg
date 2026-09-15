@@ -52,8 +52,17 @@
                 array('class' => 'btn x-btn-cancel fw-bold px-4 py-2')
             ); ?>
 
-            <?php echo $this->Form->button('Postar', array(
+            <?php echo $this->Form->button('Salvar rascunho', array(
                 'type' => 'submit',
+                'name' => 'data[Post][save_as]',
+                'value' => 'draft',
+                'class' => 'btn x-btn-cancel fw-bold px-4 py-2'
+            )); ?>
+
+            <?php echo $this->Form->button('Publicar', array(
+                'type' => 'submit',
+                'name' => 'data[Post][save_as]',
+                'value' => 'published',
                 'class' => 'btn x-btn-post-lg px-4 py-2'
             )); ?>
         </div>
