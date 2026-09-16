@@ -75,6 +75,19 @@ class UsersController extends AppController
 
         $this->set('currentUser', $user['User']);
         $this->set('user', $user['User']);
+
+        //Carregar os posts do usuario em sessão
+        $this->loadModel('Post');
+
+        $posts = $this->Post->find('all', array(
+            'conditions' => array(
+                'Post.user_id' => $userId,
+                'Post.status' => true
+            ),
+            'order' => array('Post.criado_em' => 'DESC')
+        ));
+
+        $this->set('posts', $posts);
     }
 
     public function painelAdemiro()
@@ -117,90 +130,90 @@ class UsersController extends AppController
 
     public function edit($id = null)
     {
-    // 1. Identifica quem está logado na sessão
-    $sessionUserId = $this->Auth->user('id');
-    $sessionCargo  = $this->Auth->user('cargo');
+        // 1. Identifica quem está logado na sessão
+        $sessionUserId = $this->Auth->user('id');
+        $sessionCargo  = $this->Auth->user('cargo');
 
-    if (!$sessionUserId) {
-        $this->Flash->error('Sessão expirada. Faça login novamente.');
-        return $this->redirect(array('action' => 'login'));
-    }
+        if (!$sessionUserId) {
+            $this->Flash->error('Sessão expirada. Faça login novamente.');
+            return $this->redirect(array('action' => 'login'));
+        }
 
-    // 2. Define o ID do usuário que será carregado/editado
-    // Se o Admin passar um $id via URL, edita esse $id; caso contrário, edita o próprio perfil
-    if (!empty($id) && $sessionCargo === 'admin') {
-        $targetUserId = $id;
-    } else {
-        $targetUserId = $sessionUserId;
-    }
+        // 2. Define o ID do usuário que será carregado/editado
+        // Se o Admin passar um $id via URL, edita esse $id; caso contrário, edita o próprio perfil
+        if (!empty($id) && $sessionCargo === 'admin') {
+            $targetUserId = $id;
+        } else {
+            $targetUserId = $sessionUserId;
+        }
 
-    // 3. Busca o usuário no banco de dados
-    $targetUser = $this->User->findById($targetUserId);
-    if (!$targetUser) {
-        $this->Flash->error('Usuário não encontrado.');
-        return $this->redirect(array('action' => 'perfil'));
-    }
+        // 3. Busca o usuário no banco de dados
+        $targetUser = $this->User->findById($targetUserId);
+        if (!$targetUser) {
+            $this->Flash->error('Usuário não encontrado.');
+            return $this->redirect(array('action' => 'perfil'));
+        }
 
-    // 4. Se for submissão de formulário (POST ou PUT)
-    if ($this->request->is(array('post', 'put'))) {
-        
-        // Assegura que o ID que está sendo atualizado é o $targetUserId
-        $this->request->data['User']['id'] = $targetUserId;
+        // 4. Se for submissão de formulário (POST ou PUT)
+        if ($this->request->is(array('post', 'put'))) {
 
-        // Trata o upload da foto de perfil
-        if (!empty($this->request->data['User']['foto']['name'])) {
-            $file = $this->request->data['User']['foto'];
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $allowed = array('jpg', 'jpeg', 'png', 'webp');
+            // Assegura que o ID que está sendo atualizado é o $targetUserId
+            $this->request->data['User']['id'] = $targetUserId;
 
-            if (in_array($ext, $allowed)) {
-                $filename = 'user_' . $targetUserId . '_' . time() . '.' . $ext;
-                $targetPath = WWW_ROOT . 'img' . DS . $filename;
+            // Trata o upload da foto de perfil
+            if (!empty($this->request->data['User']['foto']['name'])) {
+                $file = $this->request->data['User']['foto'];
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $allowed = array('jpg', 'jpeg', 'png', 'webp');
 
-                if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                    $this->request->data['User']['foto'] = $filename;
+                if (in_array($ext, $allowed)) {
+                    $filename = 'user_' . $targetUserId . '_' . time() . '.' . $ext;
+                    $targetPath = WWW_ROOT . 'img' . DS . $filename;
+
+                    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                        $this->request->data['User']['foto'] = $filename;
+                    } else {
+                        unset($this->request->data['User']['foto']);
+                    }
                 } else {
                     unset($this->request->data['User']['foto']);
                 }
             } else {
                 unset($this->request->data['User']['foto']);
             }
+
+            // Salva as alterações
+            if ($this->User->save($this->request->data)) {
+                // Atualiza a sessão se o usuário alterou o próprio perfil
+                if ($targetUserId == $sessionUserId) {
+                    $updatedUser = $this->User->findById($sessionUserId);
+                    $this->Auth->login($updatedUser['User']);
+                }
+
+                $this->Flash->success('Perfil atualizado com sucesso!');
+
+                if ($targetUserId != $sessionUserId) {
+                    return $this->redirect(array('action' => 'painelAdemiro'));
+                }
+                return $this->redirect(array('action' => 'perfil'));
+            } else {
+                $this->Flash->error('Erro ao salvar as alterações.');
+            }
         } else {
-            unset($this->request->data['User']['foto']);
+            // Carregamento inicial (GET): Preenche o formulário com os dados do $targetUser
+            $this->request->data = $targetUser;
+            unset($this->request->data['User']['senha_hash']);
         }
 
-        // Salva as alterações
-        if ($this->User->save($this->request->data)) {
-            // Atualiza a sessão se o usuário alterou o próprio perfil
-            if ($targetUserId == $sessionUserId) {
-                $updatedUser = $this->User->findById($sessionUserId);
-                $this->Auth->login($updatedUser['User']);
-            }
+        // 5. Busca os posts do usuário editado para o Admin visualizar no final da página
+        $this->loadModel('Post');
+        $userPosts = $this->Post->find('all', array(
+            'conditions' => array('Post.user_id' => $targetUserId),
+            'order' => array('Post.criado_em' => 'DESC')
+        ));
 
-            $this->Flash->success('Perfil atualizado com sucesso!');
-            
-            if ($targetUserId != $sessionUserId) {
-                return $this->redirect(array('action' => 'painelAdemiro'));
-            }
-            return $this->redirect(array('action' => 'perfil'));
-        } else {
-            $this->Flash->error('Erro ao salvar as alterações.');
-        }
-    } else {
-        // Carregamento inicial (GET): Preenche o formulário com os dados do $targetUser
-        $this->request->data = $targetUser;
-        unset($this->request->data['User']['senha_hash']);
+        // Envia as duas variáveis necessárias para a View
+        $this->set('targetUser', $targetUser);
+        $this->set('userPosts', $userPosts);
     }
-
-    // 5. Busca os posts do usuário editado para o Admin visualizar no final da página
-    $this->loadModel('Post');
-    $userPosts = $this->Post->find('all', array(
-        'conditions' => array('Post.user_id' => $targetUserId),
-        'order' => array('Post.created' => 'DESC')
-    ));
-
-    // Envia as duas variáveis necessárias para a View
-    $this->set('targetUser', $targetUser);
-    $this->set('userPosts', $userPosts);
-}
 }

@@ -7,7 +7,7 @@ class PostsController extends AppController
     public function beforeFilter()
     {
         parent::beforeFilter();
-        //aqui o usuario consegue acessar a home page e acessar os posts.
+        // Permite acessar a home page e ler posts sem estar logado
         $this->Auth->allow('index', 'view');
         $this->set('isAuthenticated', (bool) $this->Auth->user());
         $this->set('currentUser', $this->Auth->user());
@@ -15,22 +15,28 @@ class PostsController extends AppController
 
     public function index()
     {
-        $rawBusca      = $this->request->query('busca');
-        $rawDataInicio = $this->request->query('data_inicio');
-        $rawDataFim    = $this->request->query('data_fim');
+        // 1. Se o formulário foi enviado via POST, atualiza os dados na Sessão
+        if ($this->request->is('post')) {
+            // CORRIGIDO: Usa ['busca'] ou ['Post']['busca'] em vez de ('busca')
+            $dataPost = $this->request->data;
 
+            $busca      = isset($dataPost['busca']) ? $dataPost['busca'] : (isset($dataPost['Post']['busca']) ? $dataPost['Post']['busca'] : '');
+            $dataInicio = isset($dataPost['data_inicio']) ? $dataPost['data_inicio'] : (isset($dataPost['Post']['data_inicio']) ? $dataPost['Post']['data_inicio'] : '');
+            $dataFim    = isset($dataPost['data_fim']) ? $dataPost['data_fim'] : (isset($dataPost['Post']['data_fim']) ? $dataPost['Post']['data_fim'] : '');
+
+            $this->Session->write('Filter.busca', $busca);
+            $this->Session->write('Filter.data_inicio', $dataInicio);
+            $this->Session->write('Filter.data_fim', $dataFim);
+        }
+
+        // 2. Lê os filtros salvos na Sessão (ou define vazio se não existir)
+        $busca      = $this->Session->read('Filter.busca') ?: '';
+        $dataInicio = $this->Session->read('Filter.data_inicio') ?: '';
+        $dataFim    = $this->Session->read('Filter.data_fim') ?: '';
+
+        // Função de normalização de data
         $normalizeDate = function ($input) {
-            if (is_array($input)) {
-                if (!empty($input['year']) && !empty($input['month']) && !empty($input['day'])) {
-                    return sprintf('%04d-%02d-%02d', $input['year'], $input['month'], $input['day']);
-                }
-                return '';
-            }
-
-            if (!is_string($input)) {
-                return '';
-            }
-            //Assim ele pesquisa nos dois formatos 
+            if (!is_string($input) || trim($input) === '') return '';
             $input = trim($input);
             foreach (array('d/m/Y', 'Y-m-d') as $format) {
                 $date = DateTime::createFromFormat($format, $input);
@@ -39,62 +45,108 @@ class PostsController extends AppController
                     return $date->format('Y-m-d');
                 }
             }
-
             return '';
         };
 
-        $busca      = is_string($rawBusca) ? trim($rawBusca) : '';
-        $dataInicio = is_string($rawDataInicio) ? trim($rawDataInicio) : '';
-        $dataFim    = is_string($rawDataFim) ? trim($rawDataFim) : '';
-        $dataInicioSql = $normalizeDate($rawDataInicio);
-        $dataFimSql = $normalizeDate($rawDataFim);
+        $dataInicioSql = $normalizeDate($dataInicio);
+        $dataFimSql    = $normalizeDate($dataFim);
+
+        // 3. Monta as condições da Query
         $conditions = array('Post.status' => true);
 
         if (!empty($busca)) {
             $conditions['OR'] = array(
-                'Post.title ILIKE' => '%' . $busca . '%',
-                'Post.body ILIKE'  => '%' . $busca . '%'
+                'Post.title ILIKE' => '%' . trim($busca) . '%',
+                'Post.body ILIKE'  => '%' . trim($busca) . '%'
             );
-            if (ctype_digit($busca)) {
-                $conditions['OR']['Post.id'] = (int)$busca;
+            if (ctype_digit(trim($busca))) {
+                $conditions['OR']['Post.id'] = (int)trim($busca);
             }
         }
 
         if ($dataInicioSql !== '') {
-            $conditions['Post.created >='] = $dataInicioSql . ' 00:00:00';
+            $conditions['Post.criado_em >='] = $dataInicioSql . ' 00:00:00';
         }
 
         if ($dataFimSql !== '') {
-            $conditions['Post.created <='] = $dataFimSql . ' 23:59:59';
+            $conditions['Post.criado_em <='] = $dataFimSql . ' 23:59:59';
         }
 
+        // 4. Busca no Banco
         $posts = $this->Post->find('all', array(
             'conditions' => $conditions,
-            'order'      => array('Post.created' => 'DESC'),
+            'recursive'  => 1,
+            'order'      => array('Post.id' => 'DESC'),
             'limit'      => 15
         ));
 
         $this->set(compact('posts', 'busca', 'dataInicio', 'dataFim'));
     }
 
+    // Action para o botão "Limpar" para apagar a Sessão
+    public function clearFilters()
+    {
+        $this->Session->delete('Filter');
+        return $this->redirect(array('action' => 'index'));
+    }
+
     public function view($id = null)
     {
         if (!$id) {
-            throw new NotFoundException(__('Invalid post'));
+            throw new NotFoundException(__('Post inválido'));
         }
 
-        $post = $this->Post->findById($id);
+        // Usando find com recursive = 1 para carregar os dados do User associado
+        $post = $this->Post->find('first', array(
+            'conditions' => array('Post.id' => $id),
+            'recursive'  => 1
+        ));
+
         if (!$post || empty($post['Post']['status'])) {
-            throw new NotFoundException(__('Invalid post'));
+            throw new NotFoundException(__('Post não encontrado'));
         }
+
         $this->set('post', $post);
     }
+
     public function add()
     {
         if ($this->request->is('post')) {
             $this->Post->create();
 
-            $this->request->data['Post']['user_id'] = $this->Auth->user('id'); //Associa o post criado ao seu usuario
+            // 1. Processa o upload da imagem via API Externa (ImgBB)
+            if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
+                $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
+                $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira sua API Key aqui
+
+                // Prepara a imagem em base64 para envio
+                $imageData = base64_encode(file_get_contents($fileTmpPath));
+
+                // Configura requisição cURL para a API do ImgBB
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $imageData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $jsonResponse = json_decode($response, true);
+
+                // Se o upload externo deu certo, salva a URL publica direta
+                if (!empty($jsonResponse['data']['url'])) {
+                    $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
+                } else {
+                    // Em caso de falha no envio externo, ignora a imagem para nao quebrar o post
+                    unset($this->request->data['Post']['imagem']);
+                }
+            } else {
+                unset($this->request->data['Post']['imagem']);
+            }
+
+            $this->request->data['Post']['user_id'] = $this->Auth->user('id');
             $saveAs = isset($this->request->data['Post']['save_as'])
                 ? $this->request->data['Post']['save_as']
                 : 'published';
@@ -111,27 +163,59 @@ class PostsController extends AppController
             $this->Flash->error(__('Não foi possível salvar o post.'));
         }
     }
+
     public function edit($id = null)
     {
-        //garante que esta tentando acessar um post
         if (!$id) {
-            throw new NotFoundException(__('Invalid post'));
+            throw new NotFoundException(__('Post inválido'));
         }
-        //verifica se o post existe
+
         $post = $this->Post->findById($id);
         if (!$post) {
-            throw new NotFoundException(__('Invalid post'));
+            throw new NotFoundException(__('Post não encontrado'));
         }
-        //finalmente verifica se o post foi editado e salva as alterações
+
         if ($this->request->is(array('post', 'put'))) {
             $this->Post->id = $id;
+
+            //Tratamento da Imagem via ImgBB (igual ao add)
+            if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
+                $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
+                $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira a sua chave do ImgBB
+
+                $imageData = base64_encode(file_get_contents($fileTmpPath));
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $imageData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $jsonResponse = json_decode($response, true);
+
+                if (!empty($jsonResponse['data']['url'])) {
+                    // Atualiza com a nova URL pública da imagem
+                    $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
+                } else {
+                    // Se falhou o upload, mantém a imagem antiga que já estava no banco
+                    $this->request->data['Post']['imagem'] = $post['Post']['imagem'];
+                }
+            } else {
+                // Se o usuário não enviou um novo arquivo, mantém a imagem já cadastrada
+                unset($this->request->data['Post']['imagem']);
+            }
+
             if ($this->Post->save($this->request->data)) {
-                $this->Flash->success(__('The post with id: %s has been updated.', h($id)));
+                $this->Flash->success(__('O post #%s foi atualizado com sucesso.', h($id)));
                 return $this->redirect(array('action' => 'index'));
             }
-            $this->Flash->error(__('Unable to update your post.'));
+            $this->Flash->error(__('Não foi possível atualizar o post.'));
         }
-        //posta depois da edição, para que o usuário possa ver o post editado
+
         if ($this->request->is('get')) {
             $this->request->data = $post;
         }
@@ -141,17 +225,12 @@ class PostsController extends AppController
     {
         if ($this->request->is('get')) {
             throw new MethodNotAllowedException();
-        };
+        }
 
         if ($this->Post->delete($id)) {
-            $this->Flash->success(
-                __('The post with id: %s has been deleted.', h($id))
-            );
-            return $this->redirect(array('action' => 'index'));
+            $this->Flash->success(__('O post #%s foi excluído.', h($id)));
         } else {
-            $this->Flash->error(
-                __('The post with id: %s could not be deleted.', h($id))
-            );
+            $this->Flash->error(__('Não foi possível excluir o post #%s.', h($id)));
         }
 
         return $this->redirect(array('action' => 'index'));

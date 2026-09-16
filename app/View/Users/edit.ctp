@@ -6,16 +6,6 @@
     <!-- Cabeçalho de Navegação -->
     <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-theme-subtle">
         <div class="d-flex align-items-center gap-3">
-            <!-- Logo StockOrg -->
-            <?php echo $this->Html->link(
-                $this->Html->image('LogoStockOrg.png', array(
-                    'alt' => 'StockOrg',
-                    'style' => 'width: 30px; height: 30px; object-fit: cover; border-radius: 50%; border: 1px solid var(--border-color);'
-                )) .
-                    '<span class="fs-4 fw-bold text-gold tracking-wide d-none d-xl-inline">StockOrg</span>',
-                array('controller' => 'posts', 'action' => 'index'),
-                array('class' => 'x-brand-header d-flex align-items-center gap-3 mb-4 text-decoration-none px-2 py-1', 'escape' => false)
-            ); ?>
             <h1 class="h4 text-theme-primary fw-bold m-0">Editar Perfil</h1>
         </div>
     </div>
@@ -151,7 +141,7 @@
                             ?>
                             <div class="lh-sm">
                                 <strong class="d-block text-gold"><?php echo h($targetUser['User']['nome'] ?? $targetUser['User']['username']); ?></strong>
-                                <small class="text-muted"><?php echo h($post['Post']['created'] ?? $post['Post']['criado_em'] ?? ''); ?></small>
+                                <small class="text-muted"><?php echo h($post['Post']['criado_em'] ?? $post['Post']['criado_em'] ?? ''); ?></small>
                             </div>
                         </div>
 

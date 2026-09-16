@@ -5,6 +5,7 @@ $currentController = strtolower($this->params['controller']);
 $currentAction     = strtolower($this->params['action']);
 ?>
 
+
 <div class="profile-dashboard">
 
     <!-- Conteúdo Principal -->
@@ -36,9 +37,9 @@ $currentAction     = strtolower($this->params['action']);
 
         <!-- Grid de Conteúdo Inferior -->
         <div class="content-grid">
-            <!-- About -->
+            <!-- Informações -->
             <section class="card about-card">
-                <h3>About</h3>
+                <h3>Informações</h3>
                 <ul class="info-list">
                     <li><strong>Email:</strong> <?php echo h($user['email'] ?? 'Nenhum email registrado'); ?></li>
                     <li><strong>Joined:</strong> <?php echo h($user['criado_em'] ?? 'Sem data de criação'); ?></li>
@@ -46,11 +47,11 @@ $currentAction     = strtolower($this->params['action']);
                 </ul>
             </section>
 
-            <!-- Feed -->
+            <!-- Posts -->
             <section class="card feed-card">
                 <div class="feed-tabs">
                     <span class="active">Posts</span>
-                    <span>Saved</span>
+                    <span>Rascunho</span>
                 </div>
                 <div class="feed-posts">
                     <div class="post-item">
@@ -61,7 +62,12 @@ $currentAction     = strtolower($this->params['action']);
                                 <small>Recently</small>
                             </div>
                         </div>
-                        <p class="post-text">Organizando o painel de perfil do StockOrg com cores personalizadas e integração com PostgreSQL no Docker!</p>
+                        <?php foreach ($posts as $post): ?>
+                            <article class="post-item">
+                                <h3><?php echo h($post['Post']['title']); ?></h3>
+                                <p><?php echo h($post['Post']['body']); ?></p>
+                            </article>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </section>
@@ -69,7 +75,9 @@ $currentAction     = strtolower($this->params['action']);
             <!-- Activity -->
             <section class="card side-card">
                 <h3>Bio</h3>
-                <p class="small-text"></p>
+                <p class="small-text">
+                    <?php echo h($user['bio'] ?? 'Nenhuma biografia registrada'); ?>
+                </p>
             </section>
         </div>
     </main>

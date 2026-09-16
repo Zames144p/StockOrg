@@ -457,6 +457,23 @@ color: var(--text-secondary) !important;
     width: 100%;
 }
 
+/* Custom Zone de Upload */
+.upload-custom-zone {
+    background-color: #1a0000;
+    border: 2px dashed rgba(212, 175, 55, 0.4) !important;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+}
+
+.upload-custom-zone:hover {
+    border-color: #d4af37 !important;
+    background-color: rgba(212, 175, 55, 0.05);
+}
+
+.border-gold-subtle {
+    border-color: rgba(212, 175, 55, 0.25) !important;
+}
+
 @media (max-width: 768px) {
     .x-sidebar {
         position: fixed !important;

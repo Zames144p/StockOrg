@@ -1,72 +1,76 @@
-body {
-    font-family: 'Merriweather', serif;
-    background: radial-gradient(circle at center, #4b0000 0%, #2a0000 100%);
-    color: #f0d98a;
-    margin: 0;
-    padding: 0;
+/* Container principal e largura */
+.view-post-container {
+    max-width: 850px;
+    width: 100%;
 }
 
-/* Container principal */
-.post-container {
-    max-width: 800px;
-    margin: 50px auto;
-    background: #3b0000;
-    padding: 40px;
-    border-radius: 12px;
-    border: 2px solid #d4af37;
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+/* Card do Post */
+.post-view-card {
+    background-color: #1a0000; /* Vinho escuro tema StockOrg */
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 
-/* Título */
-.post-container h1 {
-    color: #d4af37;
-    font-size: 2.2em;
-    margin-bottom: 10px;
-    text-align: center;
-    letter-spacing: 1px;
+/* Imagem de Capa do Post */
+.post-cover-container {
+    width: 100%;
+    max-height: 420px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
 }
 
-/* Data de criação */
-.post-container small {
+.post-cover-image {
+    width: 100%;
+    height: 100%;
+    max-height: 420px;
+    object-fit: cover;
     display: block;
-    text-align: center;
-    margin-bottom: 25px;
-    color: #f0d98a;
-    font-style: italic;
 }
 
-/* Corpo do post */
-.post-container p {
-    line-height: 1.6;
-    font-size: 16px;
-    color: #f0d98a;
-    text-align: justify;
+/* Avatar do Autor */
+.post-author-avatar {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #d4af37;
 }
 
-/* Links dentro do post */
-.post-container a {
+/* Cores e Tipografia */
+.text-gold {
+    color: #d4af37 !important;
+}
+
+.border-gold-subtle {
+    border-color: rgba(212, 175, 55, 0.25) !important;
+}
+
+.post-title {
     color: #d4af37;
-    text-decoration: underline;
-    transition: 0.3s;
+    font-weight: 700;
+    line-height: 1.25;
 }
 
-.post-container a:hover {
-    color: #f0d98a;
-    text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+/* Corpo do Texto */
+.post-content-body {
+    color: #e0e0e0;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    word-wrap: break-word;
+    white-space: pre-wrap; /* Mantém quebras de linha e parágrafos */
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    .post-container {
-        width: 90%;
-        padding: 25px;
-    }
+/* Botões do Topo */
+.btn-back-feed {
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    transition: all 0.2s ease-in-out;
+}
 
-    .post-container h1 {
-        font-size: 1.8em;
-    }
-
-    .post-container p {
-        font-size: 15px;
-    }
+.btn-back-feed:hover {
+    background-color: #d4af37;
+    color: #1a0000;
 }
