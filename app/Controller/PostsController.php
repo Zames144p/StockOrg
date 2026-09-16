@@ -66,9 +66,11 @@ class PostsController extends AppController
 
         if ($dataInicioSql !== '') {
             $conditions['Post.criado_em >='] = $dataInicioSql . ' 00:00:00';
+            $conditions['Post.criado_em >='] = $dataInicioSql . ' 00:00:00';
         }
 
         if ($dataFimSql !== '') {
+            $conditions['Post.criado_em <='] = $dataFimSql . ' 23:59:59';
             $conditions['Post.criado_em <='] = $dataFimSql . ' 23:59:59';
         }
 
