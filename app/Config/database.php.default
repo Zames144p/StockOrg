@@ -1,0 +1,32 @@
+<?php
+/**
+ * Configuração de Banco de Dados Modelo - StockOrg
+ * Copie este arquivo para 'database.php' na pasta app/Config/
+ */
+class DATABASE_CONFIG {
+
+    public $default = array(
+        'datasource' => 'Database/Postgres',
+        'persistent' => false,
+        'host'       => 'db',          // Nome do serviço do PostgreSQL no docker-compose
+        'port'       => 5432,          // Porta interna do container PostgreSQL
+        'login'      => 'cakeBlog',    // POSTGRES_USER do docker-compose
+        'password'   => 'c4k3-rUl3Z',  // POSTGRES_PASSWORD do docker-compose
+        'database'   => 'blogdb',      // POSTGRES_DB do docker-compose
+        'prefix'     => '',
+        'encoding'   => 'utf8',
+    );
+
+    // Configuração para ambiente de testes (opcional)
+    public $test = array(
+        'datasource' => 'Database/Postgres',
+        'persistent' => false,
+        'host'       => 'db',
+        'port'       => 5432,
+        'login'      => 'cakeBlog',
+        'password'   => 'c4k3-rUl3Z',
+        'database'   => 'test_blogdb',
+        'prefix'     => '',
+        'encoding'   => 'utf8',
+    );
+}
