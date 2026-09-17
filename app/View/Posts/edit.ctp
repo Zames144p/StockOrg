@@ -1,17 +1,26 @@
 <?php echo $this->Html->css('globalApp.css?v=' . time()); ?>
 
-<div class="container-fluid p-0">
-    <!-- Cabeçalho da Página -->
-    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-gold-subtle">
+<div class="dashboard-content p-3 p-md-4">
+
+    <!-- CABEÇALHO COMPLETO COM BOTÃO VOLTAR -->
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-gold-subtle" style="border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;">
         <div class="d-flex align-items-center gap-3">
+            <!-- Botão Voltar para o Perfil -->
             <?php echo $this->Html->link(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-arrow-left text-gold" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg>',
-                array('action' => 'index'),
-                array('class' => 'btn btn-icon-back rounded-circle p-2 d-flex align-items-center justify-content-center', 'escape' => false, 'title' => 'Voltar aos posts')
+                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#d4af37" class="bi bi-arrow-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg>',
+                array('controller' => 'users', 'action' => 'perfil'),
+                array(
+                    'class'  => 'btn rounded-circle p-0 d-flex align-items-center justify-content-center',
+                    'style'  => 'background-color: #2a0000 !important; border: 1px solid #d4af37 !important; width: 38px; height: 38px; min-width: 38px; display: flex !important; visibility: visible !important;',
+                    'escape' => false,
+                    'title'  => 'Voltar ao perfil'
+                )
             ); ?>
-            <h1 class="h3 text-gold fw-bold m-0">Editar Post</h1>
+            <h1 class="h3 text-gold fw-bold m-0" style="color: #d4af37 !important; font-size: 1.5rem;">Editar Perfil</h1>
         </div>
-        <span class="text-gold-light opacity-75 small">ID: #<?php echo h($this->request->data['Post']['id'] ?? ''); ?></span>
+        <span class="text-gold-light opacity-75 small" style="color: #f0d98a;">
+            ID: #<?php echo h($this->request->data['User']['id'] ?? $userSession['id'] ?? ''); ?>
+        </span>
     </div>
 
     <!-- Form Card -->

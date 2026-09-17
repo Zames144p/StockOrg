@@ -72,4 +72,5 @@ class User extends AppModel {
     public function matchPasswords($data){
         return $data['confirmar_senha'] === $this->data[$this->alias]['senha_hash'];
     }
+
 }

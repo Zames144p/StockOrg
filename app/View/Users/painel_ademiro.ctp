@@ -4,11 +4,12 @@
 $currentController = strtolower($this->params['controller']);
 $currentAction     = strtolower($this->params['action']);
 ?>
-<?php 
+<?php
 /**
  * @var array $usuarios
  */
 $userSession = $this->Session->read('Auth.User'); ?>
+<?php $isSuperAdmin = (($userSession['cargo'] ?? '') === 'SuperAdmin'); ?>
 
 <div class="profile-dashboard">
 
@@ -40,7 +41,7 @@ $userSession = $this->Session->read('Auth.User'); ?>
                     <h3 class="h2 text-gold fw-bold mb-0">
                         <?php
                         $admins = array_filter($usuarios, function ($u) {
-                            return ($u['User']['cargo'] ?? '') === 'admin';
+                            return in_array($u['User']['cargo'] ?? '', array('admin', 'SuperAdmin'), true);
                         });
                         echo count($admins);
                         ?>
@@ -82,8 +83,25 @@ $userSession = $this->Session->read('Auth.User'); ?>
                                             echo $this->Html->image($userFoto, array('class' => 'post-avatar rounded-circle'));
                                             ?>
                                             <div>
-                                                <span class="fw-bold d-block text-gold-light"><?php echo h($u['User']['nome'] ?? $u['User']['username'] ?? 'Sem Nome'); ?></span>
-                                                <small class="text-muted"><?php echo h($u['User']['email'] ?? 'Sem e-mail'); ?></small>
+                                                <!-- Nome + Badge de Superadmin -->
+                                                <div class="d-inline-flex align-items-center gap-1">
+                                                    <span class="fw-bold text-gold-light">
+                                                        <?php echo h($u['User']['nome'] ?? $u['User']['username'] ?? 'Sem Nome'); ?>
+                                                    </span>
+
+                                                    <!-- Badge exibido dinamicamente apenas para cargos Superadmin -->
+                                                    <?php if (!empty($u['User']['cargo']) && strtolower($u['User']['cargo']) === 'superadmin'): ?>
+                                                        <?php
+                                                        echo $this->Html->image('superadmin_badge.png', array(
+                                                            'title' => 'Superadmin',
+                                                            'alt'   => 'Superadmin Badge',
+                                                            'style' => 'width: 16px; height: 16px; object-fit: contain; margin-left: 2px; background: transparent !important; border: none !important;'
+                                                        ));
+                                                        ?>
+                                                    <?php endif; ?>
+                                                </div>
+
+                                                <small class="text-muted d-block"><?php echo h($u['User']['email'] ?? 'Sem e-mail'); ?></small>
                                             </div>
                                         </div>
                                     </td>
@@ -100,7 +118,9 @@ $userSession = $this->Session->read('Auth.User'); ?>
 
                                     <!-- Badge de Cargo -->
                                     <td>
-                                        <?php if (($u['User']['cargo'] ?? '') === 'admin'): ?>
+                                        <?php if (($u['User']['cargo'] ?? '') === 'SuperAdmin'): ?>
+                                            <span class="badge bg-gold text-dark fw-bold">SuperAdmin</span>
+                                        <?php elseif (($u['User']['cargo'] ?? '') === 'admin'): ?>
                                             <span class="badge bg-gold text-dark fw-bold">Admin</span>
                                         <?php else: ?>
                                             <span class="badge bg-secondary text-light">Autor</span>
@@ -121,22 +141,27 @@ $userSession = $this->Session->read('Auth.User'); ?>
 
                                     <!-- Botões de Ação -->
                                     <td class="text-end">
-                                        <div class="d-flex gap-1 justify-content-end">
-                                            <?php
-                                            echo $this->Html->link(
-                                                'Editar',
-                                                array('action' => 'edit', $u['User']['id']),
-                                                array('class' => 'btn btn-sm btn-outline-gold')
-                                            );
-                                            ?>
-                                            <?php
-                                            echo $this->Form->postLink(
-                                                'Excluir',
-                                                array('action' => 'delete', $u['User']['id']),
-                                                array('class' => 'btn btn-sm btn-outline-danger', 'confirm' => 'Tem certeza que deseja excluir o usuário #' . $u['User']['id'] . '?')
-                                            );
-                                            ?>
-                                        </div>
+                                        <?php $canManageUser = $isSuperAdmin || (($u['User']['cargo'] ?? '') === 'autor'); ?>
+                                        <?php if ($canManageUser): ?>
+                                            <div class="d-flex gap-1 justify-content-end">
+                                                <?php
+                                                echo $this->Html->link(
+                                                    'Editar',
+                                                    array('action' => 'edit', $u['User']['id']),
+                                                    array('class' => 'btn btn-sm btn-outline-gold')
+                                                );
+                                                ?>
+                                                <?php
+                                                echo $this->Form->postLink(
+                                                    'Excluir',
+                                                    array('action' => 'delete', $u['User']['id']),
+                                                    array('class' => 'btn btn-sm btn-outline-danger', 'confirm' => 'Tem certeza que deseja excluir o usuário #' . $u['User']['id'] . '?')
+                                                );
+                                                ?>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="text-muted">Protegido</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

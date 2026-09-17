@@ -121,7 +121,7 @@
     <!-- ... -->
 
    <!-- Caixa de Posts do Usuário no Final da Tela (Visível apenas para Admin) -->
-<?php if (!empty($userSession['cargo']) && $userSession['cargo'] === 'admin'): ?>
+<?php if (!empty($userSession['cargo']) && in_array($userSession['cargo'], array('admin', 'SuperAdmin'), true)): ?>
     <div class="card feed-card mt-4 p-4 rounded-4 shadow-lg border border-theme-subtle">
         <div class="feed-tabs mb-3 pb-2 border-bottom border-theme-subtle d-flex align-items-center justify-content-between">
             <h3 class="m-0 fs-5 text-gold">

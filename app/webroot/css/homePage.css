@@ -376,6 +376,18 @@ tr:hover {
     text-decoration: underline !important;
 }
 
+/* Efeito de elevação e brilho ao passar o mouse sobre o card do usuário */
+.user-search-card {
+    transition: all 0.25s ease-in-out !important;
+}
+
+.user-search-card:hover {
+    background-color: #3b0000 !important;
+    border-color: #d4af37 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+}
+
 /* Botão Novo Post */
 .x-btn-gold-sm {
     background-color: #d4af37 !important;

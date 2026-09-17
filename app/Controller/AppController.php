@@ -34,6 +34,16 @@ class AppController extends Controller {
     public $layout = 'default';
     public $helpers = array('Html', 'Form', 'Flash');
 
+    protected function hasAdminPrivileges($cargo)
+    {
+        return in_array($cargo, array('admin', 'SuperAdmin'), true);
+    }
+
+    protected function isSuperAdmin($cargo)
+    {
+        return $cargo === 'SuperAdmin';
+    }
+
     //pra eu conseguir usar o authcomponent e o blowfish, eu preciso colocar eles aqui, e depois eu vou configurar eles no beforeFilter.
     public $components = array(
         'Session',

@@ -17,11 +17,12 @@ class PostsController extends AppController
     {
         // 1. Se o formulário foi enviado via POST, atualiza os dados na Sessão
         if ($this->request->is('post')) {
-            // CORRIGIDO: Usa ['busca'] ou ['Post']['busca'] em vez de ('busca')
             $dataPost = $this->request->data;
 
             $busca      = isset($dataPost['busca']) ? $dataPost['busca'] : (isset($dataPost['Post']['busca']) ? $dataPost['Post']['busca'] : '');
+
             $dataInicio = isset($dataPost['data_inicio']) ? $dataPost['data_inicio'] : (isset($dataPost['Post']['data_inicio']) ? $dataPost['Post']['data_inicio'] : '');
+
             $dataFim    = isset($dataPost['data_fim']) ? $dataPost['data_fim'] : (isset($dataPost['Post']['data_fim']) ? $dataPost['Post']['data_fim'] : '');
 
             $this->Session->write('Filter.busca', $busca);
@@ -52,12 +53,29 @@ class PostsController extends AppController
         $dataFimSql    = $normalizeDate($dataFim);
 
         // 3. Monta as condições da Query
-        $conditions = array('Post.status' => true);
 
+        //Filtro pra perfil
+        $usuariosEncontrados = array();
+        if (!empty($busca)) {
+            $this->loadModel('User');
+            $usuariosEncontrados = $this->User->find('all', array(
+                'conditions' => array(
+                    'OR' => array(
+                        'User.nome ILIKE'     => '%' . trim($busca) . '%',
+                        'User.username ILIKE' => '%' . trim($busca) . '%',
+                        'User.email ILIKE'    => '%' . trim($busca) . '%'
+                    )
+                ),
+                'limit' => 10
+            ));
+        }
+
+        //Parte pra posts
+        $conditions = array('Post.status' => true);
         if (!empty($busca)) {
             $conditions['OR'] = array(
                 'Post.title ILIKE' => '%' . trim($busca) . '%',
-                'Post.body ILIKE'  => '%' . trim($busca) . '%'
+                'Post.body ILIKE'  => '%' . trim($busca) . '%',
             );
             if (ctype_digit(trim($busca))) {
                 $conditions['OR']['Post.id'] = (int)trim($busca);
@@ -76,13 +94,13 @@ class PostsController extends AppController
 
         // 4. Busca no Banco
         $posts = $this->Post->find('all', array(
-            'conditions' => $conditions,
+            'conditions' => $conditions, //Obs: a busca de usuarios e posts tao dentro dessa variavel.
             'recursive'  => 1,
             'order'      => array('Post.id' => 'DESC'),
             'limit'      => 15
         ));
 
-        $this->set(compact('posts', 'busca', 'dataInicio', 'dataFim'));
+        $this->set(compact('posts', 'busca', 'dataInicio', 'dataFim', 'usuariosEncontrados'));
     }
 
     // Action para o botão "Limpar" para apagar a Sessão
@@ -177,6 +195,12 @@ class PostsController extends AppController
             throw new NotFoundException(__('Post não encontrado'));
         }
 
+        $currentUserId = $this->Auth->user('id');
+        $currentUserCargo = $this->Auth->user('cargo');
+        if ($post['Post']['user_id'] != $currentUserId && !$this->hasAdminPrivileges($currentUserCargo)) {
+            throw new ForbiddenException(__('Acesso não autorizado'));
+        }
+
         if ($this->request->is(array('post', 'put'))) {
             $this->Post->id = $id;
 
@@ -227,6 +251,17 @@ class PostsController extends AppController
     {
         if ($this->request->is('get')) {
             throw new MethodNotAllowedException();
+        }
+
+        $post = $this->Post->findById($id);
+        if (!$post) {
+            throw new NotFoundException(__('Post não encontrado'));
+        }
+
+        $currentUserId = $this->Auth->user('id');
+        $currentUserCargo = $this->Auth->user('cargo');
+        if ($post['Post']['user_id'] != $currentUserId && !$this->hasAdminPrivileges($currentUserCargo)) {
+            throw new ForbiddenException(__('Acesso não autorizado'));
         }
 
         if ($this->Post->delete($id)) {

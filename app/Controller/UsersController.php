@@ -50,52 +50,76 @@ class UsersController extends AppController
     //action pra dar o poder de admin (lembrar de chamar isso apenas no painel de usuarios)
     public function poderAdemiro($id)
     {
+        if (!$this->hasAdminPrivileges($this->Auth->user('cargo'))) {
+            throw new ForbiddenException('Acesso não autorizado');
+        }
+
         $this->User->id = $id;
 
-        if (!$this->user->exists()) {
+        if (!$this->User->exists()) {
             throw new NotFoundException('Usuário não encontrado');
         }
+
+        $targetUser = $this->User->findById($id);
+        if (!$this->isSuperAdmin($this->Auth->user('cargo')) && $targetUser['User']['cargo'] !== 'autor') {
+            throw new ForbiddenException('Somente o SuperAdmin pode alterar cargos administrativos');
+        }
+
         //caso o user exista, quando essa action for chamada, ele vai mudar o cargo do usuario para admin.
         $this->User->saveField('cargo', 'admin');
         return $this->redirect(array('action' => 'index'));
     }
 
-    public function perfil()
+    public function perfil($id = null)
     {
-        $this->layout = 'dashboard';
-        $userId = $this->Auth->user('id');
-        if (!$userId) {
-            return $this->redirect(array('action' => 'login'));
+        // Se nenhum ID for passado na URL (/users/perfil), carrega o ID do usuário logado
+        if (!$id) {
+            $id = $this->Auth->user('id');
         }
 
-        $user = $this->User->findById($userId);
+        // Se não houver ID e o usuário não estiver logado, redireciona para o login
+        if (!$id) {
+            return $this->redirect(array('controller' => 'users', 'action' => 'login'));
+        }
+
+        // Busca os dados do usuário solicitado no banco
+        $user = $this->User->findById($id);
+
         if (empty($user)) {
-            throw new NotFoundException('Usuário não encontrado');
+            $this->Session->setFlash('Usuário não encontrado.');
+            return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
         }
 
-        $this->set('currentUser', $user['User']);
-        $this->set('user', $user['User']);
-
-        //Carregar os posts do usuario em sessão
-        $this->loadModel('Post');
-
-        $posts = $this->Post->find('all', array(
+        // Busca os Posts PUBLICADOS deste usuário específico
+        $posts = $this->User->Post->find('all', array(
             'conditions' => array(
-                'Post.user_id' => $userId,
-                'Post.status' => true
+                'Post.user_id' => $id,
+                'Post.status'  => true
             ),
-            'order' => array('Post.criado_em' => 'DESC')
+            'order' => array('Post.id' => 'DESC')
         ));
 
-        $this->set('posts', $posts);
+        // Busca os RASCUNHOS apenas se o usuário estiver vendo o PRÓPRIO perfil
+        $rascunhos = array();
+        if ($id == $this->Auth->user('id')) {
+            $rascunhos = $this->User->Post->find('all', array(
+                'conditions' => array(
+                    'Post.user_id' => $id,
+                    'Post.status'  => false
+                ),
+                'order' => array('Post.id' => 'DESC')
+            ));
+        }
+
+        $this->set(compact('user', 'posts', 'rascunhos'));
     }
 
     public function painelAdemiro()
     {
-        $this->layout = 'dashboard';
+        $this->layout = 'default';
 
         $user = $this->Auth->user();
-        if (empty($user['cargo']) || $user['cargo'] !== 'admin') {
+        if (empty($user['cargo']) || !$this->hasAdminPrivileges($user['cargo'])) {
             return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
         }
         $this->set('currentUser', $user);
@@ -109,6 +133,10 @@ class UsersController extends AppController
 
     public function delete($id = null)
     {
+        if (!$this->hasAdminPrivileges($this->Auth->user('cargo'))) {
+            throw new ForbiddenException('Acesso não autorizado');
+        }
+
         if (!$this->request->is('post') &&  !$this->request->is('delete')) {
             throw new MethodNotAllowedException();
         }
@@ -117,6 +145,11 @@ class UsersController extends AppController
 
         if (!$this->User->exists()) {
             throw new NotFoundException('Usuário não encontrado');
+        }
+
+        $targetUser = $this->User->findById($id);
+        if (!$this->isSuperAdmin($this->Auth->user('cargo')) && $targetUser['User']['cargo'] !== 'autor') {
+            throw new ForbiddenException('Somente o SuperAdmin pode excluir contas administrativas');
         }
 
         if ($this->User->delete()) {
@@ -130,7 +163,7 @@ class UsersController extends AppController
 
     public function edit($id = null)
     {
-        // 1. Identifica quem está logado na sessão
+        // Identifica quem está logado na sessão
         $sessionUserId = $this->Auth->user('id');
         $sessionCargo  = $this->Auth->user('cargo');
 
@@ -139,46 +172,70 @@ class UsersController extends AppController
             return $this->redirect(array('action' => 'login'));
         }
 
-        // 2. Define o ID do usuário que será carregado/editado
+        // Define o ID do usuário que será carregado/editado
         // Se o Admin passar um $id via URL, edita esse $id; caso contrário, edita o próprio perfil
-        if (!empty($id) && $sessionCargo === 'admin') {
+        if (!empty($id) && $this->hasAdminPrivileges($sessionCargo)) {
             $targetUserId = $id;
         } else {
             $targetUserId = $sessionUserId;
         }
 
-        // 3. Busca o usuário no banco de dados
+        // Busca o usuário no banco de dados
         $targetUser = $this->User->findById($targetUserId);
         if (!$targetUser) {
             $this->Flash->error('Usuário não encontrado.');
             return $this->redirect(array('action' => 'perfil'));
         }
 
-        // 4. Se for submissão de formulário (POST ou PUT)
+        if (
+            $targetUserId != $sessionUserId
+            && !$this->isSuperAdmin($sessionCargo)
+            && $targetUser['User']['cargo'] !== 'autor'
+        ) {
+            throw new ForbiddenException('Somente o SuperAdmin pode editar contas administrativas');
+        }
+
+        // Se for submissão de formulário (POST ou PUT)
         if ($this->request->is(array('post', 'put'))) {
 
             // Assegura que o ID que está sendo atualizado é o $targetUserId
             $this->request->data['User']['id'] = $targetUserId;
 
-            // Trata o upload da foto de perfil
-            if (!empty($this->request->data['User']['foto']['name'])) {
-                $file = $this->request->data['User']['foto'];
-                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                $allowed = array('jpg', 'jpeg', 'png', 'webp');
+            // Admin comum não pode alterar o próprio cargo por requisição manual.
+            if (!$this->isSuperAdmin($sessionCargo)) {
+                unset($this->request->data['User']['cargo']);
+            }
 
-                if (in_array($ext, $allowed)) {
-                    $filename = 'user_' . $targetUserId . '_' . time() . '.' . $ext;
-                    $targetPath = WWW_ROOT . 'img' . DS . $filename;
+            // Trata o upload da foto de perfil via API Externa (ImgBB)
+            if (!empty($this->request->data['User']['foto']['tmp_name'])) {
+                $fileTmpPath = $this->request->data['User']['foto']['tmp_name'];
+                $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira sua API Key aqui
 
-                    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                        $this->request->data['User']['foto'] = $filename;
-                    } else {
-                        unset($this->request->data['User']['foto']);
-                    }
+                // Prepara a foto em base64 para envio
+                $imageData = base64_encode(file_get_contents($fileTmpPath));
+
+                // Configura requisição cURL para a API do ImgBB
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $imageData));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $jsonResponse = json_decode($response, true);
+
+                // Se o upload externo deu certo, salva a URL publica direta
+                if (!empty($jsonResponse['data']['url'])) {
+                    $this->request->data['User']['foto'] = $jsonResponse['data']['url'];
                 } else {
+                    // Em caso de falha, mantém a foto já cadastrada
                     unset($this->request->data['User']['foto']);
                 }
             } else {
+                // Sem arquivo novo, mantém a foto já cadastrada
                 unset($this->request->data['User']['foto']);
             }
 
@@ -205,7 +262,7 @@ class UsersController extends AppController
             unset($this->request->data['User']['senha_hash']);
         }
 
-        // 5. Busca os posts do usuário editado para o Admin visualizar no final da página
+        // Busca os posts do usuário editado para o Admin visualizar no final da página
         $this->loadModel('Post');
         $userPosts = $this->Post->find('all', array(
             'conditions' => array('Post.user_id' => $targetUserId),
@@ -216,4 +273,5 @@ class UsersController extends AppController
         $this->set('targetUser', $targetUser);
         $this->set('userPosts', $userPosts);
     }
+
 }

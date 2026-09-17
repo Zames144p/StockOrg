@@ -79,6 +79,6 @@ class PagesController extends AppController {
 	}
 
 	public function sobre(){
-		$this->layout = 'dashboard';
+		$this->layout = 'default';
 	}
 }

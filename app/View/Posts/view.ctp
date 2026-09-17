@@ -11,7 +11,7 @@ $userData   = $post['User'] ?? array();
 $postAuthorId = $postData['user_id'] ?? null;
 
 // Checa se quem está vendo pode editar/deletar (Se for o próprio autor ou Admin)
-$canManage = ($currentUserId && ($currentUserId == $postAuthorId || $currentUserCargo === 'admin'));
+$canManage = ($currentUserId && ($currentUserId == $postAuthorId || in_array($currentUserCargo, array('admin', 'SuperAdmin'), true)));
 ?>
 
 <div class="x-feed-container mx-auto p-3 p-md-4" style="max-width: 850px; width: 100%;">
