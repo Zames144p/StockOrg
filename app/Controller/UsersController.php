@@ -90,7 +90,7 @@ class UsersController extends AppController
             return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
         }
 
-        // Busca os Posts PUBLICADOS deste usuário específico
+        // Busca os Posts publicados deste usuário específico
         $posts = $this->User->Post->find('all', array(
             'conditions' => array(
                 'Post.user_id' => $id,
@@ -99,7 +99,7 @@ class UsersController extends AppController
             'order' => array('Post.id' => 'DESC')
         ));
 
-        // Busca os RASCUNHOS apenas se o usuário estiver vendo o PRÓPRIO perfil
+        // Busca os rascunhos apenas se o usuário estiver vendo o proprio perfil
         $rascunhos = array();
         if ($id == $this->Auth->user('id')) {
             $rascunhos = $this->User->Post->find('all', array(

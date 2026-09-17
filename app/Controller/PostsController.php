@@ -15,7 +15,7 @@ class PostsController extends AppController
 
     public function index()
     {
-        // 1. Se o formulário foi enviado via POST, atualiza os dados na Sessão
+        // Se o formulário foi enviado via POST, atualiza os dados na Sessão
         if ($this->request->is('post')) {
             $dataPost = $this->request->data;
 
@@ -30,7 +30,7 @@ class PostsController extends AppController
             $this->Session->write('Filter.data_fim', $dataFim);
         }
 
-        // 2. Lê os filtros salvos na Sessão (ou define vazio se não existir)
+        // Lê os filtros salvos na Sessão (ou define vazio se não existir)
         $busca      = $this->Session->read('Filter.busca') ?: '';
         $dataInicio = $this->Session->read('Filter.data_inicio') ?: '';
         $dataFim    = $this->Session->read('Filter.data_fim') ?: '';
@@ -52,7 +52,7 @@ class PostsController extends AppController
         $dataInicioSql = $normalizeDate($dataInicio);
         $dataFimSql    = $normalizeDate($dataFim);
 
-        // 3. Monta as condições da Query
+        // Monta as condições da Query
 
         //Filtro pra perfil
         $usuariosEncontrados = array();
@@ -70,7 +70,7 @@ class PostsController extends AppController
             ));
         }
 
-        //Parte pra posts
+        // Parte pra posts
         $conditions = array('Post.status' => true);
         if (!empty($busca)) {
             $conditions['OR'] = array(
@@ -92,7 +92,7 @@ class PostsController extends AppController
             $conditions['Post.criado_em <='] = $dataFimSql . ' 23:59:59';
         }
 
-        // 4. Busca no Banco
+        // Busca no Banco
         $posts = $this->Post->find('all', array(
             'conditions' => $conditions, //Obs: a busca de usuarios e posts tao dentro dessa variavel.
             'recursive'  => 1,
@@ -134,7 +134,7 @@ class PostsController extends AppController
         if ($this->request->is('post')) {
             $this->Post->create();
 
-            // 1. Processa o upload da imagem via API Externa (ImgBB)
+            // Processa o upload da imagem via API Externa (ImgBB)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
                 $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira sua API Key aqui
@@ -204,7 +204,7 @@ class PostsController extends AppController
         if ($this->request->is(array('post', 'put'))) {
             $this->Post->id = $id;
 
-            //Tratamento da Imagem via ImgBB (igual ao add)
+            // Tratamento da Imagem via ImgBB (igual ao add)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
                 $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira a sua chave do ImgBB
