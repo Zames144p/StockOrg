@@ -1,6 +1,6 @@
 {
 	"name": "cakephp/app",
-	"description": "CakePHP Application skeleton",
+	"description": "StockOrg CakePHP 2.x Application",
 	"type": "library",
 	"keywords": ["application", "cakephp"],
 	"homepage": "https://cakephp.org",
