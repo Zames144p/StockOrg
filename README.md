@@ -1,46 +1,97 @@
 # StockOrg
 
-[![Latest Stable Version](https://poser.pugx.org/cakephp/cakephp/v/stable.svg)](https://packagist.org/packages/cakephp/cakephp)
-[![License](https://poser.pugx.org/cakephp/cakephp/license.svg)](https://packagist.org/packages/cakephp/cakephp)
-[![Bake Status](https://secure.travis-ci.org/cakephp/cakephp.png?branch=master)](https://travis-ci.org/cakephp/cakephp)
-[![Code consistency](https://squizlabs.github.io/PHP_CodeSniffer/analysis/cakephp/cakephp/grade.svg)](https://squizlabs.github.io/PHP_CodeSniffer/analysis/cakephp/cakephp/)
-
 O projeto foi criado usando PHP, CakePHP, Docker e PostegreSQL. 
 
 Blog responsivo voltado para o cenario de finanças no Brasil. Projeto criado para estudar o padrao MVC no desenvolvimento web e colocar em pratica o desenvolvimento em backend.
 
 O StockOrg é originalmente um projeto apenas para estudos, porém, caso deseje escalonar para ter a experiencia completa, é possivel.
 
-## Tecnologias do Projeto
+## Features
 
-![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white)
-![jQuery Badge](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
-![CakePHP](https://img.shields.io/badge/-CakePHP-D33C43?style=flat&logo=cakephp&logoColor=white)
-![ImgBB](https://shields.io)
+### 🔐 Autenticação e Cargos
+- Sistema de login com 3 cargos possiveis:
+  - **Super Admin**
+  - **Admin**
+  - **Autor**
+- O cargo de Autor é padrão para novos registros e o Super Admin junto Admin são cargos manuais no banco.
 
+### 🏠 Dashboard (Home Page)
+- Tela de exibição principal (guest):
+  - Todos os posts
+  - possibilidade de login
+- Tela de exibiçao principal (Autor):
+  - Side bar com sessões para usuario
+  - Perfil
+  - Editar Perfil
+  - Sobre nós
+  - Sair da sessão
+  - Postar
+- Tela de exibição principal (Super admin e admin):
+  - Painel de controle com todos os usuarios e funcionalidades
 
-[CakeFest](https://cakefest.org) - Don't miss our annual CakePHP conference
+### 👥 Gestão de membros
+- Criar novos usuarios
+- Editar usuarios ja existentes
+- Visualizar as informações do usuario
+- visualizar as datas de criações e modificações, tanto posts como usuarios
+- Deletar posts e usuarios
 
-[Cake Software Foundation](https://cakefoundation.org) - Promoting development related to CakePHP
+### 💬 Posts
+- Criar uma nova postagem
+- Editar uma postagem ja existente
+- Vizualizar suas proprias postagens e de outros usuarios
+- Criar rascunhos de posts
+- Anexiar imagens nos posts
+- Deletar posts
 
+## Stacks
 
-## Get Support!
+### 🔧 Backend
+- **PHP**
+- **CakePHP**
+- **ImgBB**
 
-[#cakephp](https://webchat.freenode.net/?channels=#cakephp) on irc.freenode.net - Come chat with us, we have cake
+### 🗄 Database
+- **Dbeaver**
+- PostegreSQL
+- Suport para arquivos .sql para setup
 
-[Google Group](https://groups.google.com/group/cake-php) - Community mailing list and forum
+### 🎨 Frontend
+- **Bootstrap 5.3**
+- **jQuery**
+- **Bootstrap Icons**
+- CSS customizada para aprimoramento UI/UX
 
-[GitHub Issues](https://github.com/cakephp/cakephp/issues) - Got issues? Please tell us!
+### ⚙️ Development Tools
+- Visual Studio 2026
+- Git & GitHub
 
-[Roadmaps](https://github.com/cakephp/cakephp/wiki#roadmaps) - Want to contribute? Get involved!
+## Instalação (Linux)
 
+- Instale o php para conseguir usar o composer do projeto:
+```bash
+sudo apt install php
+sudo apt install php-cli libapache2-mod-php
+```
 
-## Contributing
+- Instale o Docker para subir o dockerfile
+```bash
+sudo apt install ca-certificates curl gnupg -y
+sudo install -m 0755 -d /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+sudo docker run hello-world
+```
 
-[CONTRIBUTING.md](CONTRIBUTING.md) - Quick pointers for contributing to the CakePHP project
+- Instale o composer 
+```bash
+sudo apt update
+sudo apt install docker-compose-plugin -y
+```
+- Agora basta escrever "docker-compose up -d" no diretorio do projeto (configure o banco de dados default antes)
 
-[CookBook "Contributing" Section (2.x)](https://book.cakephp.org/2.0/en/contributing.html) [(3.x)](https://book.cakephp.org/3.0/en/contributing.html) - Version-specific details about contributing to the project
+## Entre em contato
+
+Perguntas, feedbacks ou ate comparação de codigo entre em contato por: sfranzcarlo@gmail.com 
+
+**Criado por ZamesINC**
