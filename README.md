@@ -1,29 +1,27 @@
-# CakePHP
+# StockOrg
 
 [![Latest Stable Version](https://poser.pugx.org/cakephp/cakephp/v/stable.svg)](https://packagist.org/packages/cakephp/cakephp)
 [![License](https://poser.pugx.org/cakephp/cakephp/license.svg)](https://packagist.org/packages/cakephp/cakephp)
 [![Bake Status](https://secure.travis-ci.org/cakephp/cakephp.png?branch=master)](https://travis-ci.org/cakephp/cakephp)
 [![Code consistency](https://squizlabs.github.io/PHP_CodeSniffer/analysis/cakephp/cakephp/grade.svg)](https://squizlabs.github.io/PHP_CodeSniffer/analysis/cakephp/cakephp/)
 
-CakePHP is a rapid development framework for PHP which uses commonly known design patterns like Active Record, Association Data Mapping, Front Controller and MVC.
-Our primary goal is to provide a structured framework that enables PHP users at all levels to rapidly develop robust web applications, without any loss to flexibility.
+O projeto foi criado usando PHP, CakePHP, Docker e PostegreSQL. 
 
+Blog responsivo voltado para o cenario de finanças no Brasil. Projeto criado para estudar o padrao MVC no desenvolvimento web e colocar em pratica o desenvolvimento em backend.
 
-## Some Handy Links
+O StockOrg é originalmente um projeto apenas para estudos, porém, caso deseje escalonar para ter a experiencia completa, é possivel.
 
-[CakePHP](https://cakephp.org) - The rapid development PHP framework
+## Tecnologias do Projeto
 
-[CookBook](https://book.cakephp.org) - THE CakePHP user documentation; start learning here!
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white)
+![jQuery Badge](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+![CakePHP](https://img.shields.io/badge/-CakePHP-D33C43?style=flat&logo=cakephp&logoColor=white)
+![ImgBB](https://shields.io)
 
-[API](https://api.cakephp.org) - A reference to CakePHP's classes
-
-[Plugins](https://plugins.cakephp.org) - A repository of extensions to the framework
-
-[The Bakery](https://bakery.cakephp.org) - Tips, tutorials and articles
-
-[Community Center](https://community.cakephp.org) - A source for everything community related
-
-[Training](https://training.cakephp.org) - Join a live session and get skilled with the framework
 
 [CakeFest](https://cakefest.org) - Don't miss our annual CakePHP conference
 
