@@ -77,18 +77,16 @@ class PostsController extends AppController
                 'Post.title ILIKE' => '%' . trim($busca) . '%',
                 'Post.body ILIKE'  => '%' . trim($busca) . '%',
             );
-            if (ctype_digit(trim($busca))) {
+            if (ctype_digit(trim($busca))) { //verifica se é somente numero
                 $conditions['OR']['Post.id'] = (int)trim($busca);
             }
         }
 
         if ($dataInicioSql !== '') {
             $conditions['Post.criado_em >='] = $dataInicioSql . ' 00:00:00';
-            $conditions['Post.criado_em >='] = $dataInicioSql . ' 00:00:00';
         }
 
         if ($dataFimSql !== '') {
-            $conditions['Post.criado_em <='] = $dataFimSql . ' 23:59:59';
             $conditions['Post.criado_em <='] = $dataFimSql . ' 23:59:59';
         }
 
@@ -170,7 +168,7 @@ class PostsController extends AppController
             $saveAs = isset($this->request->data['Post']['save_as'])
                 ? $this->request->data['Post']['save_as']
                 : 'published';
-            $this->request->data['Post']['status'] = ($saveAs !== 'draft');
+            $this->request->data['Post']['status'] = ($saveAs !== 'draft'); //perguntar pra juvan, eu n entedi como que isso retorna o valor false, mesmo sabendo oq faz.
             unset($this->request->data['Post']['save_as']);
 
             if ($this->Post->save($this->request->data)) {
