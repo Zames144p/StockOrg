@@ -148,7 +148,8 @@ $userSession = $this->Session->read('Auth.User'); ?>
                                                 echo $this->Html->link(
                                                     'Editar',
                                                     array('action' => 'edit', $u['User']['id']),
-                                                    array('class' => 'btn btn-sm btn-outline-gold')
+                                                    array('class' => 'btn btn-sm btn-outline-gold',
+                                                    'escape' => false)
                                                 );
                                                 ?>
                                                 <?php

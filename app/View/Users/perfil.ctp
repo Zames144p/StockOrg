@@ -68,8 +68,8 @@ $eMeuPerfil = !empty($userSession['id']) && !empty($userData['id']) && ($userSes
             <h3>Informações</h3>
             <ul class="info-list">
                 <li><strong style="color: #d4af37;">Email:</strong><br> <?php echo h($userData['email'] ?? 'N/A'); ?></li>
-                <li><strong style="color: #d4af37;">Joined:</strong><br> <?php echo !empty($userData['criado_em']) ? date('Y-m-d H:i', strtotime($userData['criado_em'])) : (!empty($userData['created']) ? date('Y-m-d H:i', strtotime($userData['created'])) : 'N/A'); ?></li>
-                <li><strong style="color: #d4af37;">Location:</strong><br> Natal, RN</li>
+                <li><strong style="color: #d4af37;">Entrou:</strong><br> <?php echo !empty($userData['criado_em']) ? date('Y-m-d H:i', strtotime($userData['criado_em'])) : (!empty($userData['created']) ? date('Y-m-d H:i', strtotime($userData['created'])) : 'N/A'); ?></li>
+                <li><strong style="color: #d4af37;">Localização:</strong><br> Natal, RN</li>
             </ul>
         </div>
 

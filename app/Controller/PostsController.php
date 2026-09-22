@@ -167,8 +167,8 @@ class PostsController extends AppController
             }
 
             $this->request->data['Post']['user_id'] = $this->Auth->user('id');
-            $saveAs = isset($this->request->data['Post']['save_as'])
-                ? $this->request->data['Post']['save_as']
+            $saveAs = isset($this->request->data['Post']['status'])
+                ? $this->request->data['Post']['status']
                 : 'published';
             $this->request->data['Post']['status'] = ($saveAs !== 'draft');
             unset($this->request->data['Post']['save_as']);
@@ -201,8 +201,19 @@ class PostsController extends AppController
             throw new ForbiddenException(__('Acesso não autorizado'));
         }
 
+        // Verificar se o post editado é rascunho
         if ($this->request->is(array('post', 'put'))) {
             $this->Post->id = $id;
+
+            $saveAs = isset($this->request->data['Post']['status'])
+                ? $this->request->data['Post']['status']
+                : null;
+
+            if ($saveAs === 'draft') {
+                $this->request->data['Post']['status'] = false;
+            } else {
+                $this->request->data['Post']['status'] = true;
+            }
 
             // Tratamento da Imagem via ImgBB (igual ao add)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {

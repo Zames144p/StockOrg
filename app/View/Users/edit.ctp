@@ -11,9 +11,9 @@
     </div>
 
     <!-- Card Principal de Formulário -->
-    <div class="card edit-profile-card p-4 rounded-4 shadow-lg">
+    <div class="card edit-profile-card p-3 p-md-4 rounded-4 shadow-lg">
         <?php echo $this->Form->create('User', array(
-            'url' => array('controller' => 'users', 'action' => 'edit',),
+            'url' => array('controller' => 'users', 'action' => 'edit'),
             'type' => 'file',
             'class' => 'edit-profile-form'
         )); ?>
@@ -34,55 +34,61 @@
                 </label>
             </div>
             <div class="d-none">
-                <?php echo $this->Form->input('foto', array('type' => 'file', 'label' => false, 'id' => 'UserFoto', 'accept' => 'image/*')); ?>
+                <?php echo $this->Form->input('foto', array('type' => 'file', 'label' => false, 'div' => false, 'id' => 'UserFoto', 'accept' => 'image/*')); ?>
             </div>
             <small class="text-theme-muted d-block">Clique no ícone de câmera para selecionar uma nova imagem</small>
         </div>
 
         <!-- Campos do Formulário -->
         <div class="row g-3">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-1">
                 <label for="UserNome" class="form-label text-theme-primary fw-bold">Nome</label>
                 <?php echo $this->Form->input('nome', array(
                     'label' => false,
+                    'div' => false,
                     'class' => 'form-control x-input-custom',
                     'placeholder' => 'Seu nome completo'
                 )); ?>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-1">
                 <label for="UserUsername" class="form-label text-theme-primary fw-bold">Nome de Usuário (@handle)</label>
                 <?php echo $this->Form->input('username', array(
                     'label' => false,
+                    'div' => false,
                     'class' => 'form-control x-input-custom',
                     'placeholder' => 'usuario'
                 )); ?>
             </div>
 
-            <div class="col-12 mb-3">
+            <div class="col-12 mb-1">
                 <label for="UserEmail" class="form-label text-theme-primary fw-bold">Endereço de E-mail</label>
                 <?php echo $this->Form->input('email', array(
                     'label' => false,
+                    'div' => false,
                     'type' => 'email',
                     'class' => 'form-control x-input-custom',
                     'placeholder' => 'seu@email.com'
                 )); ?>
             </div>
 
-            <div class="col-12 mb-4">
+            <div class="col-12 mb-1">
                 <label for="UserBio" class="form-label text-theme-primary fw-bold">Biografia / Apresentação</label>
                 <?php echo $this->Form->input('bio', array(
                     'label' => false,
+                    'div' => false,
                     'type' => 'textarea',
                     'rows' => '3',
                     'class' => 'form-control x-input-custom text-area-custom',
                     'placeholder' => 'Conte um pouco sobre você...'
                 )); ?>
             </div>
-            <div class="col-md-6 mb-3">
+
+            <div class="col-md-6 mb-1">
                 <label for="UserSenhaHash" class="form-label text-theme-primary fw-bold">Nova senha</label>
                 <?php echo $this->Form->input('senha_hash', array(
                     'label' => false,
+                    'div' => false,
                     'type' => 'password',
                     'value' => '',
                     'class' => 'form-control x-input-custom',
@@ -90,10 +96,11 @@
                 )); ?>
             </div>
 
-            <div class="col-md-6 mb-4">
+            <div class="col-md-6 mb-3">
                 <label for="UserConfirmarSenha" class="form-label text-theme-primary fw-bold">Confirmar nova senha</label>
                 <?php echo $this->Form->input('confirmar_senha', array(
                     'label' => false,
+                    'div' => false,
                     'type' => 'password',
                     'value' => '',
                     'class' => 'form-control x-input-custom',
@@ -103,7 +110,7 @@
         </div>
 
         <!-- Botões de Ação -->
-        <div class="d-flex align-items-center justify-content-end gap-3 pt-3 border-top border-theme-subtle">
+        <div class="d-flex align-items-center justify-content-end gap-3 pt-3 mt-3 border-top border-theme-subtle">
             <?php echo $this->Html->link(
                 'Cancelar',
                 array('controller' => 'users', 'action' => 'perfil'),
@@ -118,73 +125,19 @@
 
         <?php echo $this->Form->end(); ?>
     </div>
-    <!-- ... -->
 
-   <!-- Caixa de Posts do Usuário no Final da Tela (Visível apenas para Admin) -->
-<?php if (!empty($userSession['cargo']) && in_array($userSession['cargo'], array('admin', 'SuperAdmin'), true)): ?>
-    <div class="card feed-card mt-4 p-4 rounded-4 shadow-lg border border-theme-subtle">
-        <div class="feed-tabs mb-3 pb-2 border-bottom border-theme-subtle d-flex align-items-center justify-content-between">
-            <h3 class="m-0 fs-5 text-gold">
-                Publicações de <?php echo h($targetUser['User']['nome'] ?? $targetUser['User']['username']); ?> (<?php echo count($userPosts); ?>)
-            </h3>
-            <span class="badge bg-gold text-dark">Visão de Administrador</span>
-        </div>
-
-        <div class="feed-posts d-flex flex-column gap-3">
-            <?php if (!empty($userPosts)): ?>
-                <?php foreach ($userPosts as $post): ?>
-                    <div class="post-item p-3 border border-theme-subtle rounded-3">
-                        <div class="post-header d-flex align-items-center gap-2 mb-2">
-                            <?php 
-                            $postAvatar = !empty($targetUser['User']['foto']) ? $targetUser['User']['foto'] : 'perfilDefault.jpg';
-                            echo $this->Html->image($postAvatar, array('class' => 'post-avatar rounded-circle', 'style' => 'width: 36px; height: 36px; object-fit: cover;')); 
-                            ?>
-                            <div class="lh-sm">
-                                <strong class="d-block text-gold"><?php echo h($targetUser['User']['nome'] ?? $targetUser['User']['username']); ?></strong>
-                                <small class="text-muted"><?php echo h($post['Post']['criado_em'] ?? $post['Post']['criado_em'] ?? ''); ?></small>
-                            </div>
-                        </div>
-
-                        <!-- Título e Corpo do Post -->
-                        <h4 class="h6 text-gold mb-1"><?php echo h($post['Post']['title'] ?? $post['Post']['titulo'] ?? ''); ?></h4>
-                        <p class="post-text mb-3 opacity-90"><?php echo h($post['Post']['body'] ?? $post['Post']['conteudo'] ?? ''); ?></p>
-
-                        <!-- Botões de Ação do Admin -->
-                        <div class="d-flex justify-content-end gap-2 pt-2 border-top border-theme-subtle">
-                            <?php echo $this->Html->link(
-                                'Editar Post',
-                                array('controller' => 'posts', 'action' => 'edit', $post['Post']['id']),
-                                array('class' => 'btn btn-sm btn-outline-warning')
-                            ); ?>
-                            
-                            <?php echo $this->Form->postLink(
-                                'Excluir Post',
-                                array('controller' => 'posts', 'action' => 'delete', $post['Post']['id']),
-                                array('class' => 'btn btn-sm btn-outline-danger', 'confirm' => 'Tem certeza de que deseja apagar este post?')
-                            ); ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-muted my-2">Nenhum post encontrado para este usuário.</p>
-            <?php endif; ?>
-        </div>
-    </div>
-<?php endif; ?>
-</div>
-
-<script>
-    $(document).ready(function() {
-        // Preview em tempo real da foto selecionada
-        $('#UserFoto').on('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    $('#avatarPreview').attr('src', evt.target.result);
+    <script>
+        $(document).ready(function() {
+            // Preview em tempo real da foto selecionada
+            $('#UserFoto').on('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        $('#avatarPreview').attr('src', evt.target.result);
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
+            });
         });
-    });
-</script>
+    </script>

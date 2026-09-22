@@ -23,7 +23,7 @@ $currentAction     = strtolower($this->params['action']);
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-gold-subtle">
             <h1 class="h3 text-gold fw-bold m-0">Blog posts</h1>
             <?php if (empty($userSession)): ?>
-                <?php echo $this->Html->link('Entrar', array('controller' => 'users', 'action' => 'login'), array('class' => 'btn x-btn-gold-sm fw-bold')); ?>
+                <?php echo $this->Html->link('Entrar', array('controller' => 'users', 'action' => 'login'), array('class' => 'btn btn-sm btn-outline-gold')); ?>
             <?php endif; ?>
         </div>
 

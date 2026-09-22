@@ -86,3 +86,20 @@
     background-color: var(--hover-overlay) !important;
     color: var(--text-primary) !important;
 }
+.x-btn-post-lg {
+    background-color: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    height: auto !important; 
+    padding: 10px 24px !important; 
+    line-height: 1.2 !important;
+    
+    border-radius: 9999px !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+    transition: all 0.2s ease-in-out !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+}

@@ -82,7 +82,7 @@ body {
 .x-sidebar {
     background-color: var(--bg-sidebar) !important;
     border-right: 1px solid var(--border-color) !important;
-    width: 88px;
+    min-height: 100vh;
     height: 100vh;
     position: sticky;
     top: 0;
@@ -92,6 +92,8 @@ body {
     flex-direction: column !important;
     justify-content: space-between !important;
     box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 @media (min-width: 1200px) {
@@ -327,6 +329,26 @@ color: var(--text-secondary) !important;
     transform: translateY(-2px);
 }
 
+.btn-outline-gold {
+    color: #d4af37 !important;                             
+    background-color: transparent !important;               
+    border: 1px solid rgba(212, 175, 55, 0.6) !important;     
+    border-radius: 6px !important;                         
+    padding: 4px 12px !important;                          
+    font-size: 14px !important;                            
+    font-weight: 600 !important;                          
+    transition: all 0.2s ease-in-out !important;           
+}
+
+/* Efeito ao passar o mouse (Hover) */
+.btn-outline-gold:hover {
+    color: #120202 !important;                             
+    background-color: #d4af37 !important;                  
+    border-color: #d4af37 !important;                      
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
+    transform: translateY(-1px) !important;               
+}
+
 /* ========================================== */
 /* TABELA DO PAINEL DE ADM / FEED             */
 /* ========================================== */
@@ -494,134 +516,83 @@ color: var(--text-secondary) !important;
 }
 
 /* ========================================== */
-/* RESPONSIVIDADE MOBILE (X-SIDEBAR FIXA)     */
+/*   NOVA RESPONSIVIDADE MOBILE (HAMBÚRGUER)  */
 /* ========================================== */
 
-@media (max-width: 768px) {
-
-    /* Espaçamento inferior global para evitar que o conteúdo da página fique oculto atrás da barra fixa */
+@media (max-width: 1199.98px) {
+    /* Força o contêiner principal a dar um espaço para a nova barra do topo */
     body {
-        overflow-x: hidden !important;
+        padding-top: 60px !important;
     }
 
-    .feed-container,
-    .dashboard-content,
-    .main-layout-container,
-    main {
-        padding-bottom: 85px !important;
-    }
-
-    /* Transforma a .x-sidebar em uma barra inferior fixa (Bottom Navigation) */
-    aside.x-sidebar {
+    /* Neutraliza os estilos antigos e ativa o comportamento de gaveta do Offcanvas */
+    aside#sidebarMobile.x-sidebar {
         position: fixed !important;
-        bottom: 0 !important;
+        top: 0 !important;
         left: 0 !important;
-        right: 0 !important;
-        top: auto !important;
-        width: 100vw !important;
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
-        z-index: 9999 !important;
-        background-color: #1a0000 !important;
-        border-top: 1px solid #d4af37 !important;
-        border-right: none !important;
-        border-bottom: none !important;
-        padding: 0 10px !important;
+        bottom: 0 !important;
+        right: auto !important;
+        width: 280px !important;         /* Largura ideal e confortável para o menu */
+        max-width: 85vw !important;      /* Evita cobrir telas de celulares muito pequenos */
+        height: 100vh !important;
+        min-height: 100vh !important;
+        max-height: 100vh !important;
+        background-color: #1a0303 !important; /* Cor escura original do seu projeto */
+        border-right: 1px solid var(--border-color) !important;
+        border-top: none !important;
+        padding: 20px !important;
         margin: 0 !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: space-around !important;
+        
+        /* Alinhamento dos itens internos em coluna de volta */
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        
+        /* Propriedades nativas de animação do Offcanvas do Bootstrap */
+        z-index: 1055 !important;
+        transform: translateX(-100%) !important;
+        visibility: hidden !important;
+        transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out !important;
     }
 
-    /* Esconde a logo do topo e o card do usuário no celular */
-    aside.x-sidebar .x-brand-header,
-    aside.x-sidebar .x-user-card-footer {
-        display: none !important;
+    /* Quando o Bootstrap adiciona a classe .show ao clicar no botão hambúrguer */
+    aside#sidebarMobile.x-sidebar.show {
+        transform: translateX(0) !important;
+        visibility: visible !important;
     }
 
-    /* Ajusta a nav para ocupar a barra inteira horizontalmente */
-    aside.x-sidebar .x-nav {
+    /* Exibe os textos internos normalmente ao lado dos ícones dentro do Offcanvas */
+    aside#sidebarMobile.x-sidebar .x-nav-link span,
+    aside#sidebarMobile.x-sidebar .x-brand-header span,
+    aside#sidebarMobile.x-sidebar .x-btn-post-lg span {
+        display: inline-block !important;
+    }
+
+    /* Garante o comportamento correto das listas de navegação no formato vertical */
+    aside#sidebarMobile.x-sidebar .x-nav {
         width: 100% !important;
-        margin: 0 !important;
     }
-
-    aside.x-sidebar .x-nav > ul {
+    aside#sidebarMobile.x-sidebar .x-nav > ul {
         display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-around !important;
-        align-items: center !important;
+        flex-direction: column !important;
+        gap: 8px !important;
         width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        list-style: none !important;
     }
 
-    aside.x-sidebar .x-nav li.nav-item {
-        margin: 0 !important;
-        padding: 0 !important;
+    /* Mantém o botão de postar com tamanho normal e texto visível dentro do menu */
+    aside#sidebarMobile.x-sidebar .x-btn-post-lg {
+        width: 100% !important;
+        height: 48px !important;
+        border-radius: 9999px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
     }
 
-    /* Ícones do menu principal */
-    aside.x-sidebar .x-nav-link {
-        padding: 8px 12px !important;
-        font-size: 0 !important; /* Esconde textos residuais e mantém o SVG centralizado */
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    aside.x-sidebar .x-nav-link svg {
-        width: 24px !important;
-        height: 24px !important;
-        fill: #d4af37 !important;
-    }
-
-    /* Esconde a seta chevron para baixo do menu "Mais" no mobile */
-    aside.x-sidebar .x-chevron-icon {
-        display: none !important;
-    }
-
-    /* Ajuste do botão de Postar (+) */
-    aside.x-sidebar .x-btn-post-lg {
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        border-radius: 50% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    /* POSICIONAMENTO DO SUBMENU "MAIS" (DROPDOWN) */
-    aside.x-sidebar .x-accordion-container {
+    /* Ajuste do dropdown "Mais" para abrir expandindo para baixo no mobile sem flutuar */
+    aside#sidebarMobile.x-sidebar .x-accordion-menu {
         position: relative !important;
-    }
-
-    aside.x-sidebar .x-accordion-menu {
-        position: absolute !important;
-        bottom: 65px !important; /* Faz o menu abrir para cima da barra */
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: 200px !important;
-        background-color: #2a0000 !important;
-        border: 1px solid #d4af37 !important;
-        border-radius: 8px !important;
-        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5) !important;
-        z-index: 10000 !important;
-    }
-
-    /* Restaura o texto legível das opções internas do menu "Mais" */
-    aside.x-sidebar .x-accordion-menu a.x-sub-item {
-        font-size: 14px !important;
-        padding: 8px 12px !important;
-        color: #f0d98a !important;
-        display: block !important;
-        text-decoration: none !important;
+        width: 100% !important;
+        box-shadow: none !important;
     }
 }
