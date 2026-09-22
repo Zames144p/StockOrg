@@ -50,8 +50,8 @@ class UsersController extends AppController
     //action pra dar o poder de admin (lembrar de chamar isso apenas no painel de usuarios)
     public function poderAdemiro($id)
     {
-        if (!$this->hasAdminPrivileges($this->Auth->user('cargo'))) {
-            throw new ForbiddenException('Acesso não autorizado');
+        if (!$this->isSuperAdmin($this->Auth->user('cargo'))) {
+            throw new ForbiddenException('Somente o SuperAdmin pode promover administradores');
         }
 
         $this->User->id = $id;
@@ -61,13 +61,38 @@ class UsersController extends AppController
         }
 
         $targetUser = $this->User->findById($id);
-        if (!$this->isSuperAdmin($this->Auth->user('cargo')) && $targetUser['User']['cargo'] !== 'autor') {
-            throw new ForbiddenException('Somente o SuperAdmin pode alterar cargos administrativos');
+        if ($targetUser['User']['cargo'] !== 'autor') {
+            throw new ForbiddenException('Apenas usuários Autor podem ser promovidos');
         }
 
         //caso o user exista, quando essa action for chamada, ele vai mudar o cargo do usuario para admin.
         $this->User->saveField('cargo', 'admin');
-        return $this->redirect(array('action' => 'index'));
+        return $this->redirect(array('action' => 'painelAdemiro'));
+    }
+
+    public function removerAdemiro($id)
+    {
+        if (!$this->isSuperAdmin($this->Auth->user('cargo'))) {
+            throw new ForbiddenException('Somente o SuperAdmin pode remover cargos administrativos');
+        }
+
+        if (!$this->request->is('post')) {
+            throw new MethodNotAllowedException();
+        }
+
+        $targetUser = $this->User->findById($id);
+        if (empty($targetUser)) {
+            throw new NotFoundException('Usuário não encontrado');
+        }
+
+        if ($targetUser['User']['cargo'] !== 'admin') {
+            throw new ForbiddenException('Apenas usuários Admin podem ser rebaixados por esta ação');
+        }
+
+        $this->User->id = $id;
+        $this->User->saveField('cargo', 'autor');
+
+        return $this->redirect(array('action' => 'painelAdemiro'));
     }
 
     public function perfil($id = null)

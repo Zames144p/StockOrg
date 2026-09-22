@@ -141,15 +141,48 @@ $userSession = $this->Session->read('Auth.User'); ?>
 
                                     <!-- Botões de Ação -->
                                     <td class="text-end">
-                                        <?php $canManageUser = $isSuperAdmin || (($u['User']['cargo'] ?? '') === 'autor'); ?>
+                                        <?php
+                                        $targetCargo = $u['User']['cargo'] ?? '';
+                                        $canManageUser = $isSuperAdmin || $targetCargo === 'autor';
+                                        $canPromoteUser = $isSuperAdmin && $targetCargo === 'autor';
+                                        $canDemoteUser = $isSuperAdmin && $targetCargo === 'admin';
+                                        ?>
                                         <?php if ($canManageUser): ?>
                                             <div class="d-flex gap-1 justify-content-end">
+                                                <?php if ($canPromoteUser): ?>
+                                                    <?php
+                                                    echo $this->Form->postLink(
+                                                        'Tornar Admin',
+                                                        array('action' => 'poderAdemiro', $u['User']['id']),
+                                                        array(
+                                                            'class' => 'btn btn-sm btn-outline-gold',
+                                                            'confirm' => 'Tem certeza que deseja promover este usuário a Administrador?', 
+                                                            'escape' => false
+                                                        )
+                                                    );
+                                                    ?>
+                                                <?php endif; ?>
+                                                <?php if ($canDemoteUser): ?>
+                                                    <?php
+                                                    echo $this->Form->postLink(
+                                                        'Remover Admin',
+                                                        array('action' => 'removerAdemiro', $u['User']['id']),
+                                                        array(
+                                                            'class' => 'btn btn-sm btn-outline-danger',
+                                                            'confirm' => 'Tem certeza que deseja remover o cargo de administrador deste usuário?',
+                                                            'escape' => false
+                                                        )
+                                                    );
+                                                    ?>
+                                                <?php endif; ?>
                                                 <?php
                                                 echo $this->Html->link(
                                                     'Editar',
                                                     array('action' => 'edit', $u['User']['id']),
-                                                    array('class' => 'btn btn-sm btn-outline-gold',
-                                                    'escape' => false)
+                                                    array(
+                                                        'class' => 'btn btn-sm btn-outline-gold',
+                                                        'escape' => false
+                                                    )
                                                 );
                                                 ?>
                                                 <?php
