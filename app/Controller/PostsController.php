@@ -135,7 +135,11 @@ class PostsController extends AppController
             // Processa o upload da imagem via API Externa (ImgBB)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
-                $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira sua API Key aqui
+                $apiKey = getenv('API_KEY'); // Insira sua API Key aqui
+
+                if (!$apiKey) {
+                    throw new InternalErrorException('Chave de API não configurada.');
+                }
 
                 // Prepara a imagem em base64 para envio
                 $imageData = base64_encode(file_get_contents($fileTmpPath));
@@ -168,8 +172,7 @@ class PostsController extends AppController
             $saveAs = isset($this->request->data['Post']['status'])
                 ? $this->request->data['Post']['status']
                 : 'published';
-            $this->request->data['Post']['status'] = ($saveAs !== 'draft'); //perguntar pra juvan, eu n entedi como que isso retorna o valor false, mesmo sabendo oq faz.
-            unset($this->request->data['Post']['save_as']);
+            $this->request->data['Post']['status'] = ($saveAs !== 'draft');
 
             if ($this->Post->save($this->request->data)) {
                 $message = $saveAs === 'draft'
@@ -216,8 +219,11 @@ class PostsController extends AppController
             // Tratamento da Imagem via ImgBB (igual ao add)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
-                $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira a sua chave do ImgBB
+                $apiKey = getenv('API_KEY'); // Insira sua API Key aqui
 
+                if (!$apiKey) {
+                    throw new InternalErrorException('Chave de API não configurada.');
+                }
                 $imageData = base64_encode(file_get_contents($fileTmpPath));
 
                 $ch = curl_init();

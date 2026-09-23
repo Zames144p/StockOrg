@@ -6,6 +6,8 @@ services:
     container_name: CakePHPApp
     ports:
       - "8080:80"
+    env_file:             # <-- ADICIONE ESTA LINHA
+      - imagem.env
     volumes:
       - .:/var/www/html
     environment:

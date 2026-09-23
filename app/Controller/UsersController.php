@@ -234,8 +234,12 @@ class UsersController extends AppController
             // Trata o upload da foto de perfil via API Externa (ImgBB)
             if (!empty($this->request->data['User']['foto']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['User']['foto']['tmp_name'];
-                $apiKey = '2f3135018d4bf867ad25145de87eaba8'; // Insira sua API Key aqui
+                $apiKey = getenv('API_KEY'); // Insira sua API Key aqui
 
+                if (!$apiKey) {
+                    throw new InternalErrorException('Chave de API não configurada.');
+                }
+                
                 // Prepara a foto em base64 para envio
                 $imageData = base64_encode(file_get_contents($fileTmpPath));
 
