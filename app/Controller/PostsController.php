@@ -19,11 +19,15 @@ class PostsController extends AppController
         if ($this->request->is('post')) {
             $dataPost = $this->request->data;
 
-            $busca      = isset($dataPost['busca']) ? $dataPost['busca'] : (isset($dataPost['Post']['busca']) ? $dataPost['Post']['busca'] : '');
+            $getFilter = function ($name) use ($dataPost) {
+                return isset($dataPost[$name]) //verifica se o campo foi usado
+                    ? $dataPost[$name]
+                    : (isset($dataPost['Post'][$name]) ? $dataPost['Post'][$name] : '');
+            };
 
-            $dataInicio = isset($dataPost['data_inicio']) ? $dataPost['data_inicio'] : (isset($dataPost['Post']['data_inicio']) ? $dataPost['Post']['data_inicio'] : '');
-
-            $dataFim    = isset($dataPost['data_fim']) ? $dataPost['data_fim'] : (isset($dataPost['Post']['data_fim']) ? $dataPost['Post']['data_fim'] : '');
+            $busca = $getFilter('busca');
+            $dataInicio = $getFilter('data_inicio');
+            $dataFim = $getFilter('data_fim');
 
             $this->Session->write('Filter.busca', $busca);
             $this->Session->write('Filter.data_inicio', $dataInicio);
@@ -40,10 +44,10 @@ class PostsController extends AppController
             if (!is_string($input) || trim($input) === '') return '';
             $input = trim($input);
             foreach (array('d/m/Y', 'Y-m-d') as $format) {
-                $date = DateTime::createFromFormat($format, $input);
+                $date = DateTime::createFromFormat($format, $input); //interpreta o valor digitado como data
                 $errors = DateTime::getLastErrors();
                 if ($date && ($errors === false || ($errors['warning_count'] === 0 && $errors['error_count'] === 0))) {
-                    return $date->format('Y-m-d');
+                    return $date->format('Y-m-d'); //conversao para data padrao de busca
                 }
             }
             return '';
