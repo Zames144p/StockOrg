@@ -29,5 +29,5 @@ App::uses('Model', 'Model');
  *
  * @package       app.Model
  */
-class AppModel extends Model {
+class AppModel extends Model { //importa as funçoes que relacionam com o banco (find(), save(), delete() e findById())
 }
