@@ -25,7 +25,7 @@
 ._*
 .Spotlight-V100
 .Trashes
-.env
+*.env
 Icon?
 ehthumbs.db
 Thumbs.db
