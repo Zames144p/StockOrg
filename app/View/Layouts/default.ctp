@@ -181,6 +181,7 @@
 		<!-- ÁREA PRINCIPAL DO CONTEÚDO (CHAMA AS VIEWS) -->
 		<main class="dashboard-content flex-grow-1 p-3 p-md-4">
 			<?php echo $this->Flash->render(); ?>
+            <?php echo $this->Flash->render('auth'); ?>
 			<?php echo $this->fetch('content'); ?>
 		</main>
 

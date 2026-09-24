@@ -57,7 +57,12 @@ class AppController extends Controller {
             ),
             'loginAction' => array('controller' => 'users', 'action' => 'login'),
             'loginRedirect' => array('controller' => 'posts', 'action' => 'index'),
-            'logoutRedirect' => array('controller' => 'users', 'action' => 'login')
+            'logoutRedirect' => array('controller' => 'users', 'action' => 'login'),
+            'authError' => 'Você precisa estar autenticado para acessar esta página.',
+            'flash' => array(
+                'element' => 'error',
+                'key' => 'auth'
+            )
         )
     );
 }
