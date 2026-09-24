@@ -84,7 +84,7 @@ $rascunho    = isset($this->request->data['Post']['status']) && $this->request->
                     <small class="text-muted d-block mt-1">Formatos suportados: JPG, PNG, WEBP</small>
                 </div>
                 <!-- Tag de imagem oculta para exibir o preview dinâmico via JS -->
-                <img id="imgEditPostPreview" src="#" alt="Preview" class="img-fluid rounded-3 d-none mt-3 mx-auto" style="max-height: 220px; object-fit: cover;">
+                <img id="imgEditPostPreview" src="#" alt="Preview" class="img-fluid rounded-3 d-none mt-2mx-auto" style="max-height: 250px; object-fit: cover;">
             </label>
         </div>
 
