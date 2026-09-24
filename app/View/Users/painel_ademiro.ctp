@@ -13,19 +13,27 @@ $userSession = $this->Session->read('Auth.User'); ?>
 
 <div class="profile-dashboard">
 
-    <!-- Conteúdo Principal -->
-    <main class="dashboard-content">
-        <!-- Topbar -->
-        <header class="topbar">
+   <!-- Topbar Ajustada -->
+    <header class="topbar-admin d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-gold-subtle">
+        <div>
             <h1 class="h4 text-gold fw-bold mb-0">Painel Administrativo</h1>
-            <div class="user-badge">
-                <span><?php echo h($userSession['nome'] ?? $userSession['username'] ?? 'Admin'); ?></span>
-                <?php
-                $avatar = !empty($userSession['foto']) ? $userSession['foto'] : 'perfilDefault.jpg';
-                echo $this->Html->image($avatar, array('class' => 'topbar-avatar'));
-                ?>
-            </div>
-        </header>
+            <small class="text-gold-light opacity-75" style="font-size: 12px;">Visão geral e gestão de usuários</small>
+        </div>
+
+        <!-- Badge do Admin na Direita -->
+        <div class="user-badge-admin d-flex align-items-center gap-2 px-3 py-1 rounded-pill">
+            <span class="fw-bold text-gold-light" style="font-size: 13px;">
+                <?php echo h($userSession['nome'] ?? $userSession['username'] ?? 'Admin'); ?>
+            </span>
+            <?php
+            $avatar = !empty($userSession['foto']) ? $userSession['foto'] : 'perfilDefault.jpg';
+            echo $this->Html->image($avatar, array(
+                'class' => 'topbar-avatar-admin',
+                'alt' => 'Avatar Admin'
+            ));
+            ?>
+        </div>
+    </header>
 
         <!-- Cards de Estatísticas Rápidas -->
         <div class="row g-3 mb-4">

@@ -19,6 +19,42 @@ html, body {
     background: radial-gradient(circle at center, #2b0000 0%, #1a0000 100%);
     min-height: 100vh;
 }
+/* Container do Badge no Header Admin */
+.user-badge-admin {
+    background-color: #2a0000;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.user-badge-admin:hover {
+    border-color: #d4af37;
+}
+
+/* Foto do Avatar Perfeitamente Enquadrada */
+.topbar-avatar-admin {
+    width: 34px !important;
+    height: 34px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: 50% !important;
+    border: 1px solid #d4af37 !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+/* Ajuste Responsivo para Mobile */
+@media (max-width: 576px) {
+    .topbar-admin {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px;
+    }
+    
+    .user-badge-admin {
+        align-self: flex-start;
+    }
+}
 
 /* ========================================== */
 /* CARD DE HEADER E CAPA DO PERFIL            */
