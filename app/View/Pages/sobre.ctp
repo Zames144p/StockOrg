@@ -14,45 +14,58 @@
         </div>
     </div>
 
-    <!-- Bloco de Conteúdo Textual com Limite de Largura -->
+    <!-- Bloco de Conteúdo Textual -->
     <div class="card x-feed-card p-4 rounded-4 shadow-lg text-gold-light">
         
         <section class="mb-4">
             <h2 class="h5 text-gold fw-bold mb-3 border-bottom border-gold-subtle pb-2">O que é o StockOrg</h2>
             <p class="lh-base opacity-90 small">
-                O <strong>StockOrg</strong> é uma plataforma voltada para a organização, gerenciamento e publicação de conteúdos e informações estratégicas. Desenvolvido para oferecer um ambiente dinâmico, o sistema combina simplicidade na gestão de dados com uma navegação rápida e intuitiva.
+                O <strong>StockOrg</strong> é uma plataforma voltada para a organização, gerenciamento e publicação de conteúdos sobre o mercado financeiro e a economia. Desenvolvido para oferecer um ambiente dinâmico, o sistema combina simplicidade na gestão de dados com uma navegação robusta e um design premium, refletindo a excelência da plataforma para os nossos usuários 🧡.
             </p>
             <p class="lh-base opacity-90 small mb-0">
-                Inspirado em redes modernas de comunicação, o projeto prioriza a agilidade no fluxo de postagens, permitindo que usuários e administradores acompanhem atualizações em tempo real com uma interface limpa e focada na usabilidade.
+                Inspirado em redes modernas de comunicação, o projeto prioriza a agilidade no fluxo de postagens, permitindo que leitores e administradores acompanhem atualizações com uma interface limpa, rápida e focada na melhor experiência de uso.
             </p>
         </section>
 
         <section class="mb-4">
             <h2 class="h5 text-gold fw-bold mb-3 border-bottom border-gold-subtle pb-2">Propósito e Arquitetura</h2>
             <p class="lh-base opacity-90 small">
-                Construído sob uma estrutura robusta em <strong>CakePHP</strong> e estilizado com uma paleta exclusiva em tons de <strong>vinho</strong> e <strong>ouro</strong>, o sistema busca unir estética marcante à eficiência técnica.
+                Construído sobre uma estrutura robusta em <strong>CakePHP 2.x</strong> e estilizado com uma paleta exclusiva em tons de <strong>vinho</strong> e <strong>ouro</strong>. O ambiente utiliza Docker e Docker Compose para padronizar e isolar o container da aplicação, além de incorporar Bootstrap 5 e JavaScript para garantir interatividade e responsividade completa.
             </p>
             <p class="lh-base opacity-90 small mb-0">
-                Cada módulo foi planejado para garantir segurança no controle de acessos, integridade das informações no banco de dados e total adaptabilidade a diferentes tamanhos de tela — desde monitores desktop até dispositivos móveis.
+                O gerenciamento de dados é realizado através do banco de dados <strong>PostgreSQL</strong>, modelado e administrado via DBeaver. Cada módulo foi planejado para assegurar controle de acesso por níveis de privilégio (como Administradores e Autores), além da conversão automática de dados para manter a integridade das informações no banco.
             </p>
         </section>
 
-        <section class="mb-2">
+        <section class="mb-4">
             <h2 class="h5 text-gold fw-bold mb-3 border-bottom border-gold-subtle pb-2">Principais Diretrizes</h2>
             <ul class="list-unstyled d-flex flex-column gap-2 opacity-90 small m-0">
                 <li class="d-flex align-items-start gap-2">
                     <span class="text-gold fw-bold">•</span>
-                    <span><strong>Organização Centralizada:</strong> Facilidade no cadastro, edição e consulta de publicações.</span>
+                    <span><strong>Organização Centralizada:</strong> Facilidade no cadastro, edição, moderação e consulta de publicações.</span>
                 </li>
                 <li class="d-flex align-items-start gap-2">
                     <span class="text-gold fw-bold">•</span>
-                    <span><strong>Design Responsivo:</strong> Experiência de uso fluida com navegação por barra lateral e menus retráteis.</span>
+                    <span><strong>Design Responsivo:</strong> Experiência fluida em desktop e dispositivos móveis, com suporte a menu off-canvas e barra lateral intuitiva.</span>
                 </li>
                 <li class="d-flex align-items-start gap-2">
                     <span class="text-gold fw-bold">•</span>
-                    <span><strong>Desempenho:</strong> Carregamento otimizado de dados para suportar a rotina da aplicação sem interrupções.</span>
+                    <span><strong>Desempenho e Segurança:</strong> Resposta rápida de carregamento e requisições protegidas via métodos POST e sanitização de dados.</span>
                 </li>
             </ul>
         </section>
+
+        <!-- DETALHE ADICIONADO: Tech Stack Badges no Rodapé -->
+        <section class="pt-3 border-top border-gold-subtle">
+            <small class="text-gold d-block fw-bold mb-2">STACK TECNOLÓGICA</small>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge border border-warning text-warning bg-transparent font-monospace">PHP 7.4</span>
+                <span class="badge border border-warning text-warning bg-transparent font-monospace">CakePHP 2.x</span>
+                <span class="badge border border-warning text-warning bg-transparent font-monospace">PostgreSQL 12</span>
+                <span class="badge border border-warning text-warning bg-transparent font-monospace">Docker</span>
+                <span class="badge border border-warning text-warning bg-transparent font-monospace">Bootstrap 5</span>
+            </div>
+        </section>
+
     </div>
 </div>

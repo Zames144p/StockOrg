@@ -21,11 +21,13 @@
                 </label>
             </div>
 
-            <!-- Botões Estilizados -->
             <div class="login-actions">
-                <?php echo $this->Html->link("Criar uma conta", array('action' => 'cadastro'), array('class' => 'btn-gold-link')); ?>
-                <?php echo $this->Html->link("Acessar como guest", array('controller' => 'posts', 'action' => 'index'), array('class' => 'btn-guest-link')); ?>
-                <?php echo $this->Form->submit('Entrar', array('class' => 'btn-gold-submit', 'div' => false)); ?>
+                <?php echo $this->Html->link("Criar uma conta", array('action' => 'cadastro'), array('class' => 'btn-outline-gold')); ?>
+                <?php echo $this->Form->submit('Entrar', array('class' => 'btn-solid-gold', 'div' => false)); ?>
+            </div>
+
+            <div class="guest-action">
+                <?php echo $this->Html->link("Acessar como guest", array('controller' => 'posts', 'action' => 'index'), array('class' => 'btn-guest-small')); ?>
             </div>
 
             <div class="login-footer">

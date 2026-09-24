@@ -2,7 +2,7 @@ services:
   web:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: CakePHPApp
     ports:
       - "8080:80"

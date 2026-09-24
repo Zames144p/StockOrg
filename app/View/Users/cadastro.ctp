@@ -1,36 +1,39 @@
-<?php echo $this->Html->css('loginPage'); ?>
+<?php echo $this->Html->css('loginPage.css?v=' . time()); ?>
 
 <div class="login-wrapper">
-<div class="login-card">
-    <h2>Faça seu cadastro!</h2>
-    <div class="divider"></div>
+    <div class="login-card">
+        <h2>Faça seu cadastro!</h2>
+        <div class="divider"></div>
 
-    <?php echo $this->Form->create('User'); ?>
+        <?php echo $this->Form->create('User'); ?>
 
-    <div class="form-group">
-        <?php echo $this->Form->input('nome', ['label' => 'Nome', 'div' => false, 'class' => 'form-control']); ?>
+            <div class="form-group">
+                <?php echo $this->Form->input('nome', array('label' => 'Nome', 'class' => 'form-input')); ?>
+            </div>
+
+            <div class="form-group">
+                <?php echo $this->Form->input('senha_hash', array('label' => 'Senha', 'type' => 'password', 'class' => 'form-input')); ?>
+            </div>
+
+            <div class="form-group">
+                <?php echo $this->Form->input('confirmar_senha', array('label' => 'Confirmar Senha', 'type' => 'password', 'class' => 'form-input')); ?>
+            </div>
+
+            <div class="form-checkbox">
+                <label for="remember_me">
+                    <input type="checkbox" id="remember_me" name="data[User][remember_me]"> Salvar Senha
+                </label>
+            </div>
+
+            <div class="login-actions">
+                <?php echo $this->Html->link("Já tenho conta", array('action' => 'login'), array('class' => 'btn-outline-gold')); ?>
+                <?php echo $this->Form->submit('Cadastrar', array('class' => 'btn-solid-gold', 'div' => false)); ?>
+            </div>
+
+            <div class="login-footer">
+                <small>Criado com &#129505; por ZamesINC</small>
+            </div>
+
+        <?php echo $this->Form->end(); ?>
     </div>
-
-    <div class="form-group">
-        <?php echo $this->Form->input('senha_hash', ['label' => 'Senha', 'type' => 'password', 'div' => false, 'class' => 'form-control']); ?>
-    </div>
-
-    <div class="form-group">
-        <?php echo $this->Form->input('confirmar_senha', ['label' => 'Confirmar Senha', 'type' => 'password', 'div' => false, 'class' => 'form-control']); ?>
-    </div>
-
-    <div class="form-checkbox">
-        <input type="checkbox" id="remember_me" name="data[User][remember_me]">
-        <label for="remember_me">Salvar Senha</label>
-    </div>
-
-    <div class="login-actions">
-        <?php echo $this->Html->link("Entrar", array('action' => 'login'), array('class' => 'btn-gold-link')); ?>
-        <?php echo $this->Form->submit('Cadastrar', array('action' => 'cadastro', 'class' => 'btn-gold-submit')); ?>
-    </div>
-
-    <?php echo $this->Form->end(); ?>
-
-    <p class="footer-credits">Criado com 🧡 por ZamesINC</p>
-</div>
 </div>

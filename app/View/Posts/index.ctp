@@ -233,11 +233,14 @@ $currentAction     = strtolower($this->params['action']);
 
                                 <!-- Botão Ler Post -->
                                 <div class="pt-2 border-top border-theme-subtle">
-                                    <?php echo $this->Html->link(
-                                        'Ver mais',
-                                        array('controller' => 'posts', 'action' => 'view', $post['Post']['id']),
-                                        array('class' => 'btn btn-primary w-100 fw-bold py-2 rounded-3')
-                                    ); ?>
+                                    <?php echo $this->Form->create(null, array(
+                                        'url' => array('controller' => 'posts', 'action' => 'view'),
+                                        'type' => 'post',
+                                        'class' => 'm-0'
+                                    )); ?>
+                                    <?php echo $this->Form->hidden('Post.id', array('value' => $post['Post']['id'])); ?>
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-3">Ver mais</button>
+                                    <?php echo $this->Form->end(); ?>
                                 </div>
                             </div>
 

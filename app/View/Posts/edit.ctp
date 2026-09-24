@@ -25,9 +25,6 @@ $rascunho    = isset($this->request->data['Post']['status']) && $this->request->
             <!-- Ajuste responsivo de tamanho de fonte utilitário (fs-4 no mobile, fs-3 no desktop) -->
             <h1 class="fs-4 fs-md-3 text-gold fw-bold m-0" style="color: #d4af37 !important;">Editar Publicação</h1>
         </div>
-        <span class="text-gold-light opacity-75 small" style="color: #f0d98a;">
-            ID: #<?php echo h($this->request->data['User']['id'] ?? $userSession['id'] ?? ''); ?>
-        </span>
     </div>
 
     <!-- Form Card (Ajustado o preenchimento interno 'p' para mobile) -->

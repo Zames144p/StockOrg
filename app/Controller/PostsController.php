@@ -112,15 +112,26 @@ class PostsController extends AppController
         return $this->redirect(array('action' => 'index'));
     }
 
-    public function view($id = null)
+    public function view()
     {
-        if (!$id) {
+        if (!$this->request->is('post')) {
+            throw new NotFoundException(__('Post inválido'));
+        }
+
+        $postId = isset($this->request->data['Post']['id'])
+            ? $this->request->data['Post']['id']
+            : null;
+
+        if (!$postId || !ctype_digit((string) $postId)) {
             throw new NotFoundException(__('Post inválido'));
         }
 
         // Usando find com recursive = 1 para carregar os dados do User associado
         $post = $this->Post->find('first', array(
-            'conditions' => array('Post.id' => $id),
+            'conditions' => array(
+                'Post.id' => (int) $postId,
+                'Post.status' => true
+            ),
             'recursive'  => 1
         ));
 
@@ -255,7 +266,7 @@ class PostsController extends AppController
             }
 
             if ($this->Post->save($this->request->data)) {
-                $this->Flash->success(__('O post #%s foi atualizado com sucesso.', h($id)));
+                $this->Flash->success(__('O post foi atualizado com sucesso.', h($id)));
                 return $this->redirect(array('action' => 'index'));
             }
             $this->Flash->error(__('Não foi possível atualizar o post.'));

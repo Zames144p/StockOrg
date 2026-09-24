@@ -41,6 +41,11 @@ class User extends AppModel {
         )
     );
 
+    public function matchPasswords($data){ //Quando é usado o save de user, automaticamente é requisitado pelo cake
+        return $data['confirmar_senha'] === $this->data[$this->alias]['senha_hash'];
+        //Compara o texto puro no formulario, ai n precisa fazer uma puta verificação tlgd
+    }
+
     public function beforeSave($options = array()) {
         //antes de salvar, eu removo o que foi colocar no confirmar_senha e usado na verificação, assim nao fica registrado no banco a confimação.
         unset($this->data[$this->alias]['confirmar_senha']);
@@ -67,10 +72,6 @@ class User extends AppModel {
         }
 
         return true;
-    }
-
-    public function matchPasswords($data){
-        return $data['confirmar_senha'] === $this->data[$this->alias]['senha_hash'];
     }
 
 }

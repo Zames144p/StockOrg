@@ -98,11 +98,7 @@ $canManage = ($currentUserId && ($currentUserId == $postAuthorId || in_array($cu
 
             <!-- Rodapé do Card -->
             <footer class="pt-3 border-top border-theme-subtle d-flex align-items-center justify-content-between">
-                <span class="badge bg-dark border border-gold-subtle text-gold">
-                    Post #<?php echo h($postData['id']); ?>
-                </span>
-
-                <small class="text-muted">StockOrg Blog</small>
+                <small class="text-gold-light">StockOrg Blog</small>
             </footer>
 
         </div>
