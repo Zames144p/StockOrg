@@ -150,34 +150,44 @@ class PostsController extends AppController
             // Processa o upload da imagem via API Externa (ImgBB)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
-                $apiKey = getenv('API_KEY'); // Insira sua API Key aqui
+                $apiKey = getenv('API_KEY');
 
                 if (!$apiKey) {
-                    throw new InternalErrorException('Chave de API não configurada.');
+                    throw new InternalErrorException('Chave de API não encontrada nas variáveis de ambiente.');
                 }
 
-                // Prepara a imagem em base64 para envio
+                // Lê e converte o arquivo temporário para base64
                 $imageData = base64_encode(file_get_contents($fileTmpPath));
 
-                // Configura requisição cURL para a API do ImgBB
+                // Configura a requisição cURL para a API do ImgBB
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
+                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . trim($apiKey));
                 curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $imageData));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+                    'image' => $imageData
+                ));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
                 $response = curl_exec($ch);
+                $curlError = curl_error($ch);
                 curl_close($ch);
 
-                $jsonResponse = json_decode($response, true);
-
-                // Se o upload externo deu certo, salva a URL publica direta
-                if (!empty($jsonResponse['data']['url'])) {
-                    $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
-                } else {
-                    // Em caso de falha no envio externo, ignora a imagem para nao quebrar o post
+                if ($curlError) {
+                    CakeLog::write('error', 'Erro cURL ao enviar para o ImgBB: ' . $curlError);
                     unset($this->request->data['Post']['imagem']);
+                } else {
+                    $jsonResponse = json_decode($response, true);
+
+                    // Se a API devolver a URL direta da imagem, salva na coluna 'imagem'
+                    if (!empty($jsonResponse['data']['url'])) {
+                        $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
+                    } else {
+                        // Em caso de rejeição da API, salva a resposta no log para inspecionarmos
+                        CakeLog::write('error', 'Erro do ImgBB: ' . $response);
+                        unset($this->request->data['Post']['imagem']);
+                    }
                 }
             } else {
                 unset($this->request->data['Post']['imagem']);
