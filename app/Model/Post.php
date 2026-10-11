@@ -24,11 +24,16 @@ class Post extends AppModel {
     );
 
     public function beforeSave($options = array()) {
-        if (!$this->id) {
-            $this->data[$this->alias]['criado_em'] = date('Y-m-d H:i:s');
-        } else {
-            $this->data[$this->alias]['modificado_em'] = date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
+        
+
+        // Se for um post novo
+        if (!$this->id && empty($this->data[$this->alias]['id'])) {
+            $this->data[$this->alias]['criado_em'] = $now;
         }
+
+        // Sempre atualiza a data de alteração com a data/hora atual formatada
+        $this->data[$this->alias]['modificado_em'] = $now;
 
         return true;
     }
