@@ -222,7 +222,6 @@ class UsersController extends AppController
 
         // Se for submissão de formulário (POST ou PUT)
         if ($this->request->is(array('post', 'put'))) {
-
             // Assegura que o ID que está sendo atualizado é o $targetUserId
             $this->request->data['User']['id'] = $targetUserId;
 
@@ -230,6 +229,8 @@ class UsersController extends AppController
             if (!$this->isSuperAdmin($sessionCargo)) {
                 unset($this->request->data['User']['cargo']);
             }
+
+            $currentFoto = !empty($targetUser['User']['foto']) ? $targetUser['User']['foto'] : 'perfilDefault.jpg';
 
             // Trata o upload da foto de perfil via Cloudinary
             if (!empty($this->request->data['User']['foto']['tmp_name'])) {
@@ -241,14 +242,11 @@ class UsersController extends AppController
                 $apiKey    = trim(getenv('CLOUDINARY_API_KEY')    ?: ($_ENV['CLOUDINARY_API_KEY'] ?? ''));
                 $apiSecret = trim(getenv('CLOUDINARY_API_SECRET') ?: ($_ENV['CLOUDINARY_API_SECRET'] ?? ''));
 
+                CakeLog::write('debug', '[Upload Edit User] Arquivo recebido: ' . $fileName . ' | Cloud: ' . $cloudName);
+
                 if (empty($cloudName) || empty($apiKey) || empty($apiSecret)) {
-                    CakeLog::write('error', '[Cloudinary] Credenciais de ambiente ausentes no perfil de usuario.');
-                    // Mantém a foto que já existia no banco se as credenciais falharem
-                    if (isset($user['User']['foto'])) {
-                        $this->request->data['User']['foto'] = $user['User']['foto'];
-                    } else {
-                        unset($this->request->data['User']['foto']);
-                    }
+                    CakeLog::write('error', '[Cloudinary Edit User] Credenciais ausentes no ambiente Render.');
+                    $this->request->data['User']['foto'] = $currentFoto;
                 } else {
                     $timestamp = time();
                     $signature = sha1('timestamp=' . $timestamp . $apiSecret);
@@ -257,9 +255,7 @@ class UsersController extends AppController
                         'file'      => new CURLFile($fileTmpPath, $fileType, $fileName),
                         'api_key'   => $apiKey,
                         'timestamp' => $timestamp,
-                        'signature' => $signature,
-                        // Opcional: converte automaticamente para formatos otimizados (como WEBP) e limita a resolução máxima
-                        'transformation' => 'c_limit,w_1920,h_1080/q_auto,f_auto'
+                        'signature' => $signature
                     );
 
                     $ch = curl_init();
@@ -275,55 +271,39 @@ class UsersController extends AppController
                     curl_close($ch);
 
                     if ($curlError) {
-                        CakeLog::write('error', '[Cloudinary cURL Error no perfil]: ' . $curlError);
-                        // Em caso de erro na conexão, preserva a foto antiga
-                        if (isset($user['User']['foto'])) {
-                            $this->request->data['User']['foto'] = $user['User']['foto'];
-                        } else {
-                            unset($this->request->data['User']['foto']);
-                        }
+                        CakeLog::write('error', '[Cloudinary cURL Error no edit user]: ' . $curlError);
+                        $this->request->data['User']['foto'] = $currentFoto;
                     } else {
                         $jsonResponse = json_decode($response, true);
 
                         if (!empty($jsonResponse['secure_url'])) {
-                            // SUCESSO: Atualiza com a nova URL HTTPS do Cloudinary
+                            CakeLog::write('debug', '[Cloudinary Edit User SUCESSO] URL: ' . $jsonResponse['secure_url']);
                             $this->request->data['User']['foto'] = $jsonResponse['secure_url'];
                         } else {
-                            CakeLog::write('error', '[Cloudinary API Error no perfil]: ' . $response);
-                            if (isset($user['User']['foto'])) {
-                                $this->request->data['User']['foto'] = $user['User']['foto'];
-                            } else {
-                                unset($this->request->data['User']['foto']);
-                            }
+                            CakeLog::write('error', '[Cloudinary API Error no edit user]: ' . $response);
+                            $this->request->data['User']['foto'] = $currentFoto;
                         }
                     }
                 }
             } else {
-                // Se o usuário não enviou um novo arquivo, remove a chave para que 
-                // o CakePHP não limpe o valor no banco
-                unset($this->request->data['User']['foto']);
+                // Se nenhum arquivo foi enviado no input file
+                CakeLog::write('debug', '[Upload Edit User] Nenhum arquivo tmp_name recebido.');
+                if (isset($this->request->data['User']['foto']) && empty($this->request->data['User']['foto'])) {
+                    $this->request->data['User']['foto'] = $currentFoto;
+                }
             }
-            // Salva as alterações
+
+            $this->User->id = $targetUserId;
             if ($this->User->save($this->request->data)) {
-                // Atualiza a sessão se o usuário alterou o próprio perfil
-                if ($targetUserId == $sessionUserId) {
-                    $updatedUser = $this->User->findById($sessionUserId);
-                    $this->Auth->login($updatedUser['User']);
-                }
-
-                $this->Flash->success('Perfil atualizado com sucesso!');
-
-                if ($targetUserId != $sessionUserId) {
-                    return $this->redirect(array('action' => 'painelAdemiro'));
-                }
-                return $this->redirect(array('action' => 'perfil'));
-            } else {
-                $this->Flash->error('Erro ao salvar as alterações.');
+                $this->Flash->success('Perfil atualizado com sucesso.');
+                return $this->redirect(array('controller' => 'users', 'action' => 'perfil', $targetUserId));
             }
-        } else {
-            // Carregamento inicial (GET): Preenche o formulário com os dados do $targetUser
+
+            $this->Flash->error('Não foi possível atualizar o perfil.');
+        }
+
+        if ($this->request->is('get')) {
             $this->request->data = $targetUser;
-            unset($this->request->data['User']['senha_hash']);
         }
 
         // Busca os posts do usuário editado para o Admin visualizar no final da página
