@@ -80,7 +80,7 @@ $cargoAutor = $post['User']['cargo'] ?? $userSession['cargo'] ?? '';
                 </li>
                 <li>
                     <small class="text-gold-subtle d-block">Membro desde</small>
-                    <span><?php echo !empty($userData['criado_em']) ? date('d/m/Y', strtotime($userData['criado_em'])) : (!empty($userData['created']) ? date('d/m/Y', strtotime($userData['created'])) : 'N/A'); ?></span>
+                    <span><?php echo !empty($userData['created']) ? date('d/m/Y', strtotime($userData['created'])) : 'N/A'; ?></span>
                 </li>
                 <li>
                     <small class="text-gold-subtle d-block">Localização</small>
@@ -125,7 +125,7 @@ $cargoAutor = $post['User']['cargo'] ?? $userSession['cargo'] ?? '';
                                     <?php endif; ?>
                                 </div>
 
-                                <span class="small-text text-muted-custom ms-auto">• <?php echo !empty($post['Post']['criado_em']) ? date('d/m/Y', strtotime($post['Post']['criado_em'])) : 'Recente'; ?></span>
+                                <span class="small-text text-muted-custom ms-auto">• <?php echo !empty($post['Post']['created']) ? date('d/m/Y', strtotime($post['Post']['created'])) : 'Recente'; ?></span>
                             </div>
 
                             <!-- Imagem do Post -->
@@ -187,7 +187,7 @@ $cargoAutor = $post['User']['cargo'] ?? $userSession['cargo'] ?? '';
                         <div class="post-item draft-item">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="badge bg-warning text-dark">Rascunho</span>
-                                <span class="small-text text-muted-custom"><?php echo !empty($rascunho['Post']['criado_em']) ? date('d/m/Y', strtotime($rascunho['Post']['criado_em'])) : ''; ?></span>
+                                <span class="small-text text-muted-custom"><?php echo !empty($rascunho['Post']['created']) ? date('d/m/Y', strtotime($rascunho['Post']['created'])) : ''; ?></span>
                             </div>
                             <h4 class="post-title m-0 mb-1">
                                 <?php echo $this->Html->link(

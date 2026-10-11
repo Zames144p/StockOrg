@@ -138,12 +138,12 @@ $userSession = $this->Session->read('Auth.User'); ?>
                                     <!-- Datas -->
                                     <td>
                                         <small class="text-gold-light">
-                                            <?php echo !empty($u['User']['criado_em']) ? date('d/m/Y H:i', strtotime($u['User']['criado_em'])) : 'N/A'; ?>
+                                            <?php echo !empty($u['User']['created']) ? date('d/m/Y H:i', strtotime($u['User']['created'])) : 'N/A'; ?>
                                         </small>
                                     </td>
                                     <td>
                                         <small class="text-gold-light">
-                                            <?php echo !empty($u['User']['modificado_em']) ? date('d/m/Y H:i', strtotime($u['User']['modificado_em'])) : 'N/A'; ?>
+                                            <?php echo !empty($u['User']['modified']) ? date('d/m/Y H:i', strtotime($u['User']['modified'])) : 'N/A'; ?>
                                         </small>
                                     </td>
 

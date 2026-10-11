@@ -218,7 +218,7 @@ $currentAction     = strtolower($this->params['action']);
 
                                         <span class="text-muted">•</span>
                                         <small class="text-gold-light opacity-75">
-                                            <?php echo !empty($post['Post']['criado_em']) ? date('d/m/Y', strtotime($post['Post']['criado_em'])) : (!empty($post['Post']['created']) ? date('d/m/Y', strtotime($post['Post']['created'])) : 'N/A'); ?>
+                                            <?php echo !empty($post['Post']['created']) ? date('d/m/Y', strtotime($post['Post']['created'])) : 'N/A'; ?>
                                         </small>
                                     </div>
 

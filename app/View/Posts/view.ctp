@@ -79,7 +79,7 @@ $canManage = ($currentUserId && ($currentUserId == $postAuthorId || in_array($cu
                         </strong>
                         <small class="text-gold-light opacity-75">
                             Publicado em <?php 
-                            $dataPost = $postData['criado_em'] ?? $postData['created'] ?? null;
+                            $dataPost = $postData['created'] ?? null;
                             echo !empty($dataPost) ? date('d/m/Y \à\s H:i', strtotime($dataPost)) : 'Data não informada'; 
                             ?>
                         </small>
