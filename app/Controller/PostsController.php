@@ -245,16 +245,6 @@ class PostsController extends AppController
         if ($this->request->is(array('post', 'put'))) {
             $this->Post->id = $id;
 
-            if ($this->request->is(array('post', 'put'))) {
-    echo '<pre>';
-    echo 'upload_max_filesize atual no PHP: ' . ini_get('upload_max_filesize') . "\n";
-    echo 'post_max_size atual no PHP: ' . ini_get('post_max_size') . "\n\n";
-    echo 'Estrutura de $_FILES recebida:' . "\n";
-    print_r($_FILES);
-    echo '</pre>';
-    die();
-}
-
             $saveAs = isset($this->request->data['Post']['status'])
                 ? $this->request->data['Post']['status']
                 : null;
