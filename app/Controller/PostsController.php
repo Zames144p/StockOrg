@@ -174,6 +174,12 @@ class PostsController extends AppController
                 $curlError = curl_error($ch);
                 curl_close($ch);
 
+                // debug
+                echo '<pre>';
+                print_r(json_decode($response, true));
+                echo '</pre>';
+                die();
+
                 if ($curlError) {
                     CakeLog::write('error', 'Erro cURL ao enviar para o ImgBB: ' . $curlError);
                     unset($this->request->data['Post']['imagem']);
@@ -262,12 +268,6 @@ class PostsController extends AppController
 
                 $response = curl_exec($ch);
                 curl_close($ch);
-
-                // debug
-                echo '<pre>';
-                print_r(json_decode($response, true));
-                echo '</pre>';
-                die();
 
                 $jsonResponse = json_decode($response, true);
 
