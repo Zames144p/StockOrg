@@ -147,12 +147,12 @@ class PostsController extends AppController
         if ($this->request->is('post')) {
             $this->Post->create();
 
-            // 1. Associa ao usuário logado
+            // 1. Associa a publicação ao usuário logado
             if (empty($this->request->data['Post']['user_id'])) {
                 $this->request->data['Post']['user_id'] = $this->Auth->user('id');
             }
 
-            // 2. Processa o upload para o Cloudinary
+            // 2. Processa o upload da imagem via Cloudinary
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
                 $fileName    = $this->request->data['Post']['imagem']['name'];
@@ -162,12 +162,9 @@ class PostsController extends AppController
                 $apiKey    = trim(getenv('CLOUDINARY_API_KEY')    ?: ($_ENV['CLOUDINARY_API_KEY'] ?? ''));
                 $apiSecret = trim(getenv('CLOUDINARY_API_SECRET') ?: ($_ENV['CLOUDINARY_API_SECRET'] ?? ''));
 
-                // Registra nos logs do Render para auditoria
-                CakeLog::write('debug', '[Upload Edit] Arquivo recebido: ' . $fileName . ' | Cloud: ' . $cloudName);
-
                 if (empty($cloudName) || empty($apiKey) || empty($apiSecret)) {
-                    CakeLog::write('error', '[Cloudinary Edit] Credenciais ausentes no ambiente Render.');
-                    $this->request->data['Post']['imagem'] = $post['Post']['imagem'];
+                    CakeLog::write('error', '[Cloudinary Add] Credenciais de ambiente ausentes.');
+                    unset($this->request->data['Post']['imagem']);
                 } else {
                     $timestamp = time();
                     $signature = sha1('timestamp=' . $timestamp . $apiSecret);
@@ -192,32 +189,30 @@ class PostsController extends AppController
                     curl_close($ch);
 
                     if ($curlError) {
-                        CakeLog::write('error', '[Cloudinary cURL Error no edit]: ' . $curlError);
-                        $this->request->data['Post']['imagem'] = $post['Post']['imagem'];
+                        CakeLog::write('error', '[Cloudinary cURL Error no add]: ' . $curlError);
+                        unset($this->request->data['Post']['imagem']);
                     } else {
                         $jsonResponse = json_decode($response, true);
 
                         if (!empty($jsonResponse['secure_url'])) {
-                            // SUCESSO: Atribui a nova URL para gravação
-                            CakeLog::write('debug', '[Cloudinary Edit SUCESSO] URL: ' . $jsonResponse['secure_url']);
+                            // SUCESSO: Salva a URL HTTPS do Cloudinary
                             $this->request->data['Post']['imagem'] = $jsonResponse['secure_url'];
                         } else {
-                            CakeLog::write('error', '[Cloudinary API Error no edit]: ' . $response);
-                            $this->request->data['Post']['imagem'] = $post['Post']['imagem'];
+                            CakeLog::write('error', '[Cloudinary API Error no add]: ' . $response);
+                            unset($this->request->data['Post']['imagem']);
                         }
                     }
                 }
             } else {
-                // Se nenhum arquivo foi enviado no input file
-                CakeLog::write('debug', '[Upload Edit] Nenhum arquivo tmp_name recebido.');
+                // Se nenhum arquivo foi selecionado, remove do array de dados
                 unset($this->request->data['Post']['imagem']);
             }
 
-            // 3. Define status (publicado/rascunho)
+            // 3. Define status da publicação (publicado / rascunho)
             $saveAs = isset($this->request->data['Post']['status']) ? $this->request->data['Post']['status'] : 'published';
             $this->request->data['Post']['status'] = ($saveAs !== 'draft');
 
-            // 4. Salva no PostgreSQL
+            // 4. Salva a nova publicação no PostgreSQL
             if ($this->Post->save($this->request->data)) {
                 $message = ($saveAs === 'draft') ? 'Rascunho salvo com sucesso.' : 'Post publicado com sucesso.';
                 $this->Flash->success(__($message));
