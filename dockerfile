@@ -1,7 +1,12 @@
-FROM php:8.1-apache
+FROM php:7.4-apache
 
-# 1. Instala dependências do sistema e extensões nativas do PHP
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# 1. Ajusta os repositórios legados do Debian Buster e instala dependências
+RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list \
+    && echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/10no-check-valid-until \
+    && echo "Acquire::AllowInsecureRepositories \"true\";" >> /etc/apt/apt.conf.d/10no-check-valid-until \
+    && apt-get update -o Acquire::AllowInsecureRepositories=true -y \
+    && apt-get install -y --allow-unauthenticated --no-install-recommends \
         libpq-dev \
         libpng-dev \
         libjpeg-dev \
@@ -48,7 +53,10 @@ RUN mkdir -p app/tmp/cache/persistent \
 # 7. Executa o Composer se houver composer.json
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
-## RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction; fi
+
+RUN if [ -f "composer.json" ]; then \
+    composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction || true; \
+    fi
 
 # 8. Permissões para o Apache (www-data)
 RUN chown -R www-data:www-data /var/www/html \
