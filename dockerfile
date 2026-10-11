@@ -1,10 +1,13 @@
 FROM php:7.4-apache
 
-# 1. Ajusta os repositórios legados do Debian Buster e instala dependências completas
-RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list \
+# 1. Configura os repositórios de arquivo do Debian Buster com Bypass de segurança para repositórios arquivados
+RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list \
     && echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list \
-    && apt-get -o Acquire::Check-Valid-Until=false -o Acquire::AllowInsecureRepositories=true update \
-    && apt-get install -y --no-install-recommends \
+    && echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/10no-check-valid-until \
+    && echo "Acquire::AllowInsecureRepositories \"true\";" >> /etc/apt/apt.conf.d/10no-check-valid-until \
+    && echo "Acquire::AllowDowngradeToInsecureRepositories \"true\";" >> /etc/apt/apt.conf.d/10no-check-valid-until \
+    && apt-get update --allow-insecure-repositories -y \
+    && apt-get install -y --allow-unauthenticated --no-install-recommends \
         libpq-dev \
         libpng-dev \
         libjpeg-dev \
@@ -48,12 +51,12 @@ RUN mkdir -p app/tmp/cache/persistent \
              app/tmp/logs \
              app/webroot/files
 
-# 7. Executa o Composer com suporte a ilimitada memória e ignorando exigências rígidas da plataforma
+# 7. Executa o Composer se houver composer.json
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
 RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction; fi
 
-# 8. Ajusta permissões
+# 8. Permissões para o Apache (www-data)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 777 /var/www/html/app/tmp \
     && chmod -R 777 /var/www/html/app/webroot/files
