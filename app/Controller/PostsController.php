@@ -147,55 +147,70 @@ class PostsController extends AppController
         if ($this->request->is('post')) {
             $this->Post->create();
 
-            // Processa o upload da imagem via API Externa (ImgBB)
+            if (empty($this->request->data['Post']['user_id'])) {
+                $this->request->data['Post']['user_id'] = $this->Auth->user('id');
+            }
+
+            // Processa o upload para o ImgBB via Multipart/CURLFile
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
-                $apiKey = getenv('API_KEY'); // Insira sua API Key aqui
+                $fileName    = $this->request->data['Post']['imagem']['name'];
+                $fileType    = $this->request->data['Post']['imagem']['type'];
 
-                if (!$apiKey) {
-                    throw new InternalErrorException('Chave de API não configurada.');
-                }
+                $apiKey = getenv('API_KEY') ?: ($_ENV['API_KEY'] ?? ($_SERVER['API_KEY'] ?? null));
+                $apiKey = trim($apiKey);
 
-                // Prepara a imagem em base64 para envio
-                $imageData = base64_encode(file_get_contents($fileTmpPath));
-
-                // Configura requisição cURL para a API do ImgBB
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $imageData));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-                $response = curl_exec($ch);
-                curl_close($ch);
-
-                $jsonResponse = json_decode($response, true);
-
-                // Se o upload externo deu certo, salva a URL publica direta
-                if (!empty($jsonResponse['data']['url'])) {
-                    $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
-                } else {
-                    // Em caso de falha no envio externo, ignora a imagem para nao quebrar o post
+                if (empty($apiKey)) {
+                    CakeLog::write('error', '[ImgBB] API_KEY vazia no ambiente.');
                     unset($this->request->data['Post']['imagem']);
+                } else {
+                    // Envia o arquivo como CURLFile binário (Evita o bloqueio de payload base64)
+                    $cfile = new CURLFile($fileTmpPath, $fileType, $fileName);
+
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+                        'image' => $cfile
+                    ));
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+                    $response = curl_exec($ch);
+                    $curlError = curl_error($ch);
+                    curl_close($ch);
+
+                    if ($curlError) {
+                        CakeLog::write('error', '[ImgBB cURL Error]: ' . $curlError);
+                        unset($this->request->data['Post']['imagem']);
+                    } else {
+                        $jsonResponse = json_decode($response, true);
+
+                        if (!empty($jsonResponse['data']['url'])) {
+                            // Sucesso: Salva a URL da imagem
+                            $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
+                        } else {
+                            CakeLog::write('error', '[ImgBB API Response Error]: ' . $response);
+                            unset($this->request->data['Post']['imagem']);
+                        }
+                    }
                 }
             } else {
                 unset($this->request->data['Post']['imagem']);
             }
 
-            $this->request->data['Post']['user_id'] = $this->Auth->user('id');
-            $saveAs = isset($this->request->data['Post']['status'])
-                ? $this->request->data['Post']['status']
-                : 'published';
+            $saveAs = isset($this->request->data['Post']['status']) ? $this->request->data['Post']['status'] : 'published';
             $this->request->data['Post']['status'] = ($saveAs !== 'draft');
 
             if ($this->Post->save($this->request->data)) {
-                $message = $saveAs === 'draft'
-                    ? 'Rascunho salvo com sucesso.'
-                    : 'Post publicado com sucesso.';
+                $message = ($saveAs === 'draft') ? 'Rascunho salvo com sucesso.' : 'Post publicado com sucesso.';
                 $this->Flash->success(__($message));
                 return $this->redirect(array('action' => 'index'));
             }
+
             $this->Flash->error(__('Não foi possível salvar o post.'));
         }
     }
