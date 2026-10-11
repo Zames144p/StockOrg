@@ -151,32 +151,38 @@ class PostsController extends AppController
                 $this->request->data['Post']['user_id'] = $this->Auth->user('id');
             }
 
-            // Processa o upload para o ImgBB via Multipart/CURLFile
+            // Processa o upload via Cloudinary
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
                 $fileName    = $this->request->data['Post']['imagem']['name'];
                 $fileType    = $this->request->data['Post']['imagem']['type'];
 
-                $apiKey = getenv('API_KEY') ?: ($_ENV['API_KEY'] ?? ($_SERVER['API_KEY'] ?? null));
-                $apiKey = trim($apiKey);
+                $cloudName = getenv('CLOUDINARY_CLOUD_NAME') ?: ($_ENV['CLOUDINARY_CLOUD_NAME'] ?? '');
+                $apiKey    = getenv('CLOUDINARY_API_KEY')    ?: ($_ENV['CLOUDINARY_API_KEY'] ?? '');
+                $apiSecret = getenv('CLOUDINARY_API_SECRET') ?: ($_ENV['CLOUDINARY_API_SECRET'] ?? '');
 
-                if (empty($apiKey)) {
-                    CakeLog::write('error', '[ImgBB] API_KEY vazia no ambiente.');
+                if (empty($cloudName) || empty($apiKey) || empty($apiSecret)) {
+                    CakeLog::write('error', '[Cloudinary] Credenciais ausentes no ambiente.');
                     unset($this->request->data['Post']['imagem']);
                 } else {
-                    // Envia o arquivo como CURLFile binário (Evita o bloqueio de payload base64)
-                    $cfile = new CURLFile($fileTmpPath, $fileType, $fileName);
+                    $timestamp = time();
+
+                    // Assinatura SHA1 exigida pela API do Cloudinary
+                    $signature = sha1('timestamp=' . $timestamp . $apiSecret);
+
+                    $postFields = array(
+                        'file'      => new CURLFile($fileTmpPath, $fileType, $fileName),
+                        'api_key'   => $apiKey,
+                        'timestamp' => $timestamp,
+                        'signature' => $signature
+                    );
 
                     $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
+                    curl_setopt($ch, CURLOPT_URL, 'https://api.cloudinary.com/v1_1/' . trim($cloudName) . '/image/upload');
                     curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, array(
-                        'image' => $cfile
-                    ));
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-                    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
                     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
                     $response = curl_exec($ch);
@@ -184,16 +190,16 @@ class PostsController extends AppController
                     curl_close($ch);
 
                     if ($curlError) {
-                        CakeLog::write('error', '[ImgBB cURL Error]: ' . $curlError);
+                        CakeLog::write('error', '[Cloudinary cURL Error]: ' . $curlError);
                         unset($this->request->data['Post']['imagem']);
                     } else {
                         $jsonResponse = json_decode($response, true);
 
-                        if (!empty($jsonResponse['data']['url'])) {
-                            // Sucesso: Salva a URL da imagem
-                            $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
+                        if (!empty($jsonResponse['secure_url'])) {
+                            // SUCESSO: Salva a URL HTTPS gerada pelo Cloudinary na coluna 'imagem'
+                            $this->request->data['Post']['imagem'] = $jsonResponse['secure_url'];
                         } else {
-                            CakeLog::write('error', '[ImgBB API Response Error]: ' . $response);
+                            CakeLog::write('error', '[Cloudinary API Error]: ' . $response);
                             unset($this->request->data['Post']['imagem']);
                         }
                     }
