@@ -1,6 +1,6 @@
 FROM php:7.4-apache
 
-# Ajusta o repositório histórico do Debian Buster e instala dependências como ROOT
+# Ajusta os repositórios legados do Debian Buster e instala dependências
 RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list \
     && echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list \
     && apt-get -o Acquire::Check-Valid-Until=false -o Acquire::AllowInsecureRepositories=true update \
@@ -13,14 +13,14 @@ RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala o Composer globalmente
+# Instala o Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Configura o Apache e Timezone como ROOT
+# Configurações do PHP e Apache
 RUN a2enmod rewrite
-RUN echo "date.timezone = 'America/Fortaleza'" > /usr/local/etc/php/conf.d/timezone.ini
+RUN echo "date.timezone = 'America/Recife'" > /usr/local/etc/php/conf.d/timezone.ini
 
-# Ajusta DocumentRoot para o webroot do CakePHP
+# Redireciona o DocumentRoot para a pasta webroot do CakePHP
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/app/webroot
 RUN sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/*.conf
 RUN printf '%s\n' \
@@ -30,12 +30,23 @@ RUN printf '%s\n' \
     '    Require all granted' \
     '</Directory>' >> /etc/apache2/apache2.conf
 
-# Define diretório de trabalho e cria a estrutura de pastas temporárias do CakePHP
+# Define diretório de trabalho e copia os arquivos da aplicação
 WORKDIR /var/www/html
-RUN mkdir -p app/tmp/cache/persistent app/tmp/cache/models app/tmp/cache/views app/tmp/logs
+COPY . /var/www/html
 
-# Cria o usuário "app" e ajusta as permissões de dona das pastas
-RUN groupadd -g 1000 app && \
-    useradd -u 1000 -g app -m -s /bin/bash app && \
-    chown -R app:app /var/www/html && \
-    chmod -R 777 /var/www/html/app/tmp
+# Cria pastas temporárias do CakePHP e pasta de uploads
+RUN mkdir -p app/tmp/cache/persistent \
+             app/tmp/cache/models \
+             app/tmp/cache/views \
+             app/tmp/logs \
+             app/webroot/files
+
+# Executa a instalação de dependências do Composer (se houver composer.json)
+RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloader; fi
+
+# Ajusta as permissões para o usuário 'www-data' (dono do processo do Apache)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 777 /var/www/html/app/tmp \
+    && chmod -R 777 /var/www/html/app/webroot/files
+
+EXPOSE 80
