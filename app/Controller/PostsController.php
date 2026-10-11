@@ -150,7 +150,8 @@ class PostsController extends AppController
             // Processa o upload da imagem via API Externa (ImgBB)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
-                $apiKey = getenv('API_KEY');
+                $apiKey = getenv('API_KEY') ?: ($_ENV['API_KEY'] ?? ($_SERVER['API_KEY'] ?? null));
+                $apiKey = trim($apiKey);;
 
                 if (!$apiKey) {
                     throw new InternalErrorException('Chave de API não encontrada nas variáveis de ambiente.');
@@ -244,7 +245,8 @@ class PostsController extends AppController
             // Tratamento da Imagem via ImgBB (igual ao add)
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
-                $apiKey = getenv('API_KEY'); // Insira sua API Key aqui
+                $apiKey = getenv('API_KEY') ?: ($_ENV['API_KEY'] ?? ($_SERVER['API_KEY'] ?? null));
+                $apiKey = trim($apiKey); // Insira sua API Key aqui
 
                 if (!$apiKey) {
                     throw new InternalErrorException('Chave de API não configurada.');
