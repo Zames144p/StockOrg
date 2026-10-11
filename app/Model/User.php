@@ -54,25 +54,24 @@ class User extends AppModel
         unset($this->data[$this->alias]['confirmar_senha']);
 
         $now = date('Y-m-d H:i:s');
-        
 
-        // Se for um post novo
-        if (!$this->id && empty($this->data[$this->alias]['id'])) {
+        // Se for um novo registro (INSERT)
+        if (empty($this->data[$this->alias]['id'])) {
             $this->data[$this->alias]['criado_em'] = $now;
         }
 
-        // Sempre atualiza a data de alteração com a data/hora atual formatada
-        $this->data[$this->alias]['modificado_em'] = $now;
+        // Atualiza sempre o timestamp
+        $this->data[$this->alias]['atualizado_em'] = $now;
 
         // Criptografa a senha exatamente na chave 'senha_hash' do seu formulário
-    if (!empty($this->data[$this->alias]['senha_hash'])) {
-        $passwordHasher = new BlowfishPasswordHasher();
-        $this->data[$this->alias]['senha_hash'] = $passwordHasher->hash(
-            $this->data[$this->alias]['senha_hash']
-        );
-    } else {
-        unset($this->data[$this->alias]['senha_hash']);
-    }
+        if (!empty($this->data[$this->alias]['senha_hash'])) {
+            $passwordHasher = new BlowfishPasswordHasher();
+            $this->data[$this->alias]['senha_hash'] = $passwordHasher->hash(
+                $this->data[$this->alias]['senha_hash']
+            );
+        } else {
+            unset($this->data[$this->alias]['senha_hash']);
+        }
 
         // 5. Define o cargo padrão se estiver vazio
         if (!$this->id && empty($this->data[$this->alias]['cargo'])) {
