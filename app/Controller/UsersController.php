@@ -291,6 +291,15 @@ class UsersController extends AppController
 
             $this->User->id = $targetUserId;
             if ($this->User->save($this->request->data)) {
+                // Busca os dados atualizados do usuário do banco
+                $updatedUser = $this->User->findById($targetUserId);
+
+                // Se o usuário que está sendo editado é o próprio usuário logado, atualiza a Sessão
+                if ($targetUserId == $sessionUserId && !empty($updatedUser['User'])) {
+                    $this->Auth->login($updatedUser['User']);
+                    // Alternativa equivalente: $this->Session->write('Auth.User', $updatedUser['User']);
+                }
+
                 $this->Flash->success('Perfil atualizado com sucesso.');
                 return $this->redirect(array('controller' => 'users', 'action' => 'perfil', $targetUserId));
             }
