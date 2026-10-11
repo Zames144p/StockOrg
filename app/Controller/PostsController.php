@@ -147,6 +147,14 @@ class PostsController extends AppController
         if ($this->request->is('post')) {
             $this->Post->create();
 
+// 🔍 TESTE DE DIAGNÓSTICO
+        echo '<pre>--- REQUEST DATA ---<br>';
+        print_r($this->request->data);
+        echo '<br>--- $_FILES ---<br>';
+        print_r($_FILES);
+        echo '</pre>';
+        die();
+
             // 1. Associa o post ao utilizador logado
             if (empty($this->request->data['Post']['user_id'])) {
                 $this->request->data['Post']['user_id'] = $this->Auth->user('id');
