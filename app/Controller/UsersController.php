@@ -198,7 +198,6 @@ class UsersController extends AppController
         }
 
         // Define o ID do usuário que será carregado/editado
-        // Se o Admin passar um $id via URL, edita esse $id; caso contrário, edita o próprio perfil
         if (!empty($id) && $this->hasAdminPrivileges($sessionCargo)) {
             $targetUserId = $id;
         } else {
@@ -222,10 +221,13 @@ class UsersController extends AppController
 
         // Se for submissão de formulário (POST ou PUT)
         if ($this->request->is(array('post', 'put'))) {
-            // Assegura que o ID que está sendo atualizado é o $targetUserId
             $this->request->data['User']['id'] = $targetUserId;
 
-            // Admin comum não pode alterar o próprio cargo por requisição manual.
+            // Limpa campos de data enviados na requisição para não dar conflito com o PostgreSQL
+            unset($this->request->data['User']['criado_em']);
+            $this->request->data['User']['atualizado_em'] = date('Y-m-d H:i:s');
+
+            // Admin comum não pode alterar o próprio cargo por requisição manual
             if (!$this->isSuperAdmin($sessionCargo)) {
                 unset($this->request->data['User']['cargo']);
             }
@@ -241,8 +243,6 @@ class UsersController extends AppController
                 $cloudName = strtolower(trim(getenv('CLOUDINARY_CLOUD_NAME') ?: ($_ENV['CLOUDINARY_CLOUD_NAME'] ?? '')));
                 $apiKey    = trim(getenv('CLOUDINARY_API_KEY')    ?: ($_ENV['CLOUDINARY_API_KEY'] ?? ''));
                 $apiSecret = trim(getenv('CLOUDINARY_API_SECRET') ?: ($_ENV['CLOUDINARY_API_SECRET'] ?? ''));
-
-                CakeLog::write('debug', '[Upload Edit User] Arquivo recebido: ' . $fileName . ' | Cloud: ' . $cloudName);
 
                 if (empty($cloudName) || empty($apiKey) || empty($apiSecret)) {
                     CakeLog::write('error', '[Cloudinary Edit User] Credenciais ausentes no ambiente Render.');
@@ -277,7 +277,6 @@ class UsersController extends AppController
                         $jsonResponse = json_decode($response, true);
 
                         if (!empty($jsonResponse['secure_url'])) {
-                            CakeLog::write('debug', '[Cloudinary Edit User SUCESSO] URL: ' . $jsonResponse['secure_url']);
                             $this->request->data['User']['foto'] = $jsonResponse['secure_url'];
                         } else {
                             CakeLog::write('error', '[Cloudinary API Error no edit user]: ' . $response);
@@ -286,11 +285,8 @@ class UsersController extends AppController
                     }
                 }
             } else {
-                // Se nenhum arquivo foi enviado no input file
-                CakeLog::write('debug', '[Upload Edit User] Nenhum arquivo tmp_name recebido.');
-                if (isset($this->request->data['User']['foto']) && empty($this->request->data['User']['foto'])) {
-                    $this->request->data['User']['foto'] = $currentFoto;
-                }
+                // Se nenhum arquivo foi enviado no input file, mantém a foto atual ou desfaz a chave
+                unset($this->request->data['User']['foto']);
             }
 
             $this->User->id = $targetUserId;
@@ -306,14 +302,13 @@ class UsersController extends AppController
             $this->request->data = $targetUser;
         }
 
-        // Busca os posts do usuário editado para o Admin visualizar no final da página
+        // Busca os posts do usuário editado usando a coluna correta 'criado_em' (ou 'created' se for padrão do Cake)
         $this->loadModel('Post');
         $userPosts = $this->Post->find('all', array(
             'conditions' => array('Post.user_id' => $targetUserId),
-            'order' => array('Post.created' => 'DESC')
+            'order' => array('Post.criado_em' => 'DESC') // Alterado de Post.created para Post.criado_em
         ));
 
-        // Envia as duas variáveis necessárias para a View
         $this->set('targetUser', $targetUser);
         $this->set('userPosts', $userPosts);
     }
