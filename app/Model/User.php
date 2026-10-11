@@ -53,7 +53,8 @@ class User extends AppModel
         // 1. Remove a confirmação de senha para não tentar salvar no banco
         unset($this->data[$this->alias]['confirmar_senha']);
 
-        $$now = date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
+        
 
         // Se for um post novo
         if (!$this->id && empty($this->data[$this->alias]['id'])) {
