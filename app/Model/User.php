@@ -6,7 +6,8 @@ app::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 //authcomponent pra uma verificação antes da verificação kkkkkkkkjkjkjk
 app::uses('authcomponent', 'Controller/Component');
 
-class User extends AppModel {
+class User extends AppModel
+{
     public $table = 'users';
     protected $username = 'username';
 
@@ -41,37 +42,40 @@ class User extends AppModel {
         )
     );
 
-    public function matchPasswords($data){ //Quando é usado o save de user, automaticamente é requisitado pelo cake
+    public function matchPasswords($data)
+    { //Quando é usado o save de user, automaticamente é requisitado pelo cake
         return $data['confirmar_senha'] === $this->data[$this->alias]['senha_hash'];
         //Compara o texto puro no formulario, ai n precisa fazer uma puta verificação tlgd
     }
 
-    public function beforeSave($options = array()) {
-        //antes de salvar, eu removo o que foi colocar no confirmar_senha e usado na verificação, assim nao fica registrado no banco a confimação.
+    public function beforeSave($options = array())
+    {
+        // 1. Remove a confirmação de senha para não tentar salvar no banco
         unset($this->data[$this->alias]['confirmar_senha']);
 
-        //verifico se tem o id na tabela, se nao tiver, criar um novo e se ja tiver, ele vai modificar.
-        if(!$this -> id){
-            $this->data[$this->alias]['criado_em'] = date('Y-m-d H:i:s');       
-        }
-        if($this -> id){
-            $this->data[$this->alias]['modificado_em'] = date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
+
+        // 2. Se for um cadastro NOVO (sem ID)
+        if (!$this->id && empty($this->data[$this->alias]['id'])) {
+            $this->data[$this->alias]['criado_em'] = $now;
         }
 
-        //Depois de ver se o usuario ja existe ou não, recebemos a informação de senha do usuario e hashear antes de botar no banco.
-        if (isset($this->data[$this->alias]['senha_hash']))//verifica se tem uma senha ou não. 
-        {
+        // 3. Sempre atualiza a data de alteração (seja novo ou edição)
+        $this->data[$this->alias]['atualizado_em'] = $now;
+
+        // 4. Criptografa a senha com Blowfish
+        if (!empty($this->data[$this->alias]['senha_hash'])) {
             $passwordHasher = new BlowfishPasswordHasher();
             $this->data[$this->alias]['senha_hash'] = $passwordHasher->hash(
                 $this->data[$this->alias]['senha_hash']
             );
         }
 
+        // 5. Define o cargo padrão se estiver vazio
         if (!$this->id && empty($this->data[$this->alias]['cargo'])) {
-            $this->data[$this->alias]['cargo'] = 'autor';
+            $this->data[$this->alias]['cargo'] = 'Autor';
         }
 
         return true;
     }
-
 }
