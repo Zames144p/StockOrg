@@ -63,23 +63,15 @@ class User extends AppModel
         // 3. Sempre atualiza a data de alteração (seja novo ou edição)
         $this->data[$this->alias]['atualizado_em'] = $now;
 
-        // 1. Remove confirmação de senha se existir
-        unset($this->data[$this->alias]['confirmar_senha']);
-
-        // 2. Trata a criptografia da senha
-        if (!empty($this->data[$this->alias]['senha_hash'])) {
-            $passwordHasher = new BlowfishPasswordHasher();
-            $this->data[$this->alias]['senha_hash'] = $passwordHasher->hash(
-                $this->data[$this->alias]['senha_hash']
-            );
-        } elseif (!empty($this->data[$this->alias]['senha'])) {
-            // Caso o formulário envie o campo como 'senha'
-            $passwordHasher = new BlowfishPasswordHasher();
-            $this->data[$this->alias]['senha_hash'] = $passwordHasher->hash(
-                $this->data[$this->alias]['senha']
-            );
-            unset($this->data[$this->alias]['senha']);
-        }
+        // Criptografa a senha exatamente na chave 'senha_hash' do seu formulário
+    if (!empty($this->data[$this->alias]['senha_hash'])) {
+        $passwordHasher = new BlowfishPasswordHasher();
+        $this->data[$this->alias]['senha_hash'] = $passwordHasher->hash(
+            $this->data[$this->alias]['senha_hash']
+        );
+    } else {
+        unset($this->data[$this->alias]['senha_hash']);
+    }
 
         // 5. Define o cargo padrão se estiver vazio
         if (!$this->id && empty($this->data[$this->alias]['cargo'])) {
