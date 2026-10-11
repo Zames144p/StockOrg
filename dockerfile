@@ -1,11 +1,12 @@
 FROM php:7.4-apache
 
-# 1. Ajusta os repositórios legados do Debian Buster e instala dependências
-RUN echo "deb http://archive.debian.org/debian/ buster main" > /etc/apt/sources.list \
-    && echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list \
-    && echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/10no-check-valid-until \
-    && echo "Acquire::AllowInsecureRepositories \"true\";" >> /etc/apt/apt.conf.d/10no-check-valid-until \
-    && apt-get update -o Acquire::AllowInsecureRepositories=true -y \
+# 1. Troca os repositórios para o archive do Debian com flags estritas de bypass do APT
+RUN echo "deb [trusted=yes] http://archive.debian.org/debian buster main" > /etc/apt/sources.list \
+    && echo "deb [trusted=yes] http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until \
+    && echo 'Acquire::AllowInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99no-check-valid-until \
+    && echo 'Acquire::AllowDowngradeToInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99no-check-valid-until \
+    && apt-get update -y --allow-insecure-repositories \
     && apt-get install -y --allow-unauthenticated --no-install-recommends \
         libpq-dev \
         libpng-dev \
@@ -39,11 +40,11 @@ RUN printf '%s\n' \
     '    Require all granted' \
     '</Directory>' >> /etc/apache2/apache2.conf
 
-# 5. Define diretório de trabalho e copia os arquivos do projeto
+# 5. Copia os arquivos do projeto
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# 6. Cria estrutura de pastas temporárias do CakePHP e pasta de uploads
+# 6. Estrutura de pastas do CakePHP e uploads
 RUN mkdir -p app/tmp/cache/persistent \
              app/tmp/cache/models \
              app/tmp/cache/views \
@@ -58,7 +59,7 @@ RUN if [ -f "composer.json" ]; then \
     composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction || true; \
     fi
 
-# 8. Permissões para o Apache (www-data)
+# 8. Permissões de escrita para o Apache
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 777 /var/www/html/app/tmp \
     && chmod -R 777 /var/www/html/app/webroot/files
