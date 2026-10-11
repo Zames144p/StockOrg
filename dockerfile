@@ -48,7 +48,7 @@ RUN mkdir -p app/tmp/cache/persistent \
 # 7. Executa o Composer se houver composer.json
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
-RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction; fi
+## RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction; fi
 
 # 8. Permissões para o Apache (www-data)
 RUN chown -R www-data:www-data /var/www/html \
