@@ -1,13 +1,7 @@
-FROM php:7.4-apache
+FROM php:8.1-apache
 
-# 1. Configura os repositórios de arquivo do Debian Buster com Bypass de segurança para repositórios arquivados
-RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list \
-    && echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list \
-    && echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/10no-check-valid-until \
-    && echo "Acquire::AllowInsecureRepositories \"true\";" >> /etc/apt/apt.conf.d/10no-check-valid-until \
-    && echo "Acquire::AllowDowngradeToInsecureRepositories \"true\";" >> /etc/apt/apt.conf.d/10no-check-valid-until \
-    && apt-get update --allow-insecure-repositories -y \
-    && apt-get install -y --allow-unauthenticated --no-install-recommends \
+# 1. Instala dependências do sistema e extensões nativas do PHP
+RUN apt-get update && apt-get install -y --no-install-recommends \
         libpq-dev \
         libpng-dev \
         libjpeg-dev \
@@ -40,11 +34,11 @@ RUN printf '%s\n' \
     '    Require all granted' \
     '</Directory>' >> /etc/apache2/apache2.conf
 
-# 5. Define diretório de trabalho e copia os arquivos da aplicação
+# 5. Define diretório de trabalho e copia os arquivos do projeto
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# 6. Cria pastas temporárias do CakePHP e pasta de uploads
+# 6. Cria estrutura de pastas temporárias do CakePHP e pasta de uploads
 RUN mkdir -p app/tmp/cache/persistent \
              app/tmp/cache/models \
              app/tmp/cache/views \

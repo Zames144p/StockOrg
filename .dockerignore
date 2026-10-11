@@ -1,0 +1,7 @@
+data/pgdata/
+.git
+.gitignore
+app/tmp/*
+!app/tmp/empty
+app/webroot/files/*
+!app/webroot/files/empty
