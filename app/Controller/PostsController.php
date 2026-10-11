@@ -173,7 +173,9 @@ class PostsController extends AppController
                         'file'      => new CURLFile($fileTmpPath, $fileType, $fileName),
                         'api_key'   => $apiKey,
                         'timestamp' => $timestamp,
-                        'signature' => $signature
+                        'signature' => $signature,
+                        // Opcional: converte automaticamente para formatos otimizados (como WEBP) e limita a resolução máxima
+                        'transformation' => 'c_limit,w_1920,h_1080/q_auto,f_auto'
                     );
 
                     $ch = curl_init();
@@ -275,7 +277,9 @@ class PostsController extends AppController
                         'file'      => new CURLFile($fileTmpPath, $fileType, $fileName),
                         'api_key'   => $apiKey,
                         'timestamp' => $timestamp,
-                        'signature' => $signature
+                        'signature' => $signature,
+                        // Opcional: converte automaticamente para formatos otimizados (como WEBP) e limita a resolução máxima
+                        'transformation' => 'c_limit,w_1920,h_1080/q_auto,f_auto'
                     );
 
                     $ch = curl_init();
