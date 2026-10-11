@@ -53,15 +53,15 @@ class User extends AppModel
         // 1. Remove a confirmação de senha para não tentar salvar no banco
         unset($this->data[$this->alias]['confirmar_senha']);
 
-        $now = date('Y-m-d H:i:s');
+        $$now = date('Y-m-d H:i:s');
 
-        // 2. Se for um cadastro NOVO (sem ID)
+        // Se for um post novo
         if (!$this->id && empty($this->data[$this->alias]['id'])) {
             $this->data[$this->alias]['criado_em'] = $now;
         }
 
-        // 3. Sempre atualiza a data de alteração (seja novo ou edição)
-        $this->data[$this->alias]['atualizado_em'] = $now;
+        // Sempre atualiza a data de alteração com a data/hora atual formatada
+        $this->data[$this->alias]['modificado_em'] = $now;
 
         // Criptografa a senha exatamente na chave 'senha_hash' do seu formulário
     if (!empty($this->data[$this->alias]['senha_hash'])) {
