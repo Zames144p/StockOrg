@@ -253,37 +253,63 @@ class PostsController extends AppController
                 $this->request->data['Post']['status'] = true;
             }
 
-            // Tratamento da Imagem via ImgBB (igual ao add)
+            // Processa o upload da imagem via Cloudinary na edição
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
-                $apiKey = getenv('API_KEY'); // Insira sua API Key aqui
+                $fileName    = $this->request->data['Post']['imagem']['name'];
+                $fileType    = $this->request->data['Post']['imagem']['type'];
 
-                if (!$apiKey) {
-                    throw new InternalErrorException('Chave de API não configurada.');
-                }
-                $imageData = base64_encode(file_get_contents($fileTmpPath));
+                $cloudName = strtolower(trim(getenv('CLOUDINARY_CLOUD_NAME') ?: ($_ENV['CLOUDINARY_CLOUD_NAME'] ?? '')));
+                $apiKey    = trim(getenv('CLOUDINARY_API_KEY')    ?: ($_ENV['CLOUDINARY_API_KEY'] ?? ''));
+                $apiSecret = trim(getenv('CLOUDINARY_API_SECRET') ?: ($_ENV['CLOUDINARY_API_SECRET'] ?? ''));
 
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $imageData));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-                $response = curl_exec($ch);
-                curl_close($ch);
-
-                $jsonResponse = json_decode($response, true);
-
-                if (!empty($jsonResponse['data']['url'])) {
-                    // Atualiza com a nova URL pública da imagem
-                    $this->request->data['Post']['imagem'] = $jsonResponse['data']['url'];
-                } else {
-                    // Se falhou o upload, mantém a imagem antiga que já estava no banco
+                if (empty($cloudName) || empty($apiKey) || empty($apiSecret)) {
+                    CakeLog::write('error', '[Cloudinary] Credenciais de ambiente ausentes no edit.');
+                    // Em caso de erro nas credenciais, mantém a imagem antiga
                     $this->request->data['Post']['imagem'] = $post['Post']['imagem'];
+                } else {
+                    $timestamp = time();
+                    $signature = sha1('timestamp=' . $timestamp . $apiSecret);
+
+                    $postFields = array(
+                        'file'      => new CURLFile($fileTmpPath, $fileType, $fileName),
+                        'api_key'   => $apiKey,
+                        'timestamp' => $timestamp,
+                        'signature' => $signature
+                    );
+
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, 'https://api.cloudinary.com/v1_1/' . $cloudName . '/image/upload');
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+                    $response = curl_exec($ch);
+                    $curlError = curl_error($ch);
+                    curl_close($ch);
+
+                    if ($curlError) {
+                        CakeLog::write('error', '[Cloudinary cURL Error no edit]: ' . $curlError);
+                        // Em caso de erro de conexão, mantém a imagem que já existia no banco
+                        $this->request->data['Post']['imagem'] = $post['Post']['imagem'];
+                    } else {
+                        $jsonResponse = json_decode($response, true);
+
+                        if (!empty($jsonResponse['secure_url'])) {
+                            // SUCESSO: Atualiza com a nova URL HTTPS do Cloudinary
+                            $this->request->data['Post']['imagem'] = $jsonResponse['secure_url'];
+                        } else {
+                            CakeLog::write('error', '[Cloudinary API Error no edit]: ' . $response);
+                            // Em caso de falha da API, preserva a imagem antiga
+                            $this->request->data['Post']['imagem'] = $post['Post']['imagem'];
+                        }
+                    }
                 }
             } else {
-                // Se o usuário não enviou um novo arquivo, mantém a imagem já cadastrada
+                // Se o usuário NÃO enviou um novo arquivo, descarta a chave para que 
+                // o PostgreSQL mantenha a URL da imagem antiga que já está salva
                 unset($this->request->data['Post']['imagem']);
             }
 
