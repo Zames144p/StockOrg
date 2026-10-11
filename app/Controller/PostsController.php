@@ -147,77 +147,51 @@ class PostsController extends AppController
         if ($this->request->is('post')) {
             $this->Post->create();
 
-            if (empty($this->request->data['Post']['user_id'])) {
-                $this->request->data['Post']['user_id'] = $this->Auth->user('id');
-            }
-
-            // Processa o upload via Cloudinary
             if (!empty($this->request->data['Post']['imagem']['tmp_name'])) {
                 $fileTmpPath = $this->request->data['Post']['imagem']['tmp_name'];
                 $fileName    = $this->request->data['Post']['imagem']['name'];
                 $fileType    = $this->request->data['Post']['imagem']['type'];
 
-                $cloudName = getenv('CLOUDINARY_CLOUD_NAME') ?: ($_ENV['CLOUDINARY_CLOUD_NAME'] ?? '');
-                $apiKey    = getenv('CLOUDINARY_API_KEY')    ?: ($_ENV['CLOUDINARY_API_KEY'] ?? '');
-                $apiSecret = getenv('CLOUDINARY_API_SECRET') ?: ($_ENV['CLOUDINARY_API_SECRET'] ?? '');
+                $cloudName = trim(getenv('CLOUDINARY_CLOUD_NAME') ?: ($_ENV['CLOUDINARY_CLOUD_NAME'] ?? ''));
+                $apiKey    = trim(getenv('CLOUDINARY_API_KEY')    ?: ($_ENV['CLOUDINARY_API_KEY'] ?? ''));
+                $apiSecret = trim(getenv('CLOUDINARY_API_SECRET') ?: ($_ENV['CLOUDINARY_API_SECRET'] ?? ''));
 
-                if (empty($cloudName) || empty($apiKey) || empty($apiSecret)) {
-                    CakeLog::write('error', '[Cloudinary] Credenciais ausentes no ambiente.');
-                    unset($this->request->data['Post']['imagem']);
-                } else {
-                    $timestamp = time();
+                $timestamp = time();
+                $signature = sha1('timestamp=' . $timestamp . $apiSecret);
 
-                    // Assinatura SHA1 exigida pela API do Cloudinary
-                    $signature = sha1('timestamp=' . $timestamp . $apiSecret);
+                $postFields = array(
+                    'file'      => new CURLFile($fileTmpPath, $fileType, $fileName),
+                    'api_key'   => $apiKey,
+                    'timestamp' => $timestamp,
+                    'signature' => $signature
+                );
 
-                    $postFields = array(
-                        'file'      => new CURLFile($fileTmpPath, $fileType, $fileName),
-                        'api_key'   => $apiKey,
-                        'timestamp' => $timestamp,
-                        'signature' => $signature
-                    );
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.cloudinary.com/v1_1/' . $cloudName . '/image/upload');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, 'https://api.cloudinary.com/v1_1/' . trim($cloudName) . '/image/upload');
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                $response = curl_exec($ch);
+                $curlError = curl_error($ch);
+                curl_close($ch);
 
-                    $response = curl_exec($ch);
-                    $curlError = curl_error($ch);
-                    curl_close($ch);
-
-                    if ($curlError) {
-                        CakeLog::write('error', '[Cloudinary cURL Error]: ' . $curlError);
-                        unset($this->request->data['Post']['imagem']);
-                    } else {
-                        $jsonResponse = json_decode($response, true);
-
-                        if (!empty($jsonResponse['secure_url'])) {
-                            // SUCESSO: Salva a URL HTTPS gerada pelo Cloudinary na coluna 'imagem'
-                            $this->request->data['Post']['imagem'] = $jsonResponse['secure_url'];
-                        } else {
-                            CakeLog::write('error', '[Cloudinary API Error]: ' . $response);
-                            unset($this->request->data['Post']['imagem']);
-                        }
-                    }
-                }
+                // 🔍 TRAVA E EXIBE O DIAGNÓSTICO NA TELA
+                echo '<div style="background:#000; color:#0f0; padding:20px; font-family:monospace">';
+                echo '<h3>CLOUD_NAME: ' . htmlspecialchars($cloudName) . '</h3>';
+                echo '<h3>API_KEY: ' . htmlspecialchars($apiKey) . '</h3>';
+                echo '<h3>ERRO cURL: ' . ($curlError ?: 'Nenhum erro de conexão') . '</h3>';
+                echo '<h3>RESPOSTA DO CLOUDINARY:</h3>';
+                echo '<pre>';
+                print_r(json_decode($response, true) ?: $response);
+                echo '</pre>';
+                echo '</div>';
+                die();
             } else {
-                unset($this->request->data['Post']['imagem']);
+                echo '<h2 style="color:red">Nenhum arquivo temporário (tmp_name) foi recebido pelo PHP!</h2>';
+                die();
             }
-
-            $saveAs = isset($this->request->data['Post']['status']) ? $this->request->data['Post']['status'] : 'published';
-            $this->request->data['Post']['status'] = ($saveAs !== 'draft');
-
-            if ($this->Post->save($this->request->data)) {
-                $message = ($saveAs === 'draft') ? 'Rascunho salvo com sucesso.' : 'Post publicado com sucesso.';
-                $this->Flash->success(__($message));
-                return $this->redirect(array('action' => 'index'));
-            }
-
-            $this->Flash->error(__('Não foi possível salvar o post.'));
         }
     }
 
