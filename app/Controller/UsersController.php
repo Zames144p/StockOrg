@@ -310,7 +310,7 @@ class UsersController extends AppController
         $this->loadModel('Post');
         $userPosts = $this->Post->find('all', array(
             'conditions' => array('Post.user_id' => $targetUserId),
-            'order' => array('Post.criado_em' => 'DESC')
+            'order' => array('Post.created' => 'DESC')
         ));
 
         // Envia as duas variáveis necessárias para a View

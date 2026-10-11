@@ -57,11 +57,11 @@ class User extends AppModel
 
         // Se for um novo registro (INSERT)
         if (empty($this->data[$this->alias]['id'])) {
-            $this->data[$this->alias]['criado_em'] = $now;
+            $this->data[$this->alias]['created'] = $now;
         }
 
         // Atualiza sempre o timestamp
-        $this->data[$this->alias]['atualizado_em'] = $now;
+        $this->data[$this->alias]['modified'] = $now;
 
         // Criptografa a senha exatamente na chave 'senha_hash' do seu formulário
         if (!empty($this->data[$this->alias]['senha_hash'])) {

@@ -25,15 +25,14 @@ class Post extends AppModel {
 
     public function beforeSave($options = array()) {
         $now = date('Y-m-d H:i:s');
-        
 
         // Se for um post novo
         if (!$this->id && empty($this->data[$this->alias]['id'])) {
-            $this->data[$this->alias]['criado_em'] = $now;
+            $this->data[$this->alias]['created'] = $now;
         }
 
         // Sempre atualiza a data de alteração com a data/hora atual formatada
-        $this->data[$this->alias]['modificado_em'] = $now;
+        $this->data[$this->alias]['modified'] = $now;
 
         return true;
     }
