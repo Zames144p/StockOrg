@@ -1,32 +1,31 @@
-# User specific & automatically generated files #
-#################################################
-/app/Config/database.php
-/app/tmp
+# Cache e logs temporários do CakePHP (Manter ignorado)
+/app/tmp/*
+!/app/tmp/empty
 /lib/Cake/Console/Templates/skel/tmp/
-/plugins
-/vendors
 /build
 /dist
 /tags
 *.mo
 
-# IDE and editor specific files #
-#################################
+# Uploads de utilizadores (Não subir imagens de teste locais)
+/app/webroot/files/*
+!/app/webroot/files/empty
+
+# IDE e ficheiros do Sistema Operativo
 /nbproject
 .idea
 /.project
 /.buildpath
 /.settings/
-
-# OS generated files #
-######################
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-*.env
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Ficheiros de ambiente e dados locais do Postgres
+*.env
 data/pgdata/
