@@ -254,12 +254,20 @@ class PostsController extends AppController
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, 'https://api.imgbb.com/1/upload?key=' . $apiKey);
                 curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $imageData));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array(
+                    'image' => $imageData
+                )));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
                 $response = curl_exec($ch);
                 curl_close($ch);
+
+                // debug
+                echo '<pre>';
+                print_r(json_decode($response, true));
+                echo '</pre>';
+                die();
 
                 $jsonResponse = json_decode($response, true);
 
